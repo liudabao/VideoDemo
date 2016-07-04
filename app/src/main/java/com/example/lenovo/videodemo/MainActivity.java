@@ -2,93 +2,66 @@ package com.example.lenovo.videodemo;
 
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
+import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 public class MainActivity extends AppCompatActivity {
 
-
-    Button start;
-    Button pause;
-    Button stop;
-    VideoView videoView;
+    //定义FragmentTabHost对象
+    private FragmentTabHost mTabHost;
+    //定义一个布局
+    private LayoutInflater layoutInflater;
+    //Tab选项卡的文字
+    private String mTextviewArray[] = {"视频", "设置"};
+    private Class fragmentArray[] = {VideoFragment.class,SetFragment.class};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.activity_main);
         init();
     }
 
     private void init(){
-        videoView=(VideoView)findViewById(R.id.view);
-        start=(Button)findViewById(R.id.start);
-        pause=(Button)findViewById(R.id.pause);
-        stop=(Button)findViewById(R.id.stop);
-        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
+        layoutInflater = LayoutInflater.from(this);
+       //实例化TabHost对象，得到TabHost
+        mTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
+        mTabHost.setup(this, getSupportFragmentManager(), R.id.content);
 
-                compelete();
-            }
-        });
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-
-                start();
-            }
-        });
-
-        videoView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                click();
-            }
-        });
-
-        start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Uri uri= Uri.parse("http://101.200.164.87:8080/visa/video/1.f4v");
-                videoView.setVideoURI(uri);
-            }
-        });
-
-        pause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                click();
-            }
-        });
-
-    }
-
-    private void compelete(){
-        Log.e("video", "finish");
-    }
-
-    private void start(){
-        Log.e("video", "start");
-        videoView.start();
-    }
-
-    public void click(){
-        if(videoView.isPlaying()){
-            Log.e("video", "pause");
-            videoView.pause();
+        for(int i = 0; i < 2; i++){
+            //为每一个Tab按钮设置图标、文字和内容
+            TabHost.TabSpec tabSpec = mTabHost.newTabSpec(mTextviewArray[i]).setIndicator(getTabItemView(i));
+            //将Tab按钮添加进Tab选项卡中
+            mTabHost.addTab(tabSpec, fragmentArray[i], null);
+            //设置Tab按钮的背景
+           // mTabHost.getTabWidget().getChildAt(i).setBackgroundResource(R.drawable.selector_tab_background);
         }
-        else{
-            Log.e("video", "start");
-            videoView.start();
-        }
+    }
+    /**
+     * 给Tab按钮设置图标和文字
+     */
+    private View getTabItemView(int index){
+        View view = layoutInflater.inflate(R.layout.tab_item_view, null);
+
+        ImageView imageView = (ImageView) view.findViewById(R.id.imageview);
+        imageView.setImageResource(R.mipmap.ic_launcher);
+
+        TextView textView = (TextView) view.findViewById(R.id.textview);
+        textView.setText(mTextviewArray[index]);
+
+        return view;
     }
 
 }

@@ -1,0 +1,112 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/common_color_e0e0e0"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/set_top"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_retangle"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/text_set_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_18"
+            android:text="设置" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/md_gray_50"
+        android:clickable="true"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+        <TextView
+            android:id="@+id/text_set_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_gravity="center"
+            android:textSize="@dimen/text_size_16"
+            android:textColor="@color/md_gray_700"
+            android:layout_marginLeft="16dp"
+            android:text="清空缓存" />
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/bg_divider"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/md_gray_50"
+        android:clickable="true"
+        android:orientation="horizontal" >
+        <TextView
+            android:id="@+id/text_set_question"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:textColor="@color/md_gray_700"
+            android:textSize="@dimen/text_size_18"
+            android:layout_marginLeft="16dp"
+            android:text="意见反馈" />
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/bg_divider"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/md_gray_50"
+        android:clickable="true"
+        android:orientation="horizontal" >
+        <TextView
+            android:id="@+id/text_set_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:textColor="@color/md_gray_700"
+            android:textSize="@dimen/text_size_18"
+            android:layout_marginLeft="16dp"
+            android:text="检查新版本" />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/bg_divider"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/md_gray_50"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:clickable="true"
+        android:orientation="horizontal" >
+        <TextView
+            android:id="@+id/text_set_about"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:textColor="@color/md_gray_700"
+            android:textSize="@dimen/text_size_18"
+            android:layout_marginLeft="16dp"
+            android:text="关于" />
+    </LinearLayout>
+
+</LinearLayout>
