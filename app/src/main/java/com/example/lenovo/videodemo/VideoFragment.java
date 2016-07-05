@@ -49,13 +49,13 @@ public class VideoFragment extends Fragment {
 		super.onCreateView(inflater, container, savedInstanceState);
 		if(view==null){
 			view=inflater.inflate(R.layout.layout_video, container, false);
+			showProgressDialog();
 		}
 		ViewGroup parent = (ViewGroup) view.getParent();
 		if (parent != null)
 		{
 			parent.removeView(view);
 		}
-		showProgressDialog();
 		handler=new Handler(){
 			public void handleMessage(Message msg){
 				switch (msg.what) {
