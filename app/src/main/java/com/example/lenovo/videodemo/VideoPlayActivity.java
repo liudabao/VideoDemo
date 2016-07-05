@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -19,7 +20,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -38,20 +41,20 @@ public class VideoPlayActivity extends AppCompatActivity implements
     private  SurfaceView surface;
     private SurfaceHolder surfaceHolder;
     private ImageButton start;
-    //Button fast;
+    private ImageButton next;
+    private ImageButton prev;
+    private ImageButton back;
     private SeekBar seekBar;
     private TextView textView;
-   // Button capture;
     private ProgressBar progressBar;
-    //Button pause;
-    //Button stop;
     private String time;
     private boolean flag;
-    //private final int SDK_PERMISSION_REQUEST = 127;
-   // private String permissionInfo;
-
     private boolean isFinish=false;
     private String url;
+    private String nextUrl;
+    private String prevUrl;
+    private LinearLayout linearLayout;
+    private RelativeLayout relativeLayout;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +62,11 @@ public class VideoPlayActivity extends AppCompatActivity implements
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_video_play);
         //getPersimmions();
-        url=getIntent().getExtras().getString("url");
+        Bundle bundle=getIntent().getExtras();
+        url=bundle.getString("url");
+        nextUrl=bundle.getString("next");
+        prevUrl=bundle.getString("prev");
+        Log.e("URL",url+"#"+nextUrl+"#"+prevUrl);
         initView();
     }
 
@@ -70,19 +77,29 @@ public class VideoPlayActivity extends AppCompatActivity implements
     }
 
     private void initView() {
+        relativeLayout=(RelativeLayout)findViewById(R.id.video_bottom);
+        linearLayout=(LinearLayout)findViewById(R.id.video_top);
         progressBar=(ProgressBar)findViewById(R.id.progressBar);
-
         textView=(TextView)findViewById(R.id.text);
         seekBar=(SeekBar)findViewById(R.id.progress);
         start=(ImageButton)findViewById(R.id.start);
-        //fast=(Button)findViewById(R.id.fast);
-        //capture=(Button)findViewById(R.id.capture);
-        //stop=(Button)findViewById(R.id.stop);
+        next=(ImageButton)findViewById(R.id.next);
+        prev=(ImageButton)findViewById(R.id.prev);
+        back=(ImageButton)findViewById(R.id.back);
         surface = (SurfaceView) findViewById(R.id.view);
         surfaceHolder = surface.getHolder(); // SurfaceHolder是SurfaceView的控制接口
         surfaceHolder.addCallback(this); // 因为这个类实现了SurfaceHolder.Callback接口，所以回调参数直接this
 
         start.setOnClickListener(this);
+        if (nextUrl==null){
+            next.setClickable(false);
+        }
+        if(prevUrl==null){
+            prev.setClickable(false);
+        }
+        next.setOnClickListener(this);
+        prev.setOnClickListener(this);
+        back.setOnClickListener(this);
         //fast.setOnClickListener(this);
        // capture.setOnClickListener(this);
        // pause.setOnClickListener(this);
@@ -114,17 +131,25 @@ public class VideoPlayActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onDestroy() {
-        // TODO Auto-generated method stub
-        super.onDestroy();
-        if(player!=null){
-            if (player.isPlaying()) {
-                player.stop();
-            }
-            player.release();
+    public boolean onTouchEvent(MotionEvent event){
+        super.onTouchEvent(event);
+        switch (event.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                if(linearLayout.getVisibility()==View.GONE){
+                    linearLayout.setVisibility(View.VISIBLE);
+                    relativeLayout.setVisibility(View.VISIBLE);
+                    seekBar.setVisibility(View.VISIBLE);
+                }
+                else {
+                    linearLayout.setVisibility(View.GONE);
+                    relativeLayout.setVisibility(View.GONE);
+                    seekBar.setVisibility(View.GONE);
+                }
+                break;
+            default:
+                break;
         }
-
-        // Activity销毁时停止播放，释放资源。不做这个操作，即使退出还是能听到视频播放的声音
+        return true;
     }
 
     @Override
@@ -151,6 +176,19 @@ public class VideoPlayActivity extends AppCompatActivity implements
             }
 
         }
+        else if(v==next){
+
+            url=nextUrl;
+            play();
+        }
+        else if(v==prev){
+            url=prevUrl;
+            play();
+        }
+        else if(v==back){
+            player.stop();
+            finish();
+        }
         /*if(v==fast){
             Log.e("video", "fast");
             seekBar.setProgress(player.getCurrentPosition()+5000);
@@ -163,6 +201,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
     @Override
     public void onCompletion(MediaPlayer mp) {
         Log.e("video", "video end");
+        start.setBackgroundResource(R.drawable.play);
        // player.start();
        // start.setText("start");
        // textView.setText(getShowTime(0) + "/" +time);
@@ -213,7 +252,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
         // 设置显示视频显示在SurfaceView上
         try {
             //File file=new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"Download/test.mp4");
-            Log.e("url",url);
+            Log.e("play url",url);
             File file=new File(url);
             //player.setDataSource("http://101.200.164.87:8080/visa/video/1.f4v");
             if(file.exists()){
@@ -249,6 +288,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
             player.seekTo(progress);
             if(progress==seekBar.getMax()){
                 isFinish=true;
+                start.setBackgroundResource(R.drawable.play);
             }
         }
         textView.setText(getShowTime(progress) + "/" +time);
@@ -264,5 +304,30 @@ public class VideoPlayActivity extends AppCompatActivity implements
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
+        super.onBackPressed();
+
+        //super.onBackPressed();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        super.onDestroy();
+        Log.e("video","destroy");
+        flag=false;
+        if(player!=null){
+            if (player.isPlaying()) {
+                player.stop();
+            }
+            player.release();
+        }
+
+        // Activity销毁时停止播放，释放资源。不做这个操作，即使退出还是能听到视频播放的声音
     }
 }

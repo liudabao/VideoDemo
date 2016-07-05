@@ -88,6 +88,18 @@ public class VideoFragment extends Fragment {
 				Intent intent=new Intent(getActivity(), VideoPlayActivity.class);
 				Bundle bundle=new Bundle();
 				bundle.putString("url",list.get(position).getUrl());
+				if(position<list.size()-1){
+					bundle.putString("next",list.get(position+1).getUrl());
+				}
+				else {
+					bundle.putString("next",null);
+				}
+				if(position==0){
+					bundle.putString("prev",null);
+				}
+				else {
+					bundle.putString("prev",list.get(position).getUrl());
+				}
 				intent.putExtras(bundle);
 				startActivity(intent);
 			}
@@ -125,7 +137,7 @@ public class VideoFragment extends Fragment {
 				else{
 					Log.e("TAG", "no sdcard");
 				}
-//				player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+				//player.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
 
 			}
@@ -157,16 +169,16 @@ public class VideoFragment extends Fragment {
 							e.printStackTrace();
 						}
 						Bitmap bitmap=getImage(f);
-						//try {
-							//player.reset();
-							//player.setDataSource(f.getPath());
-							//player.prepare();
-							//time=getShowTime(player.getDuration());
+						/*try {
+							player.reset();
+							player.setDataSource(f.getPath());
+							player.prepare();
+							time=getShowTime(player.getDuration());
 							//time="00";
 							//Log.e("time",getShowTime(player.getDuration()));
-						//} catch (IOException e) {
-						//	e.printStackTrace();
-						//}
+						} catch (IOException e) {
+							e.printStackTrace();
+						}*/
 						video.setName(name);
 						video.setSize(formetFileSize(getFileSizes(f)));
 						//video.setFile(new File(f.getAbsolutePath(),name));
@@ -198,7 +210,7 @@ public class VideoFragment extends Fragment {
 		//File file=new File(Environment.getExternalStorageDirectory(),"Download/test.mp4");
 		retriever.setDataSource(file.getPath());
 		String duration=retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-		Log.e("url", file.getPath()+": "+time+" "+getShowTime(Long.parseLong(duration)));
+		//Log.e("url", file.getPath()+": "+time+" "+getShowTime(Long.parseLong(duration)));
         time=getShowTime(Long.parseLong(duration));
 		Bitmap bitmap=retriever.getFrameAtTime(Long.parseLong(duration));
 		return bitmap;

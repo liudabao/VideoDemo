@@ -11,8 +11,10 @@ public class Video {
     private String name;
     private String size;
     private String time;
-    private int position;
+    private long position;
     private String url;
+    private String nextUrl;
+    private String prevUrl;
     private Bitmap bitmap;
 
     public String getName() {
@@ -39,11 +41,11 @@ public class Video {
         this.time = time;
     }
 
-    public int getPosition() {
+    public long getPosition() {
         return position;
     }
 
-    public void setPosition(int position) {
+    public void setPosition(long position) {
         this.position = position;
     }
 
@@ -62,5 +64,21 @@ public class Video {
 
     public void setBitmap(Bitmap bitmap) {
         this.bitmap = bitmap;
+    }
+
+    public String getNextUrl() {
+        return nextUrl;
+    }
+
+    public void setNextUrl(String nextUrl) {
+        this.nextUrl = nextUrl;
+    }
+
+    public String getPrevUrl() {
+        return prevUrl;
+    }
+
+    public void setPrevUrl(String prevUrl) {
+        this.prevUrl = prevUrl;
     }
 }
