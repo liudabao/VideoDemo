@@ -47,9 +47,14 @@ public class VideoFragment extends Fragment {
 	@Override	
 	public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
 		super.onCreateView(inflater, container, savedInstanceState);
-		view=inflater.inflate(R.layout.layout_video, container, false);
-		//initData();
-
+		if(view==null){
+			view=inflater.inflate(R.layout.layout_video, container, false);
+		}
+		ViewGroup parent = (ViewGroup) view.getParent();
+		if (parent != null)
+		{
+			parent.removeView(view);
+		}
 		showProgressDialog();
 		handler=new Handler(){
 			public void handleMessage(Message msg){

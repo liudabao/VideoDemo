@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.MediaController;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             //将Tab按钮添加进Tab选项卡中
             mTabHost.addTab(tabSpec, fragmentArray[i], null);
             //设置Tab按钮的背景
-            mTabHost.getTabWidget().getChildAt(i).setBackgroundResource(mImageArray[i]);
+            //mTabHost.getTabWidget().getChildAt(i).setBackgroundResource(mImageArray[i]);
         }
     }
     /**
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         View view = layoutInflater.inflate(R.layout.tab_item_view, null);
 
         ImageView imageView = (ImageView) view.findViewById(R.id.imageview);
-        imageView.setImageResource(R.mipmap.ic_launcher);
+        imageView.setImageResource(mImageArray[index]);
 
         TextView textView = (TextView) view.findViewById(R.id.textview);
         textView.setText(mTextviewArray[index]);
