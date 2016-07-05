@@ -2,17 +2,22 @@ package com.example.lenovo.videodemo;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.media.AudioManager;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -38,6 +43,7 @@ public class VideoFragment extends Fragment {
 	private Handler handler;
 	private MediaPlayer player;
 	private String time;
+	private SwipeRefreshLayout swipeRefreshLayout;
 	@Override	
 	public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
 		super.onCreateView(inflater, container, savedInstanceState);
@@ -83,10 +89,18 @@ public class VideoFragment extends Fragment {
 
 			}
 		});
+
+		swipeRefreshLayout=(SwipeRefreshLayout)view.findViewById(R.id.swipe);
+		swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+                 init();
+			}
+		});
 	}
 
 	private void init(){
-		player = new MediaPlayer();
+		//player = new MediaPlayer();
 		new Thread(new Runnable() {
 
 			@Override
@@ -103,7 +117,7 @@ public class VideoFragment extends Fragment {
 				else{
 					Log.e("TAG", "no sdcard");
 				}
-				player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//				player.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
 
 			}
@@ -134,22 +148,24 @@ public class VideoFragment extends Fragment {
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
-
-						try {
-							player.reset();
-							player.setDataSource(f.getPath());
-							player.prepare();
-							time=getShowTime(player.getDuration());
+						Bitmap bitmap=getImage(f);
+						//try {
+							//player.reset();
+							//player.setDataSource(f.getPath());
+							//player.prepare();
+							//time=getShowTime(player.getDuration());
+							//time="00";
 							//Log.e("time",getShowTime(player.getDuration()));
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						//} catch (IOException e) {
+						//	e.printStackTrace();
+						//}
 						video.setName(name);
 						video.setSize(formetFileSize(getFileSizes(f)));
 						//video.setFile(new File(f.getAbsolutePath(),name));
-						Log.e("path",f.getAbsolutePath());
+						//Log.e("path",f.getAbsolutePath());
 						video.setUrl(f.getAbsolutePath());
 						video.setTime(time);
+						video.setBitmap(bitmap);
 						list.add(video);
 					}
 				}
@@ -166,6 +182,18 @@ public class VideoFragment extends Fragment {
 			}*/
 
 		}
+
+	}
+
+	private Bitmap getImage(File file){
+		MediaMetadataRetriever retriever=new MediaMetadataRetriever();
+		//File file=new File(Environment.getExternalStorageDirectory(),"Download/test.mp4");
+		retriever.setDataSource(file.getPath());
+		String duration=retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+		Log.e("url", file.getPath()+": "+time+" "+getShowTime(Long.parseLong(duration)));
+        time=getShowTime(Long.parseLong(duration));
+		Bitmap bitmap=retriever.getFrameAtTime(Long.parseLong(duration));
+		return bitmap;
 
 	}
 

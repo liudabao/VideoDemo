@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private LayoutInflater layoutInflater;
     //Tab选项卡的文字
     private String mTextviewArray[] = {"视频", "设置"};
+    private int mImageArray[] = {R.drawable.video, R.drawable.set};
     private Class fragmentArray[] = {VideoFragment.class,SetFragment.class};
     private final int SDK_PERMISSION_REQUEST = 127;
     private String permissionInfo;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             //将Tab按钮添加进Tab选项卡中
             mTabHost.addTab(tabSpec, fragmentArray[i], null);
             //设置Tab按钮的背景
-           // mTabHost.getTabWidget().getChildAt(i).setBackgroundResource(R.drawable.selector_tab_background);
+            mTabHost.getTabWidget().getChildAt(i).setBackgroundResource(mImageArray[i]);
         }
     }
     /**

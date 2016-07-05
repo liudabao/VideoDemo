@@ -1,5 +1,7 @@
 package com.example.lenovo.videodemo;
 
+import android.graphics.Bitmap;
+
 import java.io.File;
 
 /**
@@ -11,6 +13,7 @@ public class Video {
     private String time;
     private int position;
     private String url;
+    private Bitmap bitmap;
 
     public String getName() {
         return name;
@@ -51,5 +54,13 @@ public class Video {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
     }
 }
