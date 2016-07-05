@@ -19,20 +19,45 @@
             android:textSize="@dimen/text_size_18"
             android:text="设置" />
     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/set_explain"
+        android:layout_width="match_parent"
+        android:layout_height="144dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/version"
+            android:text="熊猫播放器"
+            android:textColor="@color/md_gray_600"
+            android:textSize="32sp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tip"
+            android:text="我就是萌哒哒"
+            android:textColor="@color/gray"
+            android:textSize="14sp"
+            android:layout_below="@+id/version"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"/>
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/md_gray_50"
         android:clickable="true"
         android:orientation="horizontal"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp">
         <TextView
             android:id="@+id/text_set_clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
             android:layout_gravity="center"
             android:textSize="@dimen/text_size_16"
             android:textColor="@color/md_gray_700"
@@ -40,10 +65,8 @@
             android:text="清空缓存" />
 
     </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@drawable/bg_divider"/>
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,8 +78,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
             android:textColor="@color/md_gray_700"
             android:textSize="@dimen/text_size_18"
             android:layout_marginLeft="16dp"
@@ -65,7 +88,9 @@
     </LinearLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:background="@drawable/bg_divider"/>
     <LinearLayout
         android:layout_width="match_parent"
@@ -78,8 +103,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
             android:textColor="@color/md_gray_700"
             android:textSize="@dimen/text_size_18"
             android:layout_marginLeft="16dp"
@@ -87,7 +112,9 @@
     </LinearLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:background="@drawable/bg_divider"/>
     <LinearLayout
         android:layout_width="match_parent"
@@ -101,8 +128,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
             android:textColor="@color/md_gray_700"
             android:textSize="@dimen/text_size_18"
             android:layout_marginLeft="16dp"

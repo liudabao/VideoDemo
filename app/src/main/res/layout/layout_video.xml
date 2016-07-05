@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/md_gray_300">
     <RelativeLayout
         android:id="@+id/set_top"
         android:layout_width="match_parent"
