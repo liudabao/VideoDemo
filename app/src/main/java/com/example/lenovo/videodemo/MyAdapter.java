@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyRecyclerViewHolder>{
 
-    private List<String> list;
+    private List<Video> list;
     private Context context;
 
 
@@ -36,18 +36,20 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyRecyclerViewHold
     }
 
 
-    public MyAdapter(Context context, List<String> list){
+    public MyAdapter(Context context, List<Video> list){
         this.context=context;
         this.list=list;
+       // Log.e("adapter",context+"");
     }
 
 
     @Override
     public void onBindViewHolder(final MyRecyclerViewHolder holder, int position) {
         // TODO Auto-generated method stub
-        holder.tv_name.setText(list.get(position));
-        holder.tv_size.setText("123");
-        holder.tv_time.setText("100");
+        Video video=list.get(position);
+        holder.tv_name.setText(video.getName());
+        holder.tv_size.setText(video.getSize());
+        holder.tv_time.setText(video.getTime());
         holder.iv.setImageResource(R.mipmap.ic_launcher);
        //
         if(mListener!=null){
@@ -77,7 +79,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyRecyclerViewHold
       //  CountryRecyclerViewHolder holder=new CountryRecyclerViewHolder(LayoutInflater.from(context).inflate(R.layout.ui_recyclerview_item, parent,false));
        // return holder;
         if(context!=null){
-            Log.e("view", "start");
+           // Log.e("view", "start");
             View mView = LayoutInflater.from(context).inflate(R.layout.recyclerview_item, parent, false);
             return new MyRecyclerViewHolder(mView);
         }

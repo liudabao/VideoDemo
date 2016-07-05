@@ -34,31 +34,32 @@ public class VideoPlayActivity extends AppCompatActivity implements
         SurfaceHolder.Callback, View.OnClickListener, MediaPlayer.OnCompletionListener,
         MediaPlayer.OnPreparedListener, SeekBar.OnSeekBarChangeListener {
     /** Called when the activity is first created. */
-    MediaPlayer player;
-    SurfaceView surface;
-    SurfaceHolder surfaceHolder;
-    ImageButton start;
+    private MediaPlayer player;
+    private  SurfaceView surface;
+    private SurfaceHolder surfaceHolder;
+    private ImageButton start;
     //Button fast;
-    SeekBar seekBar;
-    TextView textView;
+    private SeekBar seekBar;
+    private TextView textView;
    // Button capture;
-    ProgressBar progressBar;
+    private ProgressBar progressBar;
     //Button pause;
     //Button stop;
-    String time;
-    boolean flag;
-    private final int SDK_PERMISSION_REQUEST = 127;
-    private String permissionInfo;
+    private String time;
+    private boolean flag;
+    //private final int SDK_PERMISSION_REQUEST = 127;
+   // private String permissionInfo;
 
-    boolean isFinish=false;
+    private boolean isFinish=false;
+    private String url;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_video_play);
-        getPersimmions();
+        //getPersimmions();
+        url=getIntent().getExtras().getString("url");
         initView();
     }
 
@@ -91,44 +92,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
 
     }
 
-    @TargetApi(23)
-    private void getPersimmions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ArrayList<String> permissions = new ArrayList<String>();
 
-            // 读写权限
-            if (addPermission(permissions, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                permissionInfo += "Manifest.permission.WRITE_EXTERNAL_STORAGE Deny \n";
-            }
-
-            if (permissions.size() > 0) {
-                requestPermissions(permissions.toArray(new String[permissions.size()]), SDK_PERMISSION_REQUEST);
-            }
-        }
-    }
-
-    @TargetApi(23)
-    private boolean addPermission(ArrayList<String> permissionsList, String permission) {
-        if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) { // 如果应用没有获得对应权限,则添加到列表中,准备批量申请
-            if (shouldShowRequestPermissionRationale(permission)){
-                return true;
-            }else{
-                permissionsList.add(permission);
-                return false;
-            }
-
-        }else{
-            return true;
-        }
-    }
-
-    @TargetApi(23)
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        // TODO Auto-generated method stub
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-    }
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
     }
@@ -248,7 +212,9 @@ public class VideoPlayActivity extends AppCompatActivity implements
         player.setDisplay(surfaceHolder);
         // 设置显示视频显示在SurfaceView上
         try {
-            File file=new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"Download/test.mp4");
+            //File file=new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"Download/test.mp4");
+            Log.e("url",url);
+            File file=new File(url);
             //player.setDataSource("http://101.200.164.87:8080/visa/video/1.f4v");
             if(file.exists()){
                 Log.e("path",file.getPath());
