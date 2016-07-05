@@ -63,13 +63,16 @@ public class VideoFragment extends Fragment {
 						progress.dismiss();
 						initView();
 						break;
-
+					case 2:
+						initView();
+						swipeRefreshLayout.setRefreshing(false);
+						break;
 					default:
 						break;
 				}
 			}
 		};
-		init();
+		init(1);
 		return view;
 	}
 
@@ -99,12 +102,12 @@ public class VideoFragment extends Fragment {
 		swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
-                 init();
+                 init(2);
 			}
 		});
 	}
 
-	private void init(){
+	private void init(final int type){
 		//player = new MediaPlayer();
 		new Thread(new Runnable() {
 
@@ -116,7 +119,7 @@ public class VideoFragment extends Fragment {
 					File file=Environment.getExternalStorageDirectory();
 					getFile(file);
 					Message msg=new Message();
-					msg.what=1;
+					msg.what=type;
 					handler.sendMessage(msg);
 				}
 				else{
