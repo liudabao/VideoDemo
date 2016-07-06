@@ -50,7 +50,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyRecyclerViewHold
         holder.tv_name.setText(video.getName());
         holder.tv_size.setText(video.getSize());
         holder.tv_time.setText(video.getTime());
-        holder.iv.setImageBitmap(video.getBitmap());
+       // holder.iv.setImageBitmap(video.getBitmap());
+        holder.iv.setBackgroundResource(R.mipmap.ic_launcher);
        //
         if(mListener!=null){
             holder.itemView.setOnClickListener(new View.OnClickListener() {

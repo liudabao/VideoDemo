@@ -23,6 +23,8 @@ import android.view.ViewGroup;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -43,7 +45,9 @@ public class VideoFragment extends Fragment {
 	private Handler handler;
 	private MediaPlayer player;
 	private String time;
+	private String imageUrl;
 	private SwipeRefreshLayout swipeRefreshLayout;
+	private DbUtil dbUtil;
 	@Override	
 	public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
 		super.onCreateView(inflater, container, savedInstanceState);
@@ -72,7 +76,7 @@ public class VideoFragment extends Fragment {
 				}
 			}
 		};
-		init(1);
+		init(GlobalValue.TYPE_ENTER);
 		return view;
 	}
 
@@ -87,19 +91,8 @@ public class VideoFragment extends Fragment {
 			public void onItemClick(View view, int position) {
 				Intent intent=new Intent(getActivity(), VideoPlayActivity.class);
 				Bundle bundle=new Bundle();
-				bundle.putString("url",list.get(position).getUrl());
-				if(position<list.size()-1){
-					bundle.putString("next",list.get(position+1).getUrl());
-				}
-				else {
-					bundle.putString("next",null);
-				}
-				if(position==0){
-					bundle.putString("prev",null);
-				}
-				else {
-					bundle.putString("prev",list.get(position).getUrl());
-				}
+				//bundle.putString("url",list.get(position).getUrl());
+                bundle.putSerializable(GlobalValue.KEY, list.get(position));
 				intent.putExtras(bundle);
 				startActivity(intent);
 			}
@@ -114,9 +107,20 @@ public class VideoFragment extends Fragment {
 		swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
-                 init(2);
+                 init(GlobalValue.TYPE_REFREASH);
 			}
 		});
+		//
+		for(int i=0;i<list.size();i++){
+            if(i>0){
+				list.get(i).setPrevUrl(list.get(i-1).getUrl());
+			}
+			if(i<list.size()-1){
+				list.get(i).setNextUrl(list.get(i+1).getUrl());
+			}
+
+		}
+		insert();
 	}
 
 	private void init(final int type){
@@ -168,7 +172,8 @@ public class VideoFragment extends Fragment {
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
-						Bitmap bitmap=getImage(f);
+						//Bitmap bitmap=getImage(f);
+						//imageUrl=saveBitmap(name, bitmap);
 						/*try {
 							player.reset();
 							player.setDataSource(f.getPath());
@@ -185,7 +190,8 @@ public class VideoFragment extends Fragment {
 						//Log.e("path",f.getAbsolutePath());
 						video.setUrl(f.getAbsolutePath());
 						video.setTime(time);
-						video.setBitmap(bitmap);
+                       // video.setImageUrl(imageUrl);
+						//video.setBitmap(bitmap);
 						list.add(video);
 					}
 				}
@@ -215,6 +221,27 @@ public class VideoFragment extends Fragment {
 		Bitmap bitmap=retriever.getFrameAtTime(Long.parseLong(duration));
 		return bitmap;
 
+	}
+
+	private String saveBitmap(String name,Bitmap bm) {
+		File f = new File(getActivity().getFilesDir(), name);
+		if (f.exists()) {
+			f.delete();
+		}
+		try {
+			FileOutputStream out = new FileOutputStream(f);
+			bm.compress(Bitmap.CompressFormat.PNG, 90, out);
+			out.flush();
+			out.close();
+			Log.i("Bitmap", "已经保存");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return f.getPath();
 	}
 
 	private long getFileSizes(File file){
@@ -261,6 +288,10 @@ public class VideoFragment extends Fragment {
 		return dateFormat.format(calendar.getTime());
 	}
 
+	private void insert(){
+		dbUtil=new DbUtil(GlobalContext.getContext(), GlobalValue.DB, GlobalValue.VERSION);
+		dbUtil.insert(list, GlobalValue.TABLE);
+	}
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub

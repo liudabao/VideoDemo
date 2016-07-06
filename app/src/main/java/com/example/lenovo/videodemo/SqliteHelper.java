@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class SqliteHelper extends SQLiteOpenHelper {
 
     public static String CREATE_VIDEO="create table video (name varchar primary key, size varchar, " +
-            "time varchar,url varchar, nextUrl varchar, prevUrl varchar, long position )";
+            "time varchar,url varchar, nextUrl varchar, prevUrl varchar, position long)";
     private Context context;
 
     public SqliteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {

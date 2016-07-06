@@ -3,11 +3,12 @@ package com.example.lenovo.videodemo;
 import android.graphics.Bitmap;
 
 import java.io.File;
+import java.io.Serializable;
 
 /**
  * Created by lenovo on 2016/7/5.
  */
-public class Video {
+public class Video implements Serializable{
     private String name;
     private String size;
     private String time;
@@ -15,7 +16,7 @@ public class Video {
     private String url;
     private String nextUrl;
     private String prevUrl;
-    private Bitmap bitmap;
+    private String imageUrl;
 
     public String getName() {
         return name;
@@ -58,14 +59,6 @@ public class Video {
         this.url = url;
     }
 
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
-
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
-    }
-
     public String getNextUrl() {
         return nextUrl;
     }
@@ -80,5 +73,13 @@ public class Video {
 
     public void setPrevUrl(String prevUrl) {
         this.prevUrl = prevUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

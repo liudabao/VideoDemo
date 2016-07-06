@@ -50,11 +50,13 @@ public class VideoPlayActivity extends AppCompatActivity implements
     private String time;
     private boolean flag;
     private boolean isFinish=false;
-    private String url;
-    private String nextUrl;
-    private String prevUrl;
+    //private String url;
+    //private String nextUrl;
+   // private String prevUrl;
     private LinearLayout linearLayout;
     private RelativeLayout relativeLayout;
+    private Video video;
+    private DbUtil dbUtil;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,10 +65,11 @@ public class VideoPlayActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_video_play);
         //getPersimmions();
         Bundle bundle=getIntent().getExtras();
-        url=bundle.getString("url");
-        nextUrl=bundle.getString("next");
-        prevUrl=bundle.getString("prev");
-        Log.e("URL",url+"#"+nextUrl+"#"+prevUrl);
+       // url=bundle.getString("url");
+       // nextUrl=bundle.getString("next");
+       // prevUrl=bundle.getString("prev");
+       // Log.e("URL",url+"#"+nextUrl+"#"+prevUrl);
+        video=(Video)bundle.getSerializable(GlobalValue.KEY);
         initView();
     }
 
@@ -77,6 +80,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
     }
 
     private void initView() {
+        Log.e("video", video.getUrl()+" & "+video.getNextUrl()+" & "+video.getPrevUrl());
         relativeLayout=(RelativeLayout)findViewById(R.id.video_bottom);
         linearLayout=(LinearLayout)findViewById(R.id.video_top);
         progressBar=(ProgressBar)findViewById(R.id.progressBar);
@@ -91,11 +95,13 @@ public class VideoPlayActivity extends AppCompatActivity implements
         surfaceHolder.addCallback(this); // 因为这个类实现了SurfaceHolder.Callback接口，所以回调参数直接this
 
         start.setOnClickListener(this);
-        if (nextUrl==null){
-            next.setClickable(false);
+        if (video.getNextUrl()==null){
+           // next.setClickable(false);
+            next.setEnabled(false);
         }
-        if(prevUrl==null){
-            prev.setClickable(false);
+        if(video.getPrevUrl()==null){
+            //prev.setClickable(false);
+            prev.setEnabled(false);
         }
         next.setOnClickListener(this);
         prev.setOnClickListener(this);
@@ -177,12 +183,28 @@ public class VideoPlayActivity extends AppCompatActivity implements
 
         }
         else if(v==next){
-
-            url=nextUrl;
+            if(player.isPlaying()){
+                player.stop();
+            }
+            dbUtil=new DbUtil(GlobalContext.getContext(), GlobalValue.DB, GlobalValue.VERSION);
+            Log.e("next", video.getNextUrl());
+            video=dbUtil.queryByUrl(GlobalValue.TABLE, video.getNextUrl());
+            if(video.getNextUrl()==null){
+                next.setEnabled(false);
+            }
+            //url=nextUrl;
             play();
         }
         else if(v==prev){
-            url=prevUrl;
+            //url=prevUrl;
+            if(player.isPlaying()){
+                player.stop();
+            }
+            dbUtil=new DbUtil(GlobalContext.getContext(), GlobalValue.DB, GlobalValue.VERSION);
+            video=dbUtil.queryByUrl(GlobalValue.TABLE, video.getPrevUrl());
+            if(video.getPrevUrl()==null){
+                prev.setEnabled(false);
+            }
             play();
         }
         else if(v==back){
@@ -252,14 +274,14 @@ public class VideoPlayActivity extends AppCompatActivity implements
         // 设置显示视频显示在SurfaceView上
         try {
             //File file=new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"Download/test.mp4");
-            Log.e("play url",url);
-            File file=new File(url);
+            Log.e("play url",video.getUrl());
+            File file=new File(video.getUrl());
             //player.setDataSource("http://101.200.164.87:8080/visa/video/1.f4v");
             if(file.exists()){
-                Log.e("path",file.getPath());
+               // Log.e("path",file.getPath());
                 player.setDataSource(file.getPath());
                 player.prepare();
-                Log.e("media","prepare");
+               // Log.e("media","prepare");
             }
 
             // player.start();
