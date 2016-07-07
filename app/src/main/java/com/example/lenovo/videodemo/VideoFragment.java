@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class VideoFragment extends Fragment {
@@ -41,7 +42,7 @@ public class VideoFragment extends Fragment {
 	private LinearLayoutManager linearLayoutManager;
 	private MyAdapter adapter;
 	private ProgressDialog progress;
-	private ArrayList<Video> list=new ArrayList<>();
+	private List<Video> list=new ArrayList<>();
 	private Handler handler;
 	private MediaPlayer player;
 	private String time;
@@ -71,11 +72,16 @@ public class VideoFragment extends Fragment {
 						initView();
 						swipeRefreshLayout.setRefreshing(false);
 						break;
+					case 3:
+						initView();
+						break;
 					default:
 						break;
 				}
 			}
 		};
+
+		//query();
 		init(GlobalValue.TYPE_ENTER);
 		return view;
 	}
@@ -292,6 +298,21 @@ public class VideoFragment extends Fragment {
 		dbUtil=new DbUtil(GlobalContext.getContext(), GlobalValue.DB, GlobalValue.VERSION);
 		dbUtil.insert(list, GlobalValue.TABLE);
 	}
+
+	private void query(){
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				dbUtil=new DbUtil(GlobalContext.getContext(), GlobalValue.DB, GlobalValue.VERSION);
+				list=dbUtil.queryAll(GlobalValue.TABLE);
+				Message msg=new Message();
+				msg.what=GlobalValue.TYPE_QUERY;
+				handler.sendMessage(msg);
+			}
+		}).start();
+
+	}
+
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub

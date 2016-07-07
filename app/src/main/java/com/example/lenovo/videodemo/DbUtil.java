@@ -40,10 +40,35 @@ public class DbUtil {
         db.endTransaction();
     }
 
-    public void update( String id, ContentValues values, String table) {
+    public void insert(Video video, String table){
         SQLiteDatabase db=helper.getWritableDatabase();
         db.beginTransaction();
-        db.update(table, values, "id=?", new String[]{id});
+        ContentValues values=new ContentValues();
+        values.put("name", video.getName());
+        values.put("size", video.getSize());
+        values.put("time", video.getTime());
+        values.put("url", video.getUrl());
+        values.put("nextUrl", video.getNextUrl());
+        values.put("prevUrl", video.getPrevUrl());
+        values.put("position", video.getPosition());
+        db.insert(table, null, values);
+        Log.e("db insert", values.get("nextUrl")+"");
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public void update( Video video, String table) {
+        SQLiteDatabase db=helper.getWritableDatabase();
+        db.beginTransaction();
+        ContentValues values=new ContentValues();
+        values.put("name", video.getName());
+        values.put("size", video.getSize());
+        values.put("time", video.getTime());
+        values.put("url", video.getUrl());
+        values.put("nextUrl", video.getNextUrl());
+        values.put("prevUrl", video.getPrevUrl());
+        values.put("position", video.getPosition());
+        db.update(table, values, "name=?", new String[]{video.getName()});
         db.setTransactionSuccessful();
         db.endTransaction();
     }
@@ -126,13 +151,15 @@ public class DbUtil {
     }
 
 
-    public boolean isExist(String table){
+    public boolean isExist(String table,String name){
         SQLiteDatabase db=helper.getReadableDatabase();
         db.beginTransaction();
         Cursor cursor=db.query(table, null, null, null, null, null, null);
         if(cursor.moveToFirst()){
             do{
-                return true;
+                if(name.equals(cursor.getString(cursor.getColumnIndex("name")))){
+                    return true;
+                }
 
             }while(cursor.moveToNext());
         }

@@ -239,6 +239,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
         surfaceHolder.setKeepScreenOn(true);
         // 设置控制条,放在加载完成以后设置，防止获取getDuration()错误
         seekBar.setProgress(0);
+
         seekBar.setMax(player.getDuration());
         time=getShowTime(player.getDuration());
         textView.setText("00:00:00/" + time);
@@ -253,7 +254,8 @@ public class VideoPlayActivity extends AppCompatActivity implements
                     if (null != VideoPlayActivity.this.player
                             &&  VideoPlayActivity.this.player.isPlaying()) {
                         seekBar.setProgress(player.getCurrentPosition());
-
+                        Log.e("position", player.getCurrentPosition()+"");
+                        video.setPosition(player.getCurrentPosition());
                         if(seekBar.getProgress()==seekBar.getMax()){
                             flag=false;
                             isFinish=true;
@@ -308,12 +310,14 @@ public class VideoPlayActivity extends AppCompatActivity implements
 
         if(fromUser){
             player.seekTo(progress);
+            video.setPosition(player.getCurrentPosition());
             if(progress==seekBar.getMax()){
                 isFinish=true;
                 start.setBackgroundResource(R.drawable.play);
             }
         }
         textView.setText(getShowTime(progress) + "/" +time);
+        update(video);
 
 
     }
@@ -326,6 +330,11 @@ public class VideoPlayActivity extends AppCompatActivity implements
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+    private void update(Video video){
+        dbUtil=new DbUtil(GlobalContext.getContext(), GlobalValue.DB, GlobalValue.VERSION);
+        dbUtil.update(video, GlobalValue.TABLE);
     }
 
     @Override
