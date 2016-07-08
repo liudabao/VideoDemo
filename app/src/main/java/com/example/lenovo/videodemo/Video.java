@@ -12,7 +12,7 @@ public class Video implements Serializable{
     private String name;
     private String size;
     private String time;
-    private long position;
+    private int position;
     private String url;
     private String nextUrl;
     private String prevUrl;
@@ -42,11 +42,11 @@ public class Video implements Serializable{
         this.time = time;
     }
 
-    public long getPosition() {
+    public int getPosition() {
         return position;
     }
 
-    public void setPosition(long position) {
+    public void setPosition(int position) {
         this.position = position;
     }
 

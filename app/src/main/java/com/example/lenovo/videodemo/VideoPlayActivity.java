@@ -80,6 +80,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
     }
 
     private void initView() {
+        dbUtil=new DbUtil();
         Log.e("video", video.getUrl()+" & "+video.getNextUrl()+" & "+video.getPrevUrl());
         relativeLayout=(RelativeLayout)findViewById(R.id.video_bottom);
         linearLayout=(LinearLayout)findViewById(R.id.video_top);
@@ -179,31 +180,49 @@ public class VideoPlayActivity extends AppCompatActivity implements
                 player.pause();
                 start.setBackgroundResource(R.drawable.play);
                 //start.setText("start");
+                //update(video);
             }
 
         }
         else if(v==next){
+            update(video);
+
             if(player.isPlaying()){
                 player.stop();
             }
-            dbUtil=new DbUtil(GlobalContext.getContext(), GlobalValue.DB, GlobalValue.VERSION);
+
             Log.e("next", video.getNextUrl());
             video=dbUtil.queryByUrl(GlobalValue.TABLE, video.getNextUrl());
             if(video.getNextUrl()==null){
                 next.setEnabled(false);
             }
+            else {
+                next.setEnabled(true);
+            }
+            if(video.getPrevUrl()==null){
+                prev.setEnabled(false);
+            }
+            else {
+                prev.setEnabled(true);
+            }
             //url=nextUrl;
+
             play();
         }
         else if(v==prev){
             //url=prevUrl;
+            update(video);
+
             if(player.isPlaying()){
                 player.stop();
             }
-            dbUtil=new DbUtil(GlobalContext.getContext(), GlobalValue.DB, GlobalValue.VERSION);
+           // dbUtil=new DbUtil();
             video=dbUtil.queryByUrl(GlobalValue.TABLE, video.getPrevUrl());
             if(video.getPrevUrl()==null){
                 prev.setEnabled(false);
+            }
+            else {
+                prev.setEnabled(true);
             }
             play();
         }
@@ -232,14 +251,18 @@ public class VideoPlayActivity extends AppCompatActivity implements
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        Log.e("video", "prepare start");
+        Log.e("video", "prepare start "+video.getPosition());
         progressBar.setVisibility(View.GONE);
         player.start();
       //  start.setText("pause");
         surfaceHolder.setKeepScreenOn(true);
         // 设置控制条,放在加载完成以后设置，防止获取getDuration()错误
-        seekBar.setProgress(0);
-
+       // seekBar.setProgress(0);
+        seekBar.setProgress(video.getPosition());
+        player.seekTo(video.getPosition());
+      //  seekBar.setProgress(video.getPosition());
+        int p=player.getDuration();
+        //Log.e("position max", player.getDuration()+" % "+p);
         seekBar.setMax(player.getDuration());
         time=getShowTime(player.getDuration());
         textView.setText("00:00:00/" + time);
@@ -254,7 +277,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
                     if (null != VideoPlayActivity.this.player
                             &&  VideoPlayActivity.this.player.isPlaying()) {
                         seekBar.setProgress(player.getCurrentPosition());
-                        Log.e("position", player.getCurrentPosition()+"");
+                       // Log.e("position", player.getCurrentPosition()+"");
                         video.setPosition(player.getCurrentPosition());
                         if(seekBar.getProgress()==seekBar.getMax()){
                             flag=false;
@@ -317,7 +340,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
             }
         }
         textView.setText(getShowTime(progress) + "/" +time);
-        update(video);
+
 
 
     }
@@ -333,8 +356,16 @@ public class VideoPlayActivity extends AppCompatActivity implements
     }
 
     private void update(Video video){
-        dbUtil=new DbUtil(GlobalContext.getContext(), GlobalValue.DB, GlobalValue.VERSION);
-        dbUtil.update(video, GlobalValue.TABLE);
+        dbUtil=new DbUtil();
+        if(dbUtil.isExist(GlobalValue.TABLE, video.getName())){
+            Log.e("update", "update");
+            dbUtil.update(video, GlobalValue.TABLE);
+        }
+        else {
+            Log.e("update","insert");
+            dbUtil.insert(video, GlobalValue.TABLE);
+        }
+
     }
 
     @Override
@@ -345,6 +376,11 @@ public class VideoPlayActivity extends AppCompatActivity implements
         //super.onBackPressed();
     }
 
+    @Override
+    public void onPause(){
+        super.onPause();
+
+    }
 
     @Override
     protected void onDestroy() {
@@ -358,7 +394,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
             }
             player.release();
         }
-
+        update(video);
         // Activity销毁时停止播放，释放资源。不做这个操作，即使退出还是能听到视频播放的声音
     }
 }

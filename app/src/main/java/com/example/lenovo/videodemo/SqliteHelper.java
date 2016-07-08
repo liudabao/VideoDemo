@@ -9,11 +9,21 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class SqliteHelper extends SQLiteOpenHelper {
 
-    public static String CREATE_VIDEO="create table video (name varchar primary key, size varchar, " +
-            "time varchar,url varchar, nextUrl varchar, prevUrl varchar, position long)";
+    public static String CREATE_VIDEO="create table video (id INTEGER PRIMARY KEY AUTOINCREMENT, name varchar, size varchar, " +
+            "time varchar,url varchar, nextUrl varchar, prevUrl varchar, position integer)";
     private Context context;
 
-    public SqliteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public static SqliteHelper helper;
+
+    public synchronized static SqliteHelper getHelper(){
+        // helper=new SqliteHelper(context, db, null, version);
+        if(helper==null){
+            helper=new SqliteHelper(GlobalContext.getContext(), GlobalValue.DB, null, 1);
+        }
+        return helper;
+    }
+
+    private SqliteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
         this.context=context;
     }

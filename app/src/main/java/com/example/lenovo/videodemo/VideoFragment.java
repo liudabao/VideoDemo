@@ -12,14 +12,18 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,11 +48,13 @@ public class VideoFragment extends Fragment {
 	private ProgressDialog progress;
 	private List<Video> list=new ArrayList<>();
 	private Handler handler;
-	private MediaPlayer player;
+	//private MediaPlayer player;
 	private String time;
 	private String imageUrl;
 	private SwipeRefreshLayout swipeRefreshLayout;
 	private DbUtil dbUtil;
+	private Toolbar toolbar;
+
 	@Override	
 	public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
 		super.onCreateView(inflater, container, savedInstanceState);
@@ -82,8 +88,46 @@ public class VideoFragment extends Fragment {
 		};
 
 		//query();
+		//initToolBar();
+		initData();
 		init(GlobalValue.TYPE_ENTER);
 		return view;
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.video_menu, menu);
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	/*private void initToolBar(){
+		setHasOptionsMenu(true);
+		toolbar=(Toolbar)view.findViewById(R.id.toolbar);
+		//toolbar.setLogo(R.mipmap.ic_launcher);
+		toolbar.setTitle(GlobalValue.VIDEO);
+		//toolbar.setSubtitle("Sub title");
+		((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+		toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				switch (item.getItemId()){
+					case R.id.add:
+						Toast.makeText(GlobalContext.getContext(), "add", Toast.LENGTH_SHORT).show();
+						break;
+					case R.id.remove:
+						Toast.makeText(GlobalContext.getContext(), "remove", Toast.LENGTH_SHORT).show();
+						break;
+				}
+				return true;
+			}
+		});
+	}*/
+
+	private void initData(){
+		query();
+		if(list.size()>0){
+			initView();
+		}
 	}
 
 	private void initView(){
@@ -126,7 +170,7 @@ public class VideoFragment extends Fragment {
 			}
 
 		}
-		insert();
+		insert(list);
 	}
 
 	private void init(final int type){
@@ -167,17 +211,36 @@ public class VideoFragment extends Fragment {
 		//Log.e("file", file.getAbsolutePath());
 		if(subFiles!=null){
 			for(File f:subFiles){
+				boolean flag=true;
 				if(f.isFile()){
 					String name=f.getName();
 					if(name.trim().toLowerCase().endsWith(".mp4")||name.trim().toLowerCase().endsWith(".rmvb")||name.trim().toLowerCase().endsWith(".avi")
 							||name.trim().toLowerCase().endsWith(".mkv")){
 
-						Video video=new Video();
-						try {
-							Log.e("vedio", file.getPath()+": "+name+" "+formetFileSize(getFileSizes(f)));
-						} catch (Exception e) {
-							e.printStackTrace();
+						for(Video v:list){
+							if(v.getName().equals(name)){
+								flag=false;
+								break;
+							}
 						}
+						if(flag){
+							Video video=new Video();
+							try {
+								Log.e("vedio", file.getPath()+": "+name+" "+formetFileSize(getFileSizes(f)));
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							video.setName(name);
+							video.setSize(formetFileSize(getFileSizes(f)));
+							//video.setFile(new File(f.getAbsolutePath(),name));
+							//Log.e("path",f.getAbsolutePath());
+							video.setUrl(f.getAbsolutePath());
+							video.setTime(time);
+							// video.setImageUrl(imageUrl);
+							//video.setBitmap(bitmap);
+							list.add(video);
+						}
+
 						//Bitmap bitmap=getImage(f);
 						//imageUrl=saveBitmap(name, bitmap);
 						/*try {
@@ -190,15 +253,7 @@ public class VideoFragment extends Fragment {
 						} catch (IOException e) {
 							e.printStackTrace();
 						}*/
-						video.setName(name);
-						video.setSize(formetFileSize(getFileSizes(f)));
-						//video.setFile(new File(f.getAbsolutePath(),name));
-						//Log.e("path",f.getAbsolutePath());
-						video.setUrl(f.getAbsolutePath());
-						video.setTime(time);
-                       // video.setImageUrl(imageUrl);
-						//video.setBitmap(bitmap);
-						list.add(video);
+
 					}
 				}
 				else if(f.isDirectory()&&f.getPath().indexOf("/.")==-1){
@@ -294,22 +349,19 @@ public class VideoFragment extends Fragment {
 		return dateFormat.format(calendar.getTime());
 	}
 
-	private void insert(){
-		dbUtil=new DbUtil(GlobalContext.getContext(), GlobalValue.DB, GlobalValue.VERSION);
+	private void insert(List<Video> list){
+		dbUtil=new DbUtil();
+		for(Video video:list){
+			if(!dbUtil.isExist(GlobalValue.TABLE, video.getName())){
+				dbUtil.insert(video, GlobalValue.TABLE);
+			}
+		}
 		dbUtil.insert(list, GlobalValue.TABLE);
 	}
 
 	private void query(){
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				dbUtil=new DbUtil(GlobalContext.getContext(), GlobalValue.DB, GlobalValue.VERSION);
-				list=dbUtil.queryAll(GlobalValue.TABLE);
-				Message msg=new Message();
-				msg.what=GlobalValue.TYPE_QUERY;
-				handler.sendMessage(msg);
-			}
-		}).start();
+		dbUtil=new DbUtil();
+		list=dbUtil.queryAll(GlobalValue.TABLE);
 
 	}
 
@@ -317,12 +369,12 @@ public class VideoFragment extends Fragment {
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		if(player!=null){
+		/*if(player!=null){
 			if (player.isPlaying()) {
 				player.stop();
 			}
 			player.release();
-		}
+		}*/
 
 		// Activity销毁时停止播放，释放资源。不做这个操作，即使退出还是能听到视频播放的声音
 	}

@@ -12,5 +12,6 @@ public class GlobalValue {
     public final static int TYPE_REFREASH=2;
     public final static int TYPE_QUERY=3;
     public final static String KEY="video";
+    public final static String VIDEO="视频";
 
 }
