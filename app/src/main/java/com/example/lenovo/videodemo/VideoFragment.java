@@ -60,7 +60,6 @@ public class VideoFragment extends Fragment {
 		super.onCreateView(inflater, container, savedInstanceState);
 		if(view==null){
 			view=inflater.inflate(R.layout.layout_video, container, false);
-			showProgressDialog();
 		}
 		ViewGroup parent = (ViewGroup) view.getParent();
 		if (parent != null)
@@ -73,13 +72,19 @@ public class VideoFragment extends Fragment {
 					case 1:
 						progress.dismiss();
 						initView();
+						setNext();
+						insert();
 						break;
 					case 2:
 						initView();
+						setNext();
+						insert();
 						swipeRefreshLayout.setRefreshing(false);
 						break;
 					case 3:
 						initView();
+						setNext();
+						insert();
 						break;
 					default:
 						break;
@@ -128,6 +133,7 @@ public class VideoFragment extends Fragment {
 		if(list.size()>0){
 			initView();
 		}
+		showProgressDialog();
 	}
 
 	private void initView(){
@@ -161,8 +167,11 @@ public class VideoFragment extends Fragment {
 			}
 		});
 		//
+	}
+
+	private void setNext(){
 		for(int i=0;i<list.size();i++){
-            if(i>0){
+			if(i>0){
 				list.get(i).setPrevUrl(list.get(i-1).getUrl());
 			}
 			if(i<list.size()-1){
@@ -170,7 +179,6 @@ public class VideoFragment extends Fragment {
 			}
 
 		}
-		insert(list);
 	}
 
 	private void init(final int type){
@@ -349,7 +357,7 @@ public class VideoFragment extends Fragment {
 		return dateFormat.format(calendar.getTime());
 	}
 
-	private void insert(List<Video> list){
+	private void insert(){
 		dbUtil=new DbUtil();
 		for(Video video:list){
 			if(!dbUtil.isExist(GlobalValue.TABLE, video.getName())){
