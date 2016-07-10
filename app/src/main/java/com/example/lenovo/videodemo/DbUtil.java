@@ -36,6 +36,7 @@ public class DbUtil {
                         values.put("nextUrl", video.getNextUrl());
                         values.put("prevUrl", video.getPrevUrl());
                         values.put("position", video.getPosition());
+                        values.put("selected", "false");
                         db.insert(table, null, values);
                         Log.e("db insert", values.get("nextUrl")+"");
                     }
@@ -66,6 +67,7 @@ public class DbUtil {
                 values.put("nextUrl", video.getNextUrl());
                 values.put("prevUrl", video.getPrevUrl());
                 values.put("position", video.getPosition());
+                values.put("selected", "false");
                 db.insert(table, null, values);
                 Log.e("db insert", values.get("name")+"");
                 db.setTransactionSuccessful();
@@ -95,6 +97,7 @@ public class DbUtil {
                 values.put("nextUrl", video.getNextUrl());
                 values.put("prevUrl", video.getPrevUrl());
                 values.put("position", video.getPosition());
+                values.put("selected", video.getSelected());
                 db.update(table, values, "name=?", new String[]{video.getName()});
                 Log.e("update", video.getName()+" update "+video.getPosition());
                 db.setTransactionSuccessful();
@@ -179,7 +182,11 @@ public class DbUtil {
                         video.setNextUrl(cursor.getString(cursor.getColumnIndex("nextUrl")));
                         video.setPrevUrl(cursor.getString(cursor.getColumnIndex("prevUrl")));
                         video.setPosition(cursor.getInt(cursor.getColumnIndex("position")));
-                        list.add(video);
+                        video.setSelected(cursor.getString(cursor.getColumnIndex("selected")));
+                        if(video.getSelected().equals("false")){
+                            list.add(video);
+                        }
+                        //list.add(video);
                     }while(cursor.moveToNext());
                 }
                 cursor.close();
@@ -209,7 +216,7 @@ public class DbUtil {
                 if(cursor.moveToFirst()){
                     do{
                         //Log.e("query", name);
-                        // Log.e("query cursor", nextUrl+" &&&  "+cursor.getString(cursor.getColumnIndex("nextUrl")));
+                         Log.e("query cursor", nextUrl+" &&&  "+cursor.getString(cursor.getColumnIndex("nextUrl")));
                         if(nextUrl.equals(cursor.getString(cursor.getColumnIndex("url")))){
                             Log.e("query video", cursor.getString(cursor.getColumnIndex("name"))+" "+cursor.getInt(cursor.getColumnIndex("position")));
                             video.setName(cursor.getString(cursor.getColumnIndex("name")));
@@ -219,6 +226,7 @@ public class DbUtil {
                             video.setNextUrl(cursor.getString(cursor.getColumnIndex("nextUrl")));
                             video.setPrevUrl(cursor.getString(cursor.getColumnIndex("prevUrl")));
                             video.setPosition(cursor.getInt(cursor.getColumnIndex("position")));
+                            video.setSelected(cursor.getString(cursor.getColumnIndex("selected")));
                             break;
                         }
 

@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class SqliteHelper extends SQLiteOpenHelper {
 
     public static String CREATE_VIDEO="create table video (id INTEGER PRIMARY KEY AUTOINCREMENT, name varchar, size varchar, " +
-            "time varchar,url varchar, nextUrl varchar, prevUrl varchar, position integer)";
+            "time varchar,url varchar, nextUrl varchar, prevUrl varchar, position integer,selected boolean )";
     private Context context;
 
     public static SqliteHelper helper;

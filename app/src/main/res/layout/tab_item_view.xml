@@ -10,8 +10,7 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:padding="2dp"
-        android:focusable="false"
-        android:src="@mipmap/ic_launcher">
+        android:layout_marginTop="4dp">
     </ImageView>
 
     <TextView

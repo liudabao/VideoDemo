@@ -17,6 +17,7 @@ public class Video implements Serializable{
     private String nextUrl;
     private String prevUrl;
     private String imageUrl;
+    private String selected;
 
     public String getName() {
         return name;
@@ -81,5 +82,13 @@ public class Video implements Serializable{
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getSelected() {
+        return selected;
+    }
+
+    public void setSelected(String selected) {
+        this.selected = selected;
     }
 }

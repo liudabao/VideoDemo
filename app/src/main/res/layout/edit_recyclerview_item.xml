@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:layout_marginBottom="8dp"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:descendantFocusability="blocksDescendants">
 
     <ImageView
         android:id="@+id/image"
@@ -23,7 +24,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginRight="8dp"
-            android:textSize="@dimen/text_size_16"
+            android:textSize="@dimen/text_size_14"
             android:textColor="@color/md_gray_850"/>
         <TextView
             android:id="@+id/time"
@@ -43,4 +44,12 @@
             android:textSize="@dimen/text_size_12"
             android:textColor="@color/md_gray_700"/>
     </RelativeLayout>
+    <ImageButton
+        android:id="@+id/edit_select"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/unselect"
+        android:layout_gravity="center"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"/>
 </LinearLayout>

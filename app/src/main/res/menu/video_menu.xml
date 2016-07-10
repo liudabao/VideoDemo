@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/sort"
         android:title="add"
-        android:icon="@drawable/sort"
+        android:icon="@drawable/menu"
         android:orderInCategory="80"
         app:showAsAction="ifRoom" />
 

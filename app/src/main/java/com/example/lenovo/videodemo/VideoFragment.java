@@ -1,8 +1,10 @@
 package com.example.lenovo.videodemo;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
@@ -11,6 +13,8 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,6 +27,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import java.io.File;
@@ -46,6 +57,7 @@ public class VideoFragment extends Fragment {
 	private LinearLayoutManager linearLayoutManager;
 	private MyAdapter adapter;
 	private ProgressDialog progress;
+	private ImageButton menu;
 	private List<Video> list=new ArrayList<>();
 	private Handler handler;
 	//private MediaPlayer player;
@@ -54,12 +66,22 @@ public class VideoFragment extends Fragment {
 	private SwipeRefreshLayout swipeRefreshLayout;
 	private DbUtil dbUtil;
 	private Toolbar toolbar;
+	private boolean isLoad=false;
+	private PopupWindow popupWindow;
+    private ListView listView;
 
 	@Override	
 	public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
 		super.onCreateView(inflater, container, savedInstanceState);
+		Log.e("fragment", "onCreateView");
 		if(view==null){
+			isLoad=true;
+			//showProgressDialog();
 			view=inflater.inflate(R.layout.layout_video, container, false);
+
+		}
+		else {
+			isLoad=false;
 		}
 		ViewGroup parent = (ViewGroup) view.getParent();
 		if (parent != null)
@@ -94,16 +116,18 @@ public class VideoFragment extends Fragment {
 
 		//query();
 		//initToolBar();
-		initData();
-		init(GlobalValue.TYPE_ENTER);
+		if (isLoad){
+			initData();
+			init(GlobalValue.TYPE_ENTER);
+		}
 		return view;
 	}
 
-	@Override
+	/*@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.video_menu, menu);
 		super.onCreateOptionsMenu(menu, inflater);
-	}
+	}*/
 
 	/*private void initToolBar(){
 		setHasOptionsMenu(true);
@@ -134,9 +158,11 @@ public class VideoFragment extends Fragment {
 			initView();
 		}
 		showProgressDialog();
+
 	}
 
 	private void initView(){
+        menu=(ImageButton)view.findViewById(R.id.meun) ;
 		recyclerView=(RecyclerView)view.findViewById(R.id.recyclerView);
 		linearLayoutManager=new LinearLayoutManager(GlobalContext.getContext());
 		adapter=new MyAdapter(GlobalContext.getContext(), list);
@@ -167,18 +193,12 @@ public class VideoFragment extends Fragment {
 			}
 		});
 		//
-	}
-
-	private void setNext(){
-		for(int i=0;i<list.size();i++){
-			if(i>0){
-				list.get(i).setPrevUrl(list.get(i-1).getUrl());
+		menu.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				showPopWindow(v);
 			}
-			if(i<list.size()-1){
-				list.get(i).setNextUrl(list.get(i+1).getUrl());
-			}
-
-		}
+		});
 	}
 
 	private void init(final int type){
@@ -206,12 +226,69 @@ public class VideoFragment extends Fragment {
 		}).start();
 	}
 
+	private void setNext(){
+		for(int i=0;i<list.size();i++){
+			if(i>0){
+				list.get(i).setPrevUrl(list.get(i-1).getUrl());
+			}
+			if(i<list.size()-1){
+				list.get(i).setNextUrl(list.get(i+1).getUrl());
+			}
+
+		}
+	}
+
 	private void showProgressDialog(){
 		progress=new ProgressDialog(getActivity());
 		progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		progress.setMessage("扫描本地所有视频文件");
 		progress.setCancelable(false);
 		progress.show();
+	}
+
+	private void showPopWindow(View parent){
+		if(popupWindow==null){
+			View view=LayoutInflater.from(GlobalContext.getContext()).inflate(R.layout.popmenu_layout, null);
+			listView=(ListView)view.findViewById(R.id.popView);
+			ArrayAdapter<String> adapter=new ArrayAdapter<String>(GlobalContext.getContext(), android.R.layout.simple_list_item_1, GlobalValue.MENU);
+			listView.setAdapter(adapter);
+			popupWindow=new PopupWindow(view, 350, 450);
+		}
+		// 使其聚集
+		popupWindow.setFocusable(true);
+		// 设置允许在外点击消失
+		popupWindow.setOutsideTouchable(true);
+		// 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景
+		popupWindow.setBackgroundDrawable(new BitmapDrawable());
+		WindowManager windowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+		// 显示的位置为:屏幕的宽度的一半-PopupWindow的高度的一半
+		int xPos = windowManager.getDefaultDisplay().getWidth() / 2
+				- popupWindow.getWidth() / 2;
+		popupWindow.showAsDropDown(parent, xPos, 0);
+		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+				switch (position){
+					case 0:
+						EditFragment editFragment=new EditFragment();
+						FragmentManager manager=getActivity().getSupportFragmentManager();
+						FragmentTransaction transaction=manager.beginTransaction();
+						transaction.replace(R.id.frame_main, editFragment);
+						transaction.addToBackStack(null);
+						transaction.commit();
+						Toast.makeText(GlobalContext.getContext(),""+position, Toast.LENGTH_SHORT).show();
+						break;
+					case 1:
+						break;
+					default:
+						break;
+				}
+				if(popupWindow!=null){
+					popupWindow.dismiss();
+				}
+			}
+		});
 	}
 
 	private void getFile(File file){

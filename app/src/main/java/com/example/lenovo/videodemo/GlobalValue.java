@@ -13,5 +13,6 @@ public class GlobalValue {
     public final static int TYPE_QUERY=3;
     public final static String KEY="video";
     public final static String VIDEO="视频";
+    public final static String[] MENU={"手动打开", "批量删除"};
 
 }
