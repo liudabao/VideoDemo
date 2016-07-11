@@ -135,7 +135,6 @@
     <!-- home text size-->
 
 
-
     <dimen name="listview_first_level_fontsize">15sp</dimen>
 
     <dimen name="first_level_fontsize">15sp</dimen>

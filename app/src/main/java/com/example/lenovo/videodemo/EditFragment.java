@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+
+import com.example.lenovo.videodemo.entity.Video;
+import com.example.lenovo.videodemo.global.GlobalContext;
+import com.example.lenovo.videodemo.global.GlobalValue;
+import com.example.lenovo.videodemo.util.DbUtil;
+import com.example.lenovo.videodemo.util.EditAdapter;
 
 import java.util.List;
 
@@ -116,7 +123,7 @@ public class EditFragment extends Fragment {
 		LayoutInflater layoutInflater = LayoutInflater.from(context);
 		View myDeleteView = layoutInflater.inflate(R.layout.dialog_delete_layout, null);
 		Dialog alertDialog = new AlertDialog.Builder(context).
-				setTitle("确认删除").
+				//setTitle("确认删除").
 				setView(myDeleteView).
 				setPositiveButton("确认", new DialogInterface.OnClickListener() {
 					@Override
@@ -125,6 +132,9 @@ public class EditFragment extends Fragment {
 						for(Video video:list){
 							dbUtil.update(video, GlobalValue.TABLE);
 						}
+						Intent intent=new Intent("android.video.delete");
+						getActivity().sendBroadcast(intent);
+						getFragmentManager().popBackStack();
 					}
 				}).
 				setNegativeButton("取消", new DialogInterface.OnClickListener() {

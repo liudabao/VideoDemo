@@ -9,20 +9,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:gravity="center"
-        android:text="将从播放器删除该视频"/>
-    <RadioButton
-        android:id="@+id/radio_delete"
+        android:layout_centerHorizontal="true"
+        android:text="将从播放器删除该视频"
+        android:textSize="@dimen/text_size_16"/>
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="16dp"/>
-    <TextView
-        android:id="@+id/delete_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/radio_delete"
-        android:text="同时删除本地视频文件" />
+        android:layout_below="@+id/delete_title"
+        android:layout_centerInParent="true"
+        android:orientation="horizontal">
+        <RadioButton
+            android:id="@+id/radio_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/delete_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="同时删除本地视频文件"/>
+    </LinearLayout>
 </RelativeLayout>

@@ -1,13 +1,13 @@
 package com.example.lenovo.videodemo;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -16,25 +16,26 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
+
+import com.example.lenovo.videodemo.entity.Video;
+import com.example.lenovo.videodemo.global.GlobalContext;
+import com.example.lenovo.videodemo.global.GlobalValue;
+import com.example.lenovo.videodemo.util.DbUtil;
+import com.example.lenovo.videodemo.util.MyAdapter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -45,9 +46,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class VideoFragment extends Fragment {
 
@@ -69,6 +68,9 @@ public class VideoFragment extends Fragment {
 	private boolean isLoad=false;
 	private PopupWindow popupWindow;
     private ListView listView;
+
+	private IntentFilter intentFilter;
+	private EditBroad editBroad;
 
 	@Override	
 	public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
@@ -94,19 +96,33 @@ public class VideoFragment extends Fragment {
 					case 1:
 						progress.dismiss();
 						initView();
+						initEvent();
 						setNext();
 						insert();
 						break;
 					case 2:
-						initView();
+						//initView();
+						adapter=new MyAdapter(GlobalContext.getContext(), list);
+						recyclerView.setAdapter(adapter);
+						adapter.notifyDataSetChanged();
 						setNext();
 						insert();
 						swipeRefreshLayout.setRefreshing(false);
 						break;
 					case 3:
-						initView();
+						//initView();
+						adapter=new MyAdapter(GlobalContext.getContext(), list);
+						recyclerView.setAdapter(adapter);
+						adapter.notifyDataSetChanged();
 						setNext();
 						insert();
+						break;
+					case 4:
+						//initView();
+						adapter=new MyAdapter(GlobalContext.getContext(), list);
+						recyclerView.setAdapter(adapter);
+						adapter.notifyDataSetChanged();
+						Log.e("delete", "refreash");
 						break;
 					default:
 						break;
@@ -162,19 +178,30 @@ public class VideoFragment extends Fragment {
 	}
 
 	private void initView(){
+		intentFilter=new IntentFilter();
+		editBroad=new EditBroad();
+		intentFilter.addAction("android.video.delete");
+		getActivity().registerReceiver(editBroad, intentFilter);
         menu=(ImageButton)view.findViewById(R.id.meun) ;
 		recyclerView=(RecyclerView)view.findViewById(R.id.recyclerView);
 		linearLayoutManager=new LinearLayoutManager(GlobalContext.getContext());
 		adapter=new MyAdapter(GlobalContext.getContext(), list);
 		recyclerView.setLayoutManager(linearLayoutManager);
 		recyclerView.setAdapter(adapter);
+
+
+		swipeRefreshLayout=(SwipeRefreshLayout)view.findViewById(R.id.swipe);
+
+	}
+
+	private void initEvent(){
 		adapter.setOnItemClickLitener(new MyAdapter.OnRecyclerViewItemClickListener() {
 			@Override
 			public void onItemClick(View view, int position) {
 				Intent intent=new Intent(getActivity(), VideoPlayActivity.class);
 				Bundle bundle=new Bundle();
 				//bundle.putString("url",list.get(position).getUrl());
-                bundle.putSerializable(GlobalValue.KEY, list.get(position));
+				bundle.putSerializable(GlobalValue.KEY, list.get(position));
 				intent.putExtras(bundle);
 				startActivity(intent);
 			}
@@ -185,11 +212,10 @@ public class VideoFragment extends Fragment {
 			}
 		});
 
-		swipeRefreshLayout=(SwipeRefreshLayout)view.findViewById(R.id.swipe);
 		swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
-                 init(GlobalValue.TYPE_REFREASH);
+				init(GlobalValue.TYPE_REFREASH);
 			}
 		});
 		//
@@ -200,6 +226,7 @@ public class VideoFragment extends Fragment {
 			}
 		});
 	}
+
 
 	private void init(final int type){
 		//player = new MediaPlayer();
@@ -302,6 +329,12 @@ public class VideoFragment extends Fragment {
 					if(name.trim().toLowerCase().endsWith(".mp4")||name.trim().toLowerCase().endsWith(".rmvb")||name.trim().toLowerCase().endsWith(".avi")
 							||name.trim().toLowerCase().endsWith(".mkv")){
 
+						Bitmap bitmap=getImage(f);
+						try {
+							imageUrl=saveBitmap(name, bitmap);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 						for(Video v:list){
 							if(v.getName().equals(name)){
 								flag=false;
@@ -309,6 +342,7 @@ public class VideoFragment extends Fragment {
 							}
 						}
 						if(flag){
+
 							Video video=new Video();
 							try {
 								Log.e("vedio", file.getPath()+": "+name+" "+formetFileSize(getFileSizes(f)));
@@ -321,7 +355,7 @@ public class VideoFragment extends Fragment {
 							//Log.e("path",f.getAbsolutePath());
 							video.setUrl(f.getAbsolutePath());
 							video.setTime(time);
-							// video.setImageUrl(imageUrl);
+							video.setImageUrl(imageUrl);
 							//video.setBitmap(bitmap);
 							list.add(video);
 						}
@@ -360,6 +394,7 @@ public class VideoFragment extends Fragment {
 	private Bitmap getImage(File file){
 		MediaMetadataRetriever retriever=new MediaMetadataRetriever();
 		//File file=new File(Environment.getExternalStorageDirectory(),"Download/test.mp4");
+		//Log.e("bitmap", file.getPath());
 		retriever.setDataSource(file.getPath());
 		String duration=retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
 		//Log.e("url", file.getPath()+": "+time+" "+getShowTime(Long.parseLong(duration)));
@@ -369,16 +404,19 @@ public class VideoFragment extends Fragment {
 
 	}
 
-	private String saveBitmap(String name,Bitmap bm) {
-		File f = new File(getActivity().getFilesDir(), name);
+	private String saveBitmap(String name,Bitmap bm) throws IOException {
+		//File f = new File(getActivity().getFilesDir(), name);
+		File f = new File(GlobalContext.getContext().getExternalCacheDir(), name+".png");
+		Log.e("paht",f.getPath() );
 		if (f.exists()) {
 			f.delete();
 		}
+		FileOutputStream out=null;
 		try {
-			FileOutputStream out = new FileOutputStream(f);
+			out = new FileOutputStream(f);
 			bm.compress(Bitmap.CompressFormat.PNG, 90, out);
 			out.flush();
-			out.close();
+
 			Log.i("Bitmap", "已经保存");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -386,8 +424,10 @@ public class VideoFragment extends Fragment {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally {
+			out.close();
 		}
-        return f.getPath();
+		return f.getPath();
 	}
 
 	private long getFileSizes(File file){
@@ -454,6 +494,7 @@ public class VideoFragment extends Fragment {
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
+		getActivity().unregisterReceiver(editBroad);
 		/*if(player!=null){
 			if (player.isPlaying()) {
 				player.stop();
@@ -463,4 +504,17 @@ public class VideoFragment extends Fragment {
 
 		// Activity销毁时停止播放，释放资源。不做这个操作，即使退出还是能听到视频播放的声音
 	}
+
+	class EditBroad extends BroadcastReceiver{
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.e("broad", "i receive");
+			list=dbUtil.queryAll(GlobalValue.TABLE);
+			Message msg=new Message();
+			msg.what=4;
+			handler.sendMessage(msg);
+		}
+	}
+
 }
