@@ -62,7 +62,7 @@
                 android:layout_centerInParent="true"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
-                android:background="@drawable/play"/>
+                android:background="@drawable/pause"/>
             <ImageButton
                 android:id="@+id/next"
                 android:layout_width="36dp"

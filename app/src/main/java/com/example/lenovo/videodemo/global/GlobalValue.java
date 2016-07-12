@@ -18,6 +18,8 @@ public class GlobalValue {
     public final static String VERSION_URL="http://101.200.164.87:8080/visa/xml/version.json";
     public final static int FILE_TYPE_DIRECTORY=1;
     public final static int FILE_TYPE_MOVE=2;
+    public final static int FILE_TYPE_OTHER=3;
     public final static String FIND_HEAD="返回上一级";
+    public final static String PERMISSIONS_TIPS="权限不足，请重新授权";
 
 }

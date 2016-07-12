@@ -47,6 +47,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 public class VideoFragment extends Fragment {
 
@@ -105,6 +106,7 @@ public class VideoFragment extends Fragment {
 						adapter=new VideoAdapter(GlobalContext.getContext(), list);
 						recyclerView.setAdapter(adapter);
 						adapter.notifyDataSetChanged();
+						initEvent();
 						setNext();
 						insert();
 						swipeRefreshLayout.setRefreshing(false);
@@ -123,6 +125,8 @@ public class VideoFragment extends Fragment {
 						recyclerView.setAdapter(adapter);
 						adapter.notifyDataSetChanged();
 						Log.e("delete", "refreash");
+						setNext();
+						insert();
 						break;
 					default:
 						break;
@@ -351,18 +355,15 @@ public class VideoFragment extends Fragment {
 
 							Video video=new Video();
 							try {
-								Log.e("vedio", file.getPath()+": "+name+" "+formetFileSize(getFileSizes(f)));
+								//Log.e("vedio", file.getPath()+": "+name+" "+formetFileSize(getFileSizes(f)));
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
 							video.setName(name);
 							video.setSize(formetFileSize(getFileSizes(f)));
-							//video.setFile(new File(f.getAbsolutePath(),name));
-							//Log.e("path",f.getAbsolutePath());
 							video.setUrl(f.getAbsolutePath());
 							video.setTime(time);
 							video.setImageUrl(imageUrl);
-							//video.setBitmap(bitmap);
 							list.add(video);
 						}
 
@@ -386,7 +387,6 @@ public class VideoFragment extends Fragment {
 				}
 
 			}
-
 			/*if(list.size()>0){
 				int positon=file.getPath().lastIndexOf("/");
 				Log.e("file",file.getPath().substring(positon+1,file.getPath().length()));
@@ -413,7 +413,7 @@ public class VideoFragment extends Fragment {
 	private String saveBitmap(String name,Bitmap bm) throws IOException {
 		//File f = new File(getActivity().getFilesDir(), name);
 		File f = new File(GlobalContext.getContext().getExternalCacheDir(), name+".png");
-		Log.e("paht",f.getPath() );
+		//Log.e("path",f.getPath() );
 		if (f.exists()) {
 			f.delete();
 		}
@@ -468,16 +468,21 @@ public class VideoFragment extends Fragment {
 
 	private String getShowTime(long milliseconds) {
 		// 获取日历函数
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(milliseconds);
+		//Calendar calendar = Calendar.getInstance();
+		//calendar.setTimeInMillis(milliseconds);
+
 		SimpleDateFormat dateFormat = null;
 		// 判断是否大于60分钟，如果大于就显示小时。设置日期格式
-		if (milliseconds / 60000 > 60) {
-			dateFormat = new SimpleDateFormat("hh:mm:ss");
+		if (milliseconds > 3600*1000) {
+
+			dateFormat = new SimpleDateFormat("HH:mm:ss");
 		} else {
 			dateFormat = new SimpleDateFormat("mm:ss");
 		}
-		return dateFormat.format(calendar.getTime());
+		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		//return dateFormat.format(calendar.getTime());
+		Log.e("time size", milliseconds+" and "+dateFormat.format(milliseconds));
+		return dateFormat.format(milliseconds);
 	}
 
 	private void insert(){
@@ -486,8 +491,11 @@ public class VideoFragment extends Fragment {
 			if(!dbUtil.isExist(GlobalValue.TABLE, video.getName())){
 				dbUtil.insert(video, GlobalValue.TABLE);
 			}
+			else {
+				dbUtil.update(video, GlobalValue.TABLE);
+			}
 		}
-		dbUtil.insert(list, GlobalValue.TABLE);
+		//dbUtil.insert(list, GlobalValue.TABLE);
 	}
 
 	private void query(){

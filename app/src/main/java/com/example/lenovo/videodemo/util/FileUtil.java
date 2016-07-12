@@ -17,10 +17,10 @@ import java.util.List;
  */
 public class FileUtil {
 
-    public static List<Find> getFile(File file){
-        List<Find> list=new ArrayList<>();
+    public static void  getFile(File file,  List<Find> list){
+        list.clear();
         File[] subFiles=file.listFiles();
-        Log.e("file", file.getAbsolutePath());
+        Log.e("file parent", file.getAbsolutePath());
         if(subFiles!=null) {
             for (File f : subFiles) {
                 boolean flag = true;
@@ -37,7 +37,7 @@ public class FileUtil {
                         list.add(find);
                     }
                 }
-                else {
+                else if(f.isDirectory()){
                     Log.e("file", f.getAbsolutePath());
                     Find find=new Find();
                     find.setUrl(f.getPath());
@@ -46,10 +46,19 @@ public class FileUtil {
                     find.setType(GlobalValue.FILE_TYPE_DIRECTORY);
                     list.add(find);
                 }
+                /*else {
+                    Log.e("file other", f.getAbsolutePath());
+                    Find find=new Find();
+                    find.setUrl(f.getPath());
+                    find.setParentUrl(file.getPath());
+                    find.setName(f.getName());
+                    find.setType(GlobalValue.FILE_TYPE_OTHER);
+                    list.add(find);
+                }*/
 
             }
         }
 
-        return list;
+       // return list;
     }
 }

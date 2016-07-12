@@ -18,6 +18,7 @@
     <color name="md_gray_850">#303030</color>
     <color name="md_gray_900">#212121</color>
     <color name="bg_gray">#a9b7b7</color>
+    <color name="bg_transprent">#99323232</color>
     <!-- 透明 -->
     <color name="transparent">#00000000</color>
     <!-- 半透明 -->
@@ -42,6 +43,7 @@
 
     <color name="lightblue">#0083FF</color>
     <color name="skyblue">#56abe4</color>
+    <color name="bgblue">#97FFFF</color>
     <!-- specific color-->
     <color name="line_color">#e7e7e7</color>
     <color name="background_grey">#e7e7e7</color>

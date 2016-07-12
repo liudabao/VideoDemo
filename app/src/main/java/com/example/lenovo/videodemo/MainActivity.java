@@ -15,6 +15,9 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import com.example.lenovo.videodemo.global.GlobalValue;
+import com.example.lenovo.videodemo.util.DialogUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,17 +41,19 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        init();
+
        // initEvent();
         getPersimmions();
+        //init();
+        initView();
     }
 
-    private void init(){
+    private void initView(){
         layoutInflater = LayoutInflater.from(this);
-       //实例化TabHost对象，得到TabHost
+        //实例化TabHost对象，得到TabHost
         mTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
-      //  mViewPager = (ViewPager) findViewById(R.id.view_pager);
-       // mFragmentList = new ArrayList<Fragment>();
+        //  mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        // mFragmentList = new ArrayList<Fragment>();
         mTabHost.setup(this, getSupportFragmentManager(), R.id.content);
         mTabHost.getTabWidget().setDividerDrawable(null);
       //  mViewPager.setOffscreenPageLimit(2);
@@ -134,6 +139,9 @@ public class MainActivity extends FragmentActivity {
             if (permissions.size() > 0) {
                 requestPermissions(permissions.toArray(new String[permissions.size()]), SDK_PERMISSION_REQUEST);
             }
+            else {
+               // init();
+            }
         }
     }
 
@@ -156,8 +164,27 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         // TODO Auto-generated method stub
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+       // super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case SDK_PERMISSION_REQUEST: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.e("permission", "success");
+                    //init();
 
+                } else {
+                    Log.e("permission", "fail");
+                    DialogUtil.showDialog(this, GlobalValue.PERMISSIONS_TIPS);
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
 }

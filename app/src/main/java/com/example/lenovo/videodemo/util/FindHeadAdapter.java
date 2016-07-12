@@ -2,6 +2,7 @@ package com.example.lenovo.videodemo.util;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,9 @@ public class FindHeadAdapter extends RecyclerView.Adapter<FindHeadAdapter.HeadHo
     public void onBindViewHolder(final HeadHolder holder, int position) {
 
         String path=list.get(position);
+
         File file=new File(path);
+        Log.e("head", path+" "+file.getParent());
         holder.imageView.setBackgroundResource(R.drawable.find_next);
         holder.textView.setText(file.getName());
         if(mListener!=null){
@@ -71,6 +74,7 @@ public class FindHeadAdapter extends RecyclerView.Adapter<FindHeadAdapter.HeadHo
 
     @Override
     public int getItemCount() {
+       // Log.e("head", list.size()+"");
         return list.size();
     }
 

@@ -74,6 +74,7 @@ public class FindContentAdapter extends RecyclerView.Adapter<FindContentAdapter.
 
     @Override
     public int getItemCount() {
+       // Log.e("content", list.size()+"");
         return list.size();
     }
 

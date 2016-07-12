@@ -103,7 +103,7 @@ public class DbUtil {
                 values.put("selected", video.getSelected());
                 values.put("imageUrl", video.getImageUrl());
                 db.update(table, values, "name=?", new String[]{video.getName()});
-                Log.e("update", video.getName()+" update "+video.getSelected());
+               // Log.e("update", video.getName()+" update "+video.getSelected());
                 db.setTransactionSuccessful();
             }catch (Exception e){
                 e.printStackTrace();
@@ -177,7 +177,7 @@ public class DbUtil {
                 Cursor cursor=db.query(table, null, null, null, null, null, null);
                 if(cursor.moveToFirst()){
                     do{
-                        Log.e("query nextUrl", cursor.getString(cursor.getColumnIndex("nextUrl")));
+                       // Log.e("query nextUrl", cursor.getString(cursor.getColumnIndex("nextUrl")));
                         Video video=new Video();
                         video.setName(cursor.getString(cursor.getColumnIndex("name")));
                         video.setSize(cursor.getString(cursor.getColumnIndex("size")));
@@ -221,7 +221,7 @@ public class DbUtil {
                 if(cursor.moveToFirst()){
                     do{
                         //Log.e("query", name);
-                         Log.e("query cursor", nextUrl+" &&&  "+cursor.getString(cursor.getColumnIndex("nextUrl")));
+                         //Log.e("query cursor", nextUrl+" &&&  "+cursor.getString(cursor.getColumnIndex("nextUrl")));
                         if(nextUrl.equals(cursor.getString(cursor.getColumnIndex("url")))){
                             Log.e("query video", cursor.getString(cursor.getColumnIndex("name"))+" "+cursor.getInt(cursor.getColumnIndex("position")));
                             video.setName(cursor.getString(cursor.getColumnIndex("name")));
@@ -252,6 +252,46 @@ public class DbUtil {
         return video;
     }
 
+    public Video queryByName(String table, String name){
+        Video video=new Video();
+        synchronized (helper){
+            if (!db.isOpen()) {
+                db = helper.getWritableDatabase();
+            }
+            db.beginTransaction();
+            try{
+                Cursor cursor=db.query(table, null, null, null, null, null, null);
+                if(cursor.moveToFirst()){
+                    do{
+                        //Log.e("query", name);
+                       // Log.e("query cursor", nextUrl+" &&&  "+cursor.getString(cursor.getColumnIndex("nextUrl")));
+                        if(name.equals(cursor.getString(cursor.getColumnIndex("name")))){
+                            Log.e("query video", cursor.getString(cursor.getColumnIndex("name"))+" "+cursor.getInt(cursor.getColumnIndex("position")));
+                            video.setName(cursor.getString(cursor.getColumnIndex("name")));
+                            video.setSize(cursor.getString(cursor.getColumnIndex("size")));
+                            video.setTime(cursor.getString(cursor.getColumnIndex("time")));
+                            video.setUrl(cursor.getString(cursor.getColumnIndex("url")));
+                            video.setNextUrl(cursor.getString(cursor.getColumnIndex("nextUrl")));
+                            video.setPrevUrl(cursor.getString(cursor.getColumnIndex("prevUrl")));
+                            video.setPosition(cursor.getInt(cursor.getColumnIndex("position")));
+                            video.setSelected(cursor.getString(cursor.getColumnIndex("selected")));
+                            video.setImageUrl(cursor.getString(cursor.getColumnIndex("imageUrl")));
+                            break;
+                        }
+
+                    }while(cursor.moveToNext());
+                }
+                cursor.close();
+                db.setTransactionSuccessful();
+            }catch (Exception e){
+
+            }finally {
+                db.endTransaction();
+                db.close();
+            }
+        }
+        return video;
+    }
 
     public boolean isExist(String table,String name){
         synchronized (helper){
@@ -263,7 +303,7 @@ public class DbUtil {
                // Log.e("query name","query name start");
                 Cursor cursor=db.query(table, null, null, null, null, null, null);
                 if(cursor.moveToFirst()){
-                    Log.e("query name", name+" * "+cursor.getString(cursor.getColumnIndex("name")));
+                   // Log.e("query name", name+" * "+cursor.getString(cursor.getColumnIndex("name")));
                     do{
 
                         if(name.equals(cursor.getString(cursor.getColumnIndex("name")))){
@@ -273,7 +313,6 @@ public class DbUtil {
                     }while(cursor.moveToNext());
                 }
                 cursor.close();
-                //db.rawQuery("select * from person",null);
                 db.setTransactionSuccessful();
             }catch (Exception e){
                 e.printStackTrace();

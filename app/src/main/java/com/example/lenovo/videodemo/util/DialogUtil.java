@@ -46,14 +46,20 @@ public class DialogUtil {
         alertDialog.show();
     }
 
-    public static void  showDialog(Context context, String msg) {
+    public static void  showDialog(final Context context, String msg) {
 
-          AlertDialog.Builder builder = new AlertDialog.Builder(context);
-          builder.setIcon(android.R.drawable.ic_dialog_info);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setIcon(android.R.drawable.ic_dialog_info);
           //builder.setTitle(title);
-          builder.setMessage(msg);
-          builder.setCancelable(true);
-          builder.create().show();
+        builder.setMessage(msg);
+        builder.setCancelable(true);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.create().show();
 
     }
 

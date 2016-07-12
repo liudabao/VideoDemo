@@ -26,10 +26,11 @@ import com.example.lenovo.videodemo.util.DbUtil;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 public class VideoPlayActivity extends AppCompatActivity implements
         SurfaceHolder.Callback, View.OnClickListener, MediaPlayer.OnCompletionListener,
-        MediaPlayer.OnPreparedListener, SeekBar.OnSeekBarChangeListener {
+        MediaPlayer.OnPreparedListener, SeekBar.OnSeekBarChangeListener, MediaPlayer.OnErrorListener {
     /** Called when the activity is first created. */
     private MediaPlayer player;
     private  SurfaceView surface;
@@ -44,9 +45,6 @@ public class VideoPlayActivity extends AppCompatActivity implements
     private String time;
     private boolean flag;
     private boolean isFinish=false;
-    //private String url;
-    //private String nextUrl;
-   // private String prevUrl;
     private LinearLayout linearLayout;
     private RelativeLayout relativeLayout;
     private Video video;
@@ -57,12 +55,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_video_play);
-        //getPersimmions();
         Bundle bundle=getIntent().getExtras();
-       // url=bundle.getString("url");
-       // nextUrl=bundle.getString("next");
-       // prevUrl=bundle.getString("prev");
-       // Log.e("URL",url+"#"+nextUrl+"#"+prevUrl);
         video=(Video)bundle.getSerializable(GlobalValue.KEY);
         initView();
     }
@@ -75,7 +68,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
 
     private void initView() {
         dbUtil=new DbUtil();
-        Log.e("video", video.getUrl()+" & "+video.getNextUrl()+" & "+video.getPrevUrl());
+       // Log.e("video", video.getUrl()+" & "+video.getNextUrl()+" & "+video.getPrevUrl());
         relativeLayout=(RelativeLayout)findViewById(R.id.video_bottom);
         linearLayout=(LinearLayout)findViewById(R.id.video_top);
         progressBar=(ProgressBar)findViewById(R.id.progressBar);
@@ -88,7 +81,6 @@ public class VideoPlayActivity extends AppCompatActivity implements
         surface = (SurfaceView) findViewById(R.id.view);
         surfaceHolder = surface.getHolder(); // SurfaceHolder是SurfaceView的控制接口
         surfaceHolder.addCallback(this); // 因为这个类实现了SurfaceHolder.Callback接口，所以回调参数直接this
-
         start.setOnClickListener(this);
         if (video.getNextUrl()==null){
            // next.setClickable(false);
@@ -101,12 +93,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
         next.setOnClickListener(this);
         prev.setOnClickListener(this);
         back.setOnClickListener(this);
-        //fast.setOnClickListener(this);
-       // capture.setOnClickListener(this);
-       // pause.setOnClickListener(this);
-       // stop.setOnClickListener(this);
-
-        //progressBar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
 
     }
 
@@ -180,11 +167,9 @@ public class VideoPlayActivity extends AppCompatActivity implements
         }
         else if(v==next){
             update(video);
-
             if(player.isPlaying()){
                 player.stop();
             }
-
             Log.e("next", video.getNextUrl());
             video=dbUtil.queryByUrl(GlobalValue.TABLE, video.getNextUrl());
             if(video.getNextUrl()==null){
@@ -200,7 +185,6 @@ public class VideoPlayActivity extends AppCompatActivity implements
                 prev.setEnabled(true);
             }
             //url=nextUrl;
-
             play();
         }
         else if(v==prev){
@@ -224,12 +208,6 @@ public class VideoPlayActivity extends AppCompatActivity implements
             player.stop();
             finish();
         }
-        /*if(v==fast){
-            Log.e("video", "fast");
-            seekBar.setProgress(player.getCurrentPosition()+5000);
-            player.seekTo(player.getCurrentPosition()+5000);
-            //seekBar.setProgress(player.getCurrentPosition()+2000);
-        }*/
 
     }
 
@@ -243,9 +221,33 @@ public class VideoPlayActivity extends AppCompatActivity implements
       //  seekBar.setProgress(0);
     }
 
+    private void play(){
+        player.reset();
+        player.setOnCompletionListener(VideoPlayActivity.this);
+        player.setOnPreparedListener(VideoPlayActivity.this);
+        player.setOnErrorListener(VideoPlayActivity.this);
+        player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        player.setDisplay(surfaceHolder);
+        start.setImageResource(R.drawable.pause);
+        // 设置显示视频显示在SurfaceView上
+        try {
+            Log.e("play url",video.getUrl());
+            File file=new File(video.getUrl());
+            if(file.exists()){
+                player.setDataSource(file.getPath());
+                player.prepare();
+                Log.e("media","prepare");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onPrepared(MediaPlayer mp) {
         Log.e("video", "prepare start "+video.getPosition());
+
         progressBar.setVisibility(View.GONE);
         player.start();
       //  start.setText("pause");
@@ -284,42 +286,20 @@ public class VideoPlayActivity extends AppCompatActivity implements
 
     }
 
-    private void play(){
-        player.reset();
-        player.setOnCompletionListener(VideoPlayActivity.this);
-        player.setOnPreparedListener(VideoPlayActivity.this);
-        player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        player.setDisplay(surfaceHolder);
-        // 设置显示视频显示在SurfaceView上
-        try {
-            //File file=new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"Download/test.mp4");
-            Log.e("play url",video.getUrl());
-            File file=new File(video.getUrl());
-            //player.setDataSource("http://101.200.164.87:8080/visa/video/1.f4v");
-            if(file.exists()){
-               // Log.e("path",file.getPath());
-                player.setDataSource(file.getPath());
-                player.prepare();
-               // Log.e("media","prepare");
-            }
-
-            // player.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
     private String getShowTime(long milliseconds) {
         // 获取日历函数
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(milliseconds);
+       // Calendar calendar = Calendar.getInstance();
+       // calendar.setTimeInMillis(milliseconds);
         SimpleDateFormat dateFormat = null;
         // 判断是否大于60分钟，如果大于就显示小时。设置日期格式
-        if (milliseconds / 60000 > 60) {
-            dateFormat = new SimpleDateFormat("hh:mm:ss");
+        if (milliseconds  > 3600*1000) {
+            dateFormat = new SimpleDateFormat("HH:mm:ss");
         } else {
             dateFormat = new SimpleDateFormat("mm:ss");
         }
-        return dateFormat.format(calendar.getTime());
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+      //  return dateFormat.format(calendar.getTime());
+        return dateFormat.format(milliseconds);
     }
 
     @Override
@@ -390,5 +370,11 @@ public class VideoPlayActivity extends AppCompatActivity implements
         }
         update(video);
         // Activity销毁时停止播放，释放资源。不做这个操作，即使退出还是能听到视频播放的声音
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
+        Log.e("media error",what+"");
+        return false;
     }
 }
