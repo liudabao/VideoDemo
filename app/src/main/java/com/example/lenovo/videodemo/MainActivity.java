@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -107,11 +108,12 @@ public class MainActivity extends FragmentActivity {
      */
     private View getTabItemView(int index){
         View view = layoutInflater.inflate(R.layout.tab_item_view, null);
-
         ImageView imageView = (ImageView) view.findViewById(R.id.imageview);
         //imageView.setBackgroundResource(mImageArray[index]);
        // imageView.setBackground(mImageArray[index]);
+       // Log.e("home image",mImageArray[0]+" * "+mImageArray[1]);
         imageView.setImageResource(mImageArray[index]);
+       // imageView.setImageResource(R.mipmap.ic_launcher);
 
         TextView textView = (TextView) view.findViewById(R.id.textview);
         textView.setText(mTextviewArray[index]);

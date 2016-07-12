@@ -1,8 +1,11 @@
 package com.example.lenovo.videodemo.service;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.example.lenovo.videodemo.global.GlobalContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -90,6 +93,8 @@ public class DownloadTask  extends AsyncTask<Void, Integer, Boolean> {
     @Override
     protected void onPostExecute(Boolean result){
         dialog.dismiss();
+        Intent intent=new Intent("android.video.update");
+        GlobalContext.getContext().sendBroadcast(intent);
         Log.e("percent", "finish");
     }
 

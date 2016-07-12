@@ -12,7 +12,9 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -22,10 +24,15 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.lenovo.videodemo.entity.Version;
 import com.example.lenovo.videodemo.global.GlobalContext;
+import com.example.lenovo.videodemo.global.GlobalValue;
+import com.example.lenovo.videodemo.listener.OnHttpListener;
 import com.example.lenovo.videodemo.service.DownloadService;
 import com.example.lenovo.videodemo.util.DataManager;
 import com.example.lenovo.videodemo.util.DialogUtil;
+import com.example.lenovo.videodemo.util.HttpUtil;
+import com.example.lenovo.videodemo.util.ParseUtil;
 
 import java.io.File;
 
@@ -42,6 +49,8 @@ public class SetFragment extends Fragment {
 	private ServiceConnection connection;
 	private IntentFilter filter;
 	private DownloadReceiver receiver;
+	private Version version;
+	private Handler handler;
 	
 	@Override	
 	public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
@@ -57,6 +66,18 @@ public class SetFragment extends Fragment {
 			@Override
 			public void onServiceDisconnected(ComponentName name) {
 
+			}
+		};
+		handler=new Handler(){
+
+			public void handleMessage(Message message){
+				switch (message.what){
+					case GlobalValue.VERSION:
+						showDownDialog();
+						break;
+					default:
+						break;
+				}
 			}
 		};
 		initView();
@@ -97,9 +118,9 @@ public class SetFragment extends Fragment {
 		versons.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//getAppVersion();
-				showDownDialog();
-				getActivity().registerReceiver(receiver, filter);
+				getAppVersion();
+				//showDownDialog();
+
 			}
 		});
 
@@ -122,7 +143,7 @@ public class SetFragment extends Fragment {
 	private void showClearDialog(){
 
 		AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
-		builder.setMessage("确定清空缓存")
+		builder.setMessage("确定清空应用数据")
 				.setCancelable(true);
 		builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
 
@@ -152,9 +173,10 @@ public class SetFragment extends Fragment {
 
 	private void showDownDialog(){
 
+		Log.e("update", "start");
 		AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
 		builder.setTitle("版本更新");
-		builder.setMessage("该版本改进了XX")
+		builder.setMessage(version.getInfo())
 				.setCancelable(true);
 		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
@@ -165,6 +187,8 @@ public class SetFragment extends Fragment {
 
 					Intent intent=new Intent(getActivity(), DownloadService.class);
 					getActivity().bindService(intent, connection, Context.BIND_AUTO_CREATE);
+					getActivity().registerReceiver(receiver, filter);
+
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -180,18 +204,49 @@ public class SetFragment extends Fragment {
 		});
 		builder.create();
 		builder.show();
+		Log.e("update", "end");
 	}
 
 	private void getAppVersion(){
 
-		PackageManager manager=getActivity().getPackageManager();
-		try {
-			PackageInfo info=manager.getPackageInfo(getActivity().getPackageName(), 0);
-			DialogUtil.showDialog(getActivity(),"当前已是最新版本，版本号为: "+info.versionName );
-			Log.e("Version",info.versionName+" and "+info.versionCode);
-		} catch (PackageManager.NameNotFoundException e) {
-			e.printStackTrace();
-		}
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+
+				HttpUtil.get(GlobalValue.VERSION_URL, new OnHttpListener() {
+					@Override
+					public void onSuccess(String response) {
+						Log.e("Version",response);
+						version= ParseUtil.parserJson(response);
+						PackageManager manager=getActivity().getPackageManager();
+						PackageInfo info= null;
+						try {
+							info = manager.getPackageInfo(getActivity().getPackageName(), 0);
+							//Log.e("Version",info.versionName+" and "+version.getValue()+" and "+info.versionCode);
+							if(info.versionName.compareTo(version.getValue())>0){
+								Log.e("Version ",info.versionName+" and "+version.getValue());
+								DialogUtil.showDialog(getActivity(),"当前已是最新版本，版本号为: "+info.versionName );
+
+							}
+							else {
+								Log.e("Version update",info.versionName+" and "+version.getValue());
+								//showDownDialog();
+								Message msg=new Message();
+								msg.what=GlobalValue.VERSION;
+								handler.sendMessage(msg);
+							}
+						} catch (PackageManager.NameNotFoundException e) {
+							e.printStackTrace();
+						}
+					}
+
+					@Override
+					public void onFailed() {
+						DialogUtil.showDialog(getActivity(),"网络连接失败" );
+					}
+				});
+			}
+		}).start();
 	}
 
 

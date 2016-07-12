@@ -35,7 +35,7 @@ import com.example.lenovo.videodemo.entity.Video;
 import com.example.lenovo.videodemo.global.GlobalContext;
 import com.example.lenovo.videodemo.global.GlobalValue;
 import com.example.lenovo.videodemo.util.DbUtil;
-import com.example.lenovo.videodemo.util.MyAdapter;
+import com.example.lenovo.videodemo.util.VideoAdapter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -54,7 +54,7 @@ public class VideoFragment extends Fragment {
 	private View view;
 	private RecyclerView recyclerView;
 	private LinearLayoutManager linearLayoutManager;
-	private MyAdapter adapter;
+	private VideoAdapter adapter;
 	private ProgressDialog progress;
 	private ImageButton menu;
 	private List<Video> list=new ArrayList<>();
@@ -102,7 +102,7 @@ public class VideoFragment extends Fragment {
 						break;
 					case 2:
 						//initView();
-						adapter=new MyAdapter(GlobalContext.getContext(), list);
+						adapter=new VideoAdapter(GlobalContext.getContext(), list);
 						recyclerView.setAdapter(adapter);
 						adapter.notifyDataSetChanged();
 						setNext();
@@ -111,7 +111,7 @@ public class VideoFragment extends Fragment {
 						break;
 					case 3:
 						//initView();
-						adapter=new MyAdapter(GlobalContext.getContext(), list);
+						adapter=new VideoAdapter(GlobalContext.getContext(), list);
 						recyclerView.setAdapter(adapter);
 						adapter.notifyDataSetChanged();
 						setNext();
@@ -119,7 +119,7 @@ public class VideoFragment extends Fragment {
 						break;
 					case 4:
 						//initView();
-						adapter=new MyAdapter(GlobalContext.getContext(), list);
+						adapter=new VideoAdapter(GlobalContext.getContext(), list);
 						recyclerView.setAdapter(adapter);
 						adapter.notifyDataSetChanged();
 						Log.e("delete", "refreash");
@@ -185,7 +185,7 @@ public class VideoFragment extends Fragment {
         menu=(ImageButton)view.findViewById(R.id.meun) ;
 		recyclerView=(RecyclerView)view.findViewById(R.id.recyclerView);
 		linearLayoutManager=new LinearLayoutManager(GlobalContext.getContext());
-		adapter=new MyAdapter(GlobalContext.getContext(), list);
+		adapter=new VideoAdapter(GlobalContext.getContext(), list);
 		recyclerView.setLayoutManager(linearLayoutManager);
 		recyclerView.setAdapter(adapter);
 
@@ -195,7 +195,7 @@ public class VideoFragment extends Fragment {
 	}
 
 	private void initEvent(){
-		adapter.setOnItemClickLitener(new MyAdapter.OnRecyclerViewItemClickListener() {
+		adapter.setOnItemClickLitener(new VideoAdapter.OnRecyclerViewItemClickListener() {
 			@Override
 			public void onItemClick(View view, int position) {
 				Intent intent=new Intent(getActivity(), VideoPlayActivity.class);

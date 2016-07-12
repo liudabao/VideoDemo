@@ -63,7 +63,7 @@
             android:textSize="@dimen/text_size_16"
             android:textColor="@color/md_gray_700"
             android:layout_marginLeft="16dp"
-            android:text="清空缓存" />
+            android:text="应用数据" />
         <TextView
             android:id="@+id/text_size"
             android:layout_width="match_parent"
