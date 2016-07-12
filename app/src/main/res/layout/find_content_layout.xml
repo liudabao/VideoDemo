@@ -7,9 +7,9 @@
     android:background="@color/white">
     <ImageView
         android:id="@+id/content_image"
-        android:layout_width="96dp"
-        android:layout_height="80dp"
-        android:layout_margin="16dp"
+        android:layout_width="80dp"
+        android:layout_height="64dp"
+        android:layout_margin="8dp"
         android:background="@drawable/direcotry"/>
 
     <TextView
