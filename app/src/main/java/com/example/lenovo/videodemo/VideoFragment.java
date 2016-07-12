@@ -181,15 +181,13 @@ public class VideoFragment extends Fragment {
 		intentFilter=new IntentFilter();
 		editBroad=new EditBroad();
 		intentFilter.addAction("android.video.delete");
-		getActivity().registerReceiver(editBroad, intentFilter);
+		//getActivity().registerReceiver(editBroad, intentFilter);
         menu=(ImageButton)view.findViewById(R.id.meun) ;
 		recyclerView=(RecyclerView)view.findViewById(R.id.recyclerView);
 		linearLayoutManager=new LinearLayoutManager(GlobalContext.getContext());
 		adapter=new VideoAdapter(GlobalContext.getContext(), list);
 		recyclerView.setLayoutManager(linearLayoutManager);
 		recyclerView.setAdapter(adapter);
-
-
 		swipeRefreshLayout=(SwipeRefreshLayout)view.findViewById(R.id.swipe);
 
 	}
@@ -223,6 +221,7 @@ public class VideoFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				showPopWindow(v);
+				getActivity().registerReceiver(editBroad, intentFilter);
 			}
 		});
 	}
@@ -299,14 +298,13 @@ public class VideoFragment extends Fragment {
 				switch (position){
 					case 0:
 						EditFragment editFragment=new EditFragment();
-						FragmentManager manager=getActivity().getSupportFragmentManager();
-						FragmentTransaction transaction=manager.beginTransaction();
-						transaction.replace(R.id.frame_main, editFragment);
-						transaction.addToBackStack(null);
-						transaction.commit();
+						replace(editFragment);
 						Toast.makeText(GlobalContext.getContext(),""+position, Toast.LENGTH_SHORT).show();
 						break;
 					case 1:
+						FindFragment findFragment=new FindFragment();
+						replace(findFragment);
+						Toast.makeText(GlobalContext.getContext(),""+position, Toast.LENGTH_SHORT).show();
 						break;
 					default:
 						break;
@@ -316,6 +314,14 @@ public class VideoFragment extends Fragment {
 				}
 			}
 		});
+	}
+
+	private void replace(Fragment fragment){
+		FragmentManager manager=getActivity().getSupportFragmentManager();
+		FragmentTransaction transaction=manager.beginTransaction();
+		transaction.replace(R.id.frame_main, fragment);
+		transaction.addToBackStack(null);
+		transaction.commit();
 	}
 
 	private void getFile(File file){

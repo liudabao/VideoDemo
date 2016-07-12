@@ -16,6 +16,8 @@ public class GlobalValue {
     public final static String[] MENU={"批量删除" , "手动打开"};
     public final static String url="http://101.200.164.87:8080/visa/download/Visa.apk";
     public final static String VERSION_URL="http://101.200.164.87:8080/visa/xml/version.json";
-
+    public final static int FILE_TYPE_DIRECTORY=1;
+    public final static int FILE_TYPE_MOVE=2;
+    public final static String FIND_HEAD="返回上一级";
 
 }
