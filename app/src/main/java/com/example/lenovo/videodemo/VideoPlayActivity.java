@@ -30,7 +30,7 @@ import java.util.TimeZone;
 
 public class VideoPlayActivity extends AppCompatActivity implements
         SurfaceHolder.Callback, View.OnClickListener, MediaPlayer.OnCompletionListener,
-        MediaPlayer.OnPreparedListener, SeekBar.OnSeekBarChangeListener, MediaPlayer.OnErrorListener {
+        MediaPlayer.OnPreparedListener, SeekBar.OnSeekBarChangeListener {
     /** Called when the activity is first created. */
     private MediaPlayer player;
     private  SurfaceView surface;
@@ -225,10 +225,10 @@ public class VideoPlayActivity extends AppCompatActivity implements
         player.reset();
         player.setOnCompletionListener(VideoPlayActivity.this);
         player.setOnPreparedListener(VideoPlayActivity.this);
-        player.setOnErrorListener(VideoPlayActivity.this);
+       // player.setOnErrorListener(VideoPlayActivity.this);
         player.setAudioStreamType(AudioManager.STREAM_MUSIC);
         player.setDisplay(surfaceHolder);
-        start.setImageResource(R.drawable.pause);
+        start.setBackgroundResource(R.drawable.pause);
         // 设置显示视频显示在SurfaceView上
         try {
             Log.e("play url",video.getUrl());
@@ -353,7 +353,13 @@ public class VideoPlayActivity extends AppCompatActivity implements
     @Override
     public void onPause(){
         super.onPause();
-
+        Log.e("video","pause");
+        if(player!=null){
+            if (player.isPlaying()) {
+                player.stop();
+            }
+        }
+        update(video);
     }
 
     @Override
@@ -368,13 +374,8 @@ public class VideoPlayActivity extends AppCompatActivity implements
             }
             player.release();
         }
-        update(video);
+        //update(video);
         // Activity销毁时停止播放，释放资源。不做这个操作，即使退出还是能听到视频播放的声音
     }
 
-    @Override
-    public boolean onError(MediaPlayer mp, int what, int extra) {
-        Log.e("media error",what+"");
-        return false;
-    }
 }
