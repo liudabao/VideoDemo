@@ -1,5 +1,6 @@
 package com.example.lenovo.videodemo;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.media.AudioManager;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import com.example.lenovo.videodemo.entity.Video;
 import com.example.lenovo.videodemo.global.GlobalValue;
 import com.example.lenovo.videodemo.util.DbUtil;
+import com.example.lenovo.videodemo.util.MediaUtil;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -85,10 +87,12 @@ public class VideoPlayActivity extends AppCompatActivity implements
         if (video.getNextUrl()==null){
            // next.setClickable(false);
             next.setEnabled(false);
+            next.setBackgroundResource(R.drawable.next_back);
         }
         if(video.getPrevUrl()==null){
             //prev.setClickable(false);
             prev.setEnabled(false);
+            prev.setBackgroundResource(R.drawable.prev_back);
         }
         next.setOnClickListener(this);
         prev.setOnClickListener(this);
@@ -143,70 +147,17 @@ public class VideoPlayActivity extends AppCompatActivity implements
     @Override
     public void onClick(View v) {
         if(v==start){
-            if(!player.isPlaying()){
-                Log.e("video", "start");
-                if(!isFinish){
-                    player.start();
-                    //start.setText("pause");
-                    start.setBackgroundResource(R.drawable.pause);
-                }
-                else {
-                    play();
-                    isFinish=false;
-                }
-
-            }
-            else{
-                Log.e("video", "pause");
-                player.pause();
-                start.setBackgroundResource(R.drawable.play);
-                //start.setText("start");
-                //update(video);
-            }
-
+            start();
         }
         else if(v==next){
-            update(video);
-            if(player.isPlaying()){
-                player.stop();
-            }
-            Log.e("next", video.getNextUrl());
-            video=dbUtil.queryByUrl(GlobalValue.TABLE, video.getNextUrl());
-            if(video.getNextUrl()==null){
-                next.setEnabled(false);
-            }
-            else {
-                next.setEnabled(true);
-            }
-            if(video.getPrevUrl()==null){
-                prev.setEnabled(false);
-            }
-            else {
-                prev.setEnabled(true);
-            }
-            //url=nextUrl;
-            play();
+           next();
         }
         else if(v==prev){
             //url=prevUrl;
-            update(video);
-
-            if(player.isPlaying()){
-                player.stop();
-            }
-           // dbUtil=new DbUtil();
-            video=dbUtil.queryByUrl(GlobalValue.TABLE, video.getPrevUrl());
-            if(video.getPrevUrl()==null){
-                prev.setEnabled(false);
-            }
-            else {
-                prev.setEnabled(true);
-            }
-            play();
+           prev();
         }
         else if(v==back){
-            player.stop();
-            finish();
+           back();
         }
 
     }
@@ -215,6 +166,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
     public void onCompletion(MediaPlayer mp) {
         Log.e("video", "video end");
         start.setBackgroundResource(R.drawable.play);
+        update(video);
        // player.start();
        // start.setText("start");
        // textView.setText(getShowTime(0) + "/" +time);
@@ -244,6 +196,94 @@ public class VideoPlayActivity extends AppCompatActivity implements
         }
     }
 
+    private void start(){
+
+        if(!player.isPlaying()){
+            Log.e("video", "start");
+            if(!isFinish){
+                player.start();
+                //start.setText("pause");
+                start.setBackgroundResource(R.drawable.pause);
+            }
+            else {
+                play();
+                isFinish=false;
+            }
+
+        }
+        else{
+            Log.e("video", "pause");
+            player.pause();
+            start.setBackgroundResource(R.drawable.play);
+            update(video);
+            //start.setText("start");
+            //update(video);
+        }
+
+    }
+
+    private void next(){
+
+        if(player.isPlaying()){
+            player.stop();
+        }
+        update(video);
+        Log.e("next", video.getNextUrl());
+        video=dbUtil.queryByUrl(GlobalValue.TABLE, video.getNextUrl());
+        if(video.getNextUrl()==null){
+            next.setEnabled(false);
+            next.setBackgroundResource(R.drawable.next_back);
+        }
+        else {
+            next.setEnabled(true);
+            next.setBackgroundResource(R.drawable.next);
+        }
+        if(video.getPrevUrl()==null){
+            prev.setEnabled(false);
+            prev.setBackgroundResource(R.drawable.prev_back);
+        }
+        else {
+            prev.setEnabled(true);
+            prev.setBackgroundResource(R.drawable.prev);
+        }
+        //url=nextUrl;
+        play();
+    }
+
+    private void prev(){
+
+        if(player.isPlaying()){
+            player.stop();
+        }
+        update(video);
+        // dbUtil=new DbUtil();
+        video=dbUtil.queryByUrl(GlobalValue.TABLE, video.getPrevUrl());
+        if(video.getPrevUrl()==null){
+            prev.setEnabled(false);
+            prev.setBackgroundResource(R.drawable.prev_back);
+        }
+        else {
+            prev.setEnabled(true);
+            prev.setBackgroundResource(R.drawable.prev);
+        }
+        if(video.getNextUrl()==null){
+            next.setEnabled(false);
+            next.setBackgroundResource(R.drawable.next_back);
+        }
+        else {
+            next.setEnabled(true);
+            next.setBackgroundResource(R.drawable.next);
+        }
+        play();
+    }
+
+    private void back(){
+        player.stop();
+        Intent intent=new Intent();
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
     @Override
     public void onPrepared(MediaPlayer mp) {
         Log.e("video", "prepare start "+video.getPosition());
@@ -253,16 +293,12 @@ public class VideoPlayActivity extends AppCompatActivity implements
       //  start.setText("pause");
         surfaceHolder.setKeepScreenOn(true);
         // 设置控制条,放在加载完成以后设置，防止获取getDuration()错误
-       // seekBar.setProgress(0);
         seekBar.setProgress(video.getPosition());
         player.seekTo(video.getPosition());
-      //  seekBar.setProgress(video.getPosition());
         int p=player.getDuration();
-        //Log.e("position max", player.getDuration()+" % "+p);
         seekBar.setMax(player.getDuration());
-        time=getShowTime(player.getDuration());
+        time= MediaUtil.getShowTime(player.getDuration());
         textView.setText("00:00:00/" + time);
-        //capture.setOnClickListener(VideoPlayActivity.this);
         seekBar.setOnSeekBarChangeListener(VideoPlayActivity.this);
         flag=true;
         new Thread(new Runnable() {
@@ -286,7 +322,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
 
     }
 
-    private String getShowTime(long milliseconds) {
+   /* private String getShowTime(long milliseconds) {
         // 获取日历函数
        // Calendar calendar = Calendar.getInstance();
        // calendar.setTimeInMillis(milliseconds);
@@ -300,7 +336,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
       //  return dateFormat.format(calendar.getTime());
         return dateFormat.format(milliseconds);
-    }
+    }*/
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -313,7 +349,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
                 start.setBackgroundResource(R.drawable.play);
             }
         }
-        textView.setText(getShowTime(progress) + "/" +time);
+        textView.setText( MediaUtil.getShowTime(progress) + "/" +time);
 
 
 
@@ -346,7 +382,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
     public void onBackPressed() {
         // TODO Auto-generated method stub
         super.onBackPressed();
-
+        back();
         //super.onBackPressed();
     }
 

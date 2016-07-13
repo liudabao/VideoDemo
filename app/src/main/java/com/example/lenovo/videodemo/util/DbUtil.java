@@ -103,7 +103,7 @@ public class DbUtil {
                 values.put("selected", video.getSelected());
                 values.put("imageUrl", video.getImageUrl());
                 db.update(table, values, "name=?", new String[]{video.getName()});
-               // Log.e("update", video.getName()+" update "+video.getSelected());
+                Log.e("update", video.getName()+" update "+video.getPosition());
                 db.setTransactionSuccessful();
             }catch (Exception e){
                 e.printStackTrace();
@@ -127,7 +127,7 @@ public class DbUtil {
                 Cursor cursor=db.query(table, null, null, null, null, null, null);
                 if(cursor.moveToFirst()){
                     do{
-                        db.delete(table, "id=?", new String[]{cursor.getString(cursor.getColumnIndex("id"))});
+                        db.delete(table, "name=?", new String[]{cursor.getString(cursor.getColumnIndex("name"))});
                     }while(cursor.moveToNext());
                 }
                 cursor.close();

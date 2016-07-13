@@ -33,7 +33,7 @@
             android:id="@+id/head_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@drawable/bg_bottmo_retangle">
+            android:background="@color/white">
         </android.support.v7.widget.RecyclerView>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/content_recyclerView"

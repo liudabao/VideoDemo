@@ -5,12 +5,26 @@
     android:layout_marginBottom="8dp"
     android:background="@drawable/video_item_selector">
 
-    <ImageView
-        android:id="@+id/image"
+    <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:padding="8dp"/>
+        android:padding="8dp">
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/panda"/>
+        <TextView
+            android:id="@+id/play_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            android:background="@color/bg_transprent"
+            android:gravity="center"
+            android:text="00:00"
+            android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"

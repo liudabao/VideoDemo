@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.example.lenovo.videodemo.R;
 
 public class CommentActivity extends AppCompatActivity {
 
     private Button send;
+    private ImageButton back;
     private EditText editText;
 
     @Override
@@ -25,6 +27,7 @@ public class CommentActivity extends AppCompatActivity {
     private void initView(){
         send=(Button)findViewById(R.id.send);
         editText=(EditText)findViewById(R.id.comments);
+        back=(ImageButton)findViewById(R.id.comment_back) ;
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -33,6 +36,12 @@ public class CommentActivity extends AppCompatActivity {
                 data.putExtra(Intent.EXTRA_SUBJECT, "播放器改进");
                 data.putExtra(Intent.EXTRA_TEXT, editText.getText());
                 startActivity(data);
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }

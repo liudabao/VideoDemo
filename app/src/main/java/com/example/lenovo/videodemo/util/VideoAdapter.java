@@ -53,6 +53,13 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyRecyclerVi
         holder.tv_size.setText(video.getSize());
         holder.tv_time.setText(video.getTime());
         holder.iv.setImageBitmap(BitmapFactory.decodeFile(video.getImageUrl()));
+        holder.tv_play_time.setText("已播放 "+MediaUtil.getShowTime(video.getPosition()));
+        if(video.getPosition()==0){
+            holder.tv_play_time.setVisibility(View.GONE);
+        }
+        else {
+            holder.tv_play_time.setVisibility(View.VISIBLE);
+        }
        // Log.e("imagurl", video.getImageUrl());
        // holder.iv.setImageBitmap(video.getBitmap());
        // holder.iv.setBackgroundResource(R.mipmap.ic_launcher);
@@ -108,6 +115,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyRecyclerVi
         TextView tv_name;
         TextView tv_size;
         TextView tv_time;
+        TextView tv_play_time;
         public MyRecyclerViewHolder(View view){
             super(view);
             init(view);
@@ -118,6 +126,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyRecyclerVi
             tv_name=(TextView)view.findViewById(R.id.name);
             tv_size=(TextView)view.findViewById(R.id.size);
             tv_time=(TextView)view.findViewById(R.id.time);
+            tv_play_time=(TextView)view.findViewById(R.id.play_time);
         }
 
     }

@@ -55,6 +55,7 @@
             android:layout_marginRight="4dp"
             />
         <TextView
+            android:id="@+id/text_select"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/md_gray_500"

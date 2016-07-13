@@ -33,11 +33,17 @@
             android:textSize="32sp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"/>
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/panda"
+            android:layout_toLeftOf="@+id/tip"
+            android:layout_below="@+id/version"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tip"
-            android:text="我就是萌哒哒"
+            android:text="我就是萌萌哒"
             android:textColor="@color/gray"
             android:textSize="14sp"
             android:layout_below="@+id/version"
@@ -47,11 +53,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/md_gray_50"
         android:clickable="true"
         android:orientation="horizontal"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="32dp"
+        android:background="@drawable/video_item_selector"
         android:id="@+id/clear">
         <TextView
             android:id="@+id/text_set_clear"
@@ -83,7 +89,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/md_gray_50"
+        android:background="@drawable/video_item_selector"
         android:clickable="true"
         android:orientation="horizontal"
         android:id="@+id/comment">
@@ -109,7 +115,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/md_gray_50"
+        android:background="@drawable/video_item_selector"
         android:clickable="true"
         android:orientation="horizontal"
         android:id="@+id/versions">
@@ -134,7 +140,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/md_gray_50"
+        android:background="@drawable/video_item_selector"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:clickable="true"
         android:orientation="horizontal"
@@ -151,5 +157,15 @@
             android:layout_marginLeft="16dp"
             android:text="关于" />
     </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="熊猫的尾巴@copy right 2016"
+        android:textColor="@color/gray"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_marginTop="8dp"
+        />
 
 </LinearLayout>

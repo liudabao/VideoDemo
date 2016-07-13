@@ -19,7 +19,7 @@
             android:textSize="@dimen/text_size_18"
             android:text="反馈" />
         <ImageButton
-            android:id="@+id/btn_back"
+            android:id="@+id/comment_back"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_alignParentLeft="true"

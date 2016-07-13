@@ -21,5 +21,6 @@ public class GlobalValue {
     public final static int FILE_TYPE_OTHER=3;
     public final static String FIND_HEAD="返回上一级";
     public final static String PERMISSIONS_TIPS="权限不足，请重新授权";
+    public final static int REQUEST_CODE_PLAY=1;
 
 }

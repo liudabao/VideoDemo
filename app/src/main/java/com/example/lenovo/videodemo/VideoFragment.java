@@ -35,6 +35,8 @@ import com.example.lenovo.videodemo.entity.Video;
 import com.example.lenovo.videodemo.global.GlobalContext;
 import com.example.lenovo.videodemo.global.GlobalValue;
 import com.example.lenovo.videodemo.util.DbUtil;
+import com.example.lenovo.videodemo.util.FileUtil;
+import com.example.lenovo.videodemo.util.ImageUtil;
 import com.example.lenovo.videodemo.util.VideoAdapter;
 
 import java.io.File;
@@ -91,6 +93,73 @@ public class VideoFragment extends Fragment {
 		{
 			parent.removeView(view);
 		}
+		initHandler();
+		if (isLoad){
+			initData();
+			init(GlobalValue.TYPE_ENTER);
+		}
+		return view;
+	}
+
+	private void initData(){
+		query();
+		if(list.size()>0){
+			initView();
+		}
+		showProgressDialog();
+
+	}
+
+	private void initView(){
+		intentFilter=new IntentFilter();
+		editBroad=new EditBroad();
+		intentFilter.addAction("android.video.delete");
+		//getActivity().registerReceiver(editBroad, intentFilter);
+        menu=(ImageButton)view.findViewById(R.id.meun) ;
+		recyclerView=(RecyclerView)view.findViewById(R.id.recyclerView);
+		linearLayoutManager=new LinearLayoutManager(GlobalContext.getContext());
+		adapter=new VideoAdapter(GlobalContext.getContext(), list);
+		recyclerView.setLayoutManager(linearLayoutManager);
+		recyclerView.setAdapter(adapter);
+		swipeRefreshLayout=(SwipeRefreshLayout)view.findViewById(R.id.swipe);
+
+	}
+
+	private void initEvent(){
+		adapter.setOnItemClickLitener(new VideoAdapter.OnRecyclerViewItemClickListener() {
+			@Override
+			public void onItemClick(View view, int position) {
+				Intent intent=new Intent(getActivity(), VideoPlayActivity.class);
+				Bundle bundle=new Bundle();
+				//bundle.putString("url",list.get(position).getUrl());
+				bundle.putSerializable(GlobalValue.KEY, list.get(position));
+				intent.putExtras(bundle);
+				startActivityForResult(intent, GlobalValue.REQUEST_CODE_PLAY);
+			}
+
+			@Override
+			public void onItemLongClick(View view, int position) {
+
+			}
+		});
+
+		swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				init(GlobalValue.TYPE_REFREASH);
+			}
+		});
+		//
+		menu.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				showPopWindow(v);
+				getActivity().registerReceiver(editBroad, intentFilter);
+			}
+		});
+	}
+
+	private void initHandler(){
 		handler=new Handler(){
 			public void handleMessage(Message msg){
 				switch (msg.what) {
@@ -133,103 +202,7 @@ public class VideoFragment extends Fragment {
 				}
 			}
 		};
-
-		//query();
-		//initToolBar();
-		if (isLoad){
-			initData();
-			init(GlobalValue.TYPE_ENTER);
-		}
-		return view;
 	}
-
-	/*@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.video_menu, menu);
-		super.onCreateOptionsMenu(menu, inflater);
-	}*/
-
-	/*private void initToolBar(){
-		setHasOptionsMenu(true);
-		toolbar=(Toolbar)view.findViewById(R.id.toolbar);
-		//toolbar.setLogo(R.mipmap.ic_launcher);
-		toolbar.setTitle(GlobalValue.VIDEO);
-		//toolbar.setSubtitle("Sub title");
-		((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-		toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-			@Override
-			public boolean onMenuItemClick(MenuItem item) {
-				switch (item.getItemId()){
-					case R.id.add:
-						Toast.makeText(GlobalContext.getContext(), "add", Toast.LENGTH_SHORT).show();
-						break;
-					case R.id.remove:
-						Toast.makeText(GlobalContext.getContext(), "remove", Toast.LENGTH_SHORT).show();
-						break;
-				}
-				return true;
-			}
-		});
-	}*/
-
-	private void initData(){
-		query();
-		if(list.size()>0){
-			initView();
-		}
-		showProgressDialog();
-
-	}
-
-	private void initView(){
-		intentFilter=new IntentFilter();
-		editBroad=new EditBroad();
-		intentFilter.addAction("android.video.delete");
-		//getActivity().registerReceiver(editBroad, intentFilter);
-        menu=(ImageButton)view.findViewById(R.id.meun) ;
-		recyclerView=(RecyclerView)view.findViewById(R.id.recyclerView);
-		linearLayoutManager=new LinearLayoutManager(GlobalContext.getContext());
-		adapter=new VideoAdapter(GlobalContext.getContext(), list);
-		recyclerView.setLayoutManager(linearLayoutManager);
-		recyclerView.setAdapter(adapter);
-		swipeRefreshLayout=(SwipeRefreshLayout)view.findViewById(R.id.swipe);
-
-	}
-
-	private void initEvent(){
-		adapter.setOnItemClickLitener(new VideoAdapter.OnRecyclerViewItemClickListener() {
-			@Override
-			public void onItemClick(View view, int position) {
-				Intent intent=new Intent(getActivity(), VideoPlayActivity.class);
-				Bundle bundle=new Bundle();
-				//bundle.putString("url",list.get(position).getUrl());
-				bundle.putSerializable(GlobalValue.KEY, list.get(position));
-				intent.putExtras(bundle);
-				startActivity(intent);
-			}
-
-			@Override
-			public void onItemLongClick(View view, int position) {
-
-			}
-		});
-
-		swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-			@Override
-			public void onRefresh() {
-				init(GlobalValue.TYPE_REFREASH);
-			}
-		});
-		//
-		menu.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				showPopWindow(v);
-				getActivity().registerReceiver(editBroad, intentFilter);
-			}
-		});
-	}
-
 
 	private void init(final int type){
 		//player = new MediaPlayer();
@@ -241,7 +214,7 @@ public class VideoFragment extends Fragment {
 				if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
 					//File file=new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"Download");
 					File file=Environment.getExternalStorageDirectory();
-					getFile(file);
+					FileUtil.getFile(file, time, imageUrl, list);
 					Message msg=new Message();
 					msg.what=type;
 					handler.sendMessage(msg);
@@ -254,6 +227,27 @@ public class VideoFragment extends Fragment {
 
 			}
 		}).start();
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch(requestCode){
+			case GlobalValue.REQUEST_CODE_PLAY:
+				if(resultCode==getActivity().RESULT_OK){
+					Log.e("result","ok");
+					query();
+					adapter=new VideoAdapter(GlobalContext.getContext(), list);
+					recyclerView.setAdapter(adapter);
+					adapter.notifyDataSetChanged();
+					for(Video video:list){
+						Log.e("result", video.getName()+" "+video.getPosition());
+					}
+				}
+				break;
+			default:
+				break;
+
+		}
 	}
 
 	private void setNext(){
@@ -328,7 +322,7 @@ public class VideoFragment extends Fragment {
 		transaction.commit();
 	}
 
-	private void getFile(File file){
+	/*private void getFile(File file){
 		File[] subFiles=file.listFiles();
 		//Log.e("file", file.getAbsolutePath());
 		if(subFiles!=null){
@@ -339,9 +333,10 @@ public class VideoFragment extends Fragment {
 					if(name.trim().toLowerCase().endsWith(".mp4")||name.trim().toLowerCase().endsWith(".rmvb")||name.trim().toLowerCase().endsWith(".avi")
 							||name.trim().toLowerCase().endsWith(".mkv")){
 
-						Bitmap bitmap=getImage(f);
+						Bitmap bitmap= ImageUtil.getImage(time,f);
 						try {
-							imageUrl=saveBitmap(name, bitmap);
+							imageUrl=ImageUtil.saveBitmap(name, bitmap);
+
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -360,25 +355,12 @@ public class VideoFragment extends Fragment {
 								e.printStackTrace();
 							}
 							video.setName(name);
-							video.setSize(formetFileSize(getFileSizes(f)));
+							video.setSize(FileUtil.formetFileSize(FileUtil.getFileSizes(f)));
 							video.setUrl(f.getAbsolutePath());
 							video.setTime(time);
 							video.setImageUrl(imageUrl);
 							list.add(video);
 						}
-
-						//Bitmap bitmap=getImage(f);
-						//imageUrl=saveBitmap(name, bitmap);
-						/*try {
-							player.reset();
-							player.setDataSource(f.getPath());
-							player.prepare();
-							time=getShowTime(player.getDuration());
-							//time="00";
-							//Log.e("time",getShowTime(player.getDuration()));
-						} catch (IOException e) {
-							e.printStackTrace();
-						}*/
 
 					}
 				}
@@ -391,13 +373,13 @@ public class VideoFragment extends Fragment {
 				int positon=file.getPath().lastIndexOf("/");
 				Log.e("file",file.getPath().substring(positon+1,file.getPath().length()));
 
-			}*/
+			}
 
 		}
 
-	}
+	}*/
 
-	private Bitmap getImage(File file){
+	/*private Bitmap getImage(File file){
 		MediaMetadataRetriever retriever=new MediaMetadataRetriever();
 		//File file=new File(Environment.getExternalStorageDirectory(),"Download/test.mp4");
 		//Log.e("bitmap", file.getPath());
@@ -483,9 +465,10 @@ public class VideoFragment extends Fragment {
 		//return dateFormat.format(calendar.getTime());
 		Log.e("time size", milliseconds+" and "+dateFormat.format(milliseconds));
 		return dateFormat.format(milliseconds);
-	}
+	}*/
 
 	private void insert(){
+		Log.e("video insert","update or insert");
 		dbUtil=new DbUtil();
 		for(Video video:list){
 			if(!dbUtil.isExist(GlobalValue.TABLE, video.getName())){
@@ -499,6 +482,7 @@ public class VideoFragment extends Fragment {
 	}
 
 	private void query(){
+		list.clear();
 		dbUtil=new DbUtil();
 		list=dbUtil.queryAll(GlobalValue.TABLE);
 
@@ -509,14 +493,7 @@ public class VideoFragment extends Fragment {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		getActivity().unregisterReceiver(editBroad);
-		/*if(player!=null){
-			if (player.isPlaying()) {
-				player.stop();
-			}
-			player.release();
-		}*/
 
-		// Activity销毁时停止播放，释放资源。不做这个操作，即使退出还是能听到视频播放的声音
 	}
 
 	class EditBroad extends BroadcastReceiver{
