@@ -59,6 +59,8 @@ public class VideoPlayActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_video_play);
         Bundle bundle=getIntent().getExtras();
         video=(Video)bundle.getSerializable(GlobalValue.KEY);
+        Log.e("video activity", video.getName()+" * "+video.getSelected());
+        //video.setSelected("false");
         initView();
     }
 

@@ -129,6 +129,7 @@ public class VideoFragment extends Fragment {
 		adapter.setOnItemClickLitener(new VideoAdapter.OnRecyclerViewItemClickListener() {
 			@Override
 			public void onItemClick(View view, int position) {
+				Log.e("item click", list.get(position).getName());
 				Intent intent=new Intent(getActivity(), VideoPlayActivity.class);
 				Bundle bundle=new Bundle();
 				//bundle.putString("url",list.get(position).getUrl());
@@ -185,6 +186,7 @@ public class VideoFragment extends Fragment {
 						adapter=new VideoAdapter(GlobalContext.getContext(), list);
 						recyclerView.setAdapter(adapter);
 						adapter.notifyDataSetChanged();
+						initEvent();
 						setNext();
 						insert();
 						break;
@@ -194,6 +196,7 @@ public class VideoFragment extends Fragment {
 						recyclerView.setAdapter(adapter);
 						adapter.notifyDataSetChanged();
 						Log.e("delete", "refreash");
+						initEvent();
 						setNext();
 						insert();
 						break;
@@ -242,6 +245,7 @@ public class VideoFragment extends Fragment {
 					for(Video video:list){
 						Log.e("result", video.getName()+" "+video.getPosition());
 					}
+					initEvent();
 				}
 				break;
 			default:
@@ -468,13 +472,15 @@ public class VideoFragment extends Fragment {
 	}*/
 
 	private void insert(){
-		Log.e("video insert","update or insert");
+
 		dbUtil=new DbUtil();
 		for(Video video:list){
 			if(!dbUtil.isExist(GlobalValue.TABLE, video.getName())){
+				Log.e("video insert","insert");
 				dbUtil.insert(video, GlobalValue.TABLE);
 			}
 			else {
+				Log.e("video insert","update");
 				dbUtil.update(video, GlobalValue.TABLE);
 			}
 		}

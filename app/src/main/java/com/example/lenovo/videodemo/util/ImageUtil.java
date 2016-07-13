@@ -16,15 +16,15 @@ import java.io.IOException;
  */
 public class ImageUtil {
 
-    public static Bitmap getImage(String time,File file){
+    public static Bitmap getImage(File file, int position){
         MediaMetadataRetriever retriever=new MediaMetadataRetriever();
         //File file=new File(Environment.getExternalStorageDirectory(),"Download/test.mp4");
         //Log.e("bitmap", file.getPath());
         retriever.setDataSource(file.getPath());
-        String duration=retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+       //String duration=retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
         //Log.e("url", file.getPath()+": "+time+" "+getShowTime(Long.parseLong(duration)));
-        time=MediaUtil.getShowTime(Long.parseLong(duration));
-        Bitmap bitmap=retriever.getFrameAtTime(Long.parseLong(duration));
+        //time=MediaUtil.getShowTime(Long.parseLong(duration));
+        Bitmap bitmap=retriever.getFrameAtTime(position);
         return bitmap;
 
     }

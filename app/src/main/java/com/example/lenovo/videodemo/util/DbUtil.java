@@ -37,10 +37,10 @@ public class DbUtil {
                         values.put("nextUrl", video.getNextUrl());
                         values.put("prevUrl", video.getPrevUrl());
                         values.put("position", video.getPosition());
-                        values.put("selected", "false");
+                        values.put("selected", video.getSelected());
                         values.put("imageUrl", video.getImageUrl());
                         db.insert(table, null, values);
-                        Log.e("db insert", values.get("nextUrl")+"");
+                        Log.e("db insert", values.get("selected")+"");
                     }
                 }
                 db.setTransactionSuccessful();
@@ -69,10 +69,10 @@ public class DbUtil {
                 values.put("nextUrl", video.getNextUrl());
                 values.put("prevUrl", video.getPrevUrl());
                 values.put("position", video.getPosition());
-                values.put("selected", "false");
+                values.put("selected", video.getSelected());
                 values.put("imageUrl", video.getImageUrl());
                 db.insert(table, null, values);
-                Log.e("db insert", values.get("name")+"");
+                Log.e("db insert", values.get("selected")+"");
                 db.setTransactionSuccessful();
             }catch (Exception e){
                 e.printStackTrace();
@@ -103,7 +103,8 @@ public class DbUtil {
                 values.put("selected", video.getSelected());
                 values.put("imageUrl", video.getImageUrl());
                 db.update(table, values, "name=?", new String[]{video.getName()});
-                Log.e("update", video.getName()+" update "+video.getPosition());
+               // Log.e("update1", video.getName()+" * "+video.getSize()+" * "+video.getTime()+" * "+video.getUrl()+" * "+video.getNextUrl());
+                Log.e("update", video.getName()+" * "+video.getSelected()+" * "+video.getPosition());
                 db.setTransactionSuccessful();
             }catch (Exception e){
                 e.printStackTrace();
@@ -175,9 +176,10 @@ public class DbUtil {
             db.beginTransaction();
             try{
                 Cursor cursor=db.query(table, null, null, null, null, null, null);
+               // Log.e("query all", "start");
                 if(cursor.moveToFirst()){
                     do{
-                       // Log.e("query nextUrl", cursor.getString(cursor.getColumnIndex("nextUrl")));
+                       // Log.e("query all", cursor.getString(cursor.getColumnIndex("selected")));
                         Video video=new Video();
                         video.setName(cursor.getString(cursor.getColumnIndex("name")));
                         video.setSize(cursor.getString(cursor.getColumnIndex("size")));
@@ -189,6 +191,7 @@ public class DbUtil {
                         video.setSelected(cursor.getString(cursor.getColumnIndex("selected")));
                         video.setImageUrl(cursor.getString(cursor.getColumnIndex("imageUrl")));
                         if(video.getSelected().equals("false")){
+                            Log.e("query all", "add");
                             list.add(video);
                         }
                         //list.add(video);
@@ -196,7 +199,9 @@ public class DbUtil {
                 }
                 cursor.close();
                 db.setTransactionSuccessful();
+               // Log.e("query all", "end");
             }catch (Exception e){
+                Log.e("query all", "error");
                 e.printStackTrace();
             }finally {
 

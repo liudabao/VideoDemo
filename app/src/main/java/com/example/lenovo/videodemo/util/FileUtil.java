@@ -33,15 +33,9 @@ public class FileUtil {
                     if(name.trim().toLowerCase().endsWith(".mp4")||name.trim().toLowerCase().endsWith(".rmvb")||name.trim().toLowerCase().endsWith(".avi")
                             ||name.trim().toLowerCase().endsWith(".mkv")){
 
-                        Bitmap bitmap= ImageUtil.getImage(time,f);
-                        try {
-                            imageUrl=ImageUtil.saveBitmap(name, bitmap);
 
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
                         for(Video v:list){
-                            if(v.getName().equals(name)){
+                            if(v.getName().equals(name)||(v.getSelected()!=null&&v.getSelected().equals("true"))){
                                 flag=false;
                                 break;
                             }
@@ -49,8 +43,16 @@ public class FileUtil {
                         if(flag){
 
                             Video video=new Video();
+                            Bitmap bitmap= ImageUtil.getImage(f, video.getPosition());
+                            time=MediaUtil.getMediaTime(f);
                             try {
-                                //Log.e("vedio", file.getPath()+": "+name+" "+formetFileSize(getFileSizes(f)));
+                                imageUrl=ImageUtil.saveBitmap(name, bitmap);
+                                // Log.e("vedio", file.getPath()+": "+name+" "+formetFileSize(getFileSizes(f)));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            try {
+                               // Log.e("vedio", file.getPath()+": "+name+" "+formetFileSize(getFileSizes(f)));
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -59,6 +61,8 @@ public class FileUtil {
                             video.setUrl(f.getAbsolutePath());
                             video.setTime(time);
                             video.setImageUrl(imageUrl);
+                            video.setSelected("false");
+                           // Log.e("video detail", name+" * "+FileUtil.formetFileSize(FileUtil.getFileSizes(f))+" * "+f.getAbsolutePath()+" * "+time+" * "+imageUrl);
                             list.add(video);
                         }
 

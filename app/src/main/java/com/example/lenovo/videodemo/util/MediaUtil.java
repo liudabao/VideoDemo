@@ -1,7 +1,10 @@
 package com.example.lenovo.videodemo.util;
 
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
@@ -10,6 +13,16 @@ import java.util.TimeZone;
  */
 public class MediaUtil {
 
+    public static String getMediaTime(File file){
+
+        MediaMetadataRetriever retriever=new MediaMetadataRetriever();
+        //File file=new File(Environment.getExternalStorageDirectory(),"Download/test.mp4");
+        //Log.e("bitmap", file.getPath());
+        retriever.setDataSource(file.getPath());
+        String duration=retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);;
+        return getShowTime(Long.parseLong(duration));
+
+    }
     public static String getShowTime(long milliseconds) {
         // 获取日历函数
         //Calendar calendar = Calendar.getInstance();
