@@ -21,9 +21,11 @@ import com.example.lenovo.videodemo.util.DbUtil;
 import com.example.lenovo.videodemo.util.FileUtil;
 import com.example.lenovo.videodemo.util.FindContentAdapter;
 import com.example.lenovo.videodemo.util.FindHeadAdapter;
+import com.example.lenovo.videodemo.util.FindNameComparator;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -57,6 +59,7 @@ public class FindFragment extends Fragment {
             //File file=new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"Download");
             File file=Environment.getExternalStorageDirectory();
             FileUtil.getFile(file, moveList);
+            Collections.sort(moveList, new FindNameComparator());
             fileList.add(file.getPath());
         }
 

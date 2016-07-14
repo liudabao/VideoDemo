@@ -72,7 +72,7 @@ public class DbUtil {
                 values.put("selected", video.getSelected());
                 values.put("imageUrl", video.getImageUrl());
                 db.insert(table, null, values);
-                Log.e("db insert", values.get("selected")+"");
+                //Log.e("db insert", values.get("selected")+"");
                 db.setTransactionSuccessful();
             }catch (Exception e){
                 e.printStackTrace();
@@ -191,7 +191,7 @@ public class DbUtil {
                         video.setSelected(cursor.getString(cursor.getColumnIndex("selected")));
                         video.setImageUrl(cursor.getString(cursor.getColumnIndex("imageUrl")));
                         if(video.getSelected().equals("false")){
-                            Log.e("query all", "add "+video.getName());
+                            //Log.e("query all", "add "+video.getName());
                             list.add(video);
                         }
                         //list.add(video);

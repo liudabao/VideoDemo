@@ -44,6 +44,7 @@ import com.example.lenovo.videodemo.util.FileUtil;
 import com.example.lenovo.videodemo.util.ImageUtil;
 import com.example.lenovo.videodemo.util.MediaUtil;
 import com.example.lenovo.videodemo.util.VideoAdapter;
+import com.example.lenovo.videodemo.util.VideoNameComparator;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -54,6 +55,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -126,6 +128,7 @@ public class VideoFragment extends Fragment {
 
 	private void initData(){
 		list=DbManager.query();
+		Collections.sort(list, new VideoNameComparator());
 		initView();
 		initEvent();
 		if(list.size()==0){
@@ -141,7 +144,7 @@ public class VideoFragment extends Fragment {
 		videoFilter=new IntentFilter();
 		videoFilter.addAction("android.video.scan");
 		//getActivity().registerReceiver(editBroad, intentFilter);
-        menu=(ImageButton)view.findViewById(R.id.meun) ;
+        menu=(ImageButton)view.findViewById(R.id.video_meun) ;
 		recyclerView=(RecyclerView)view.findViewById(R.id.recyclerView);
 		linearLayoutManager=new LinearLayoutManager(GlobalContext.getContext());
 		adapter=new VideoAdapter(GlobalContext.getContext(), list);
@@ -194,11 +197,12 @@ public class VideoFragment extends Fragment {
 				switch (msg.what) {
 					case GlobalValue.TYPE_ENTER:
 						//initView();
-						if(progress.isShowing()){
+						if(progress!=null&&progress.isShowing()){
 							progress.dismiss();
 						}
 						list=DbManager.query();
-						Log.e("message 1",list.size()+"");
+						Collections.sort(list, new VideoNameComparator());
+						//Log.e("message 1",list.size()+"");
 						adapter=new VideoAdapter(GlobalContext.getContext(), list);
 						recyclerView.setAdapter(adapter);
 						adapter.notifyDataSetChanged();
@@ -211,7 +215,8 @@ public class VideoFragment extends Fragment {
 					case GlobalValue.TYPE_REFREASH:
 						//initView();
 						list=DbManager.query();
-						Log.e("message 2",list.size()+"");
+						Collections.sort(list, new VideoNameComparator());
+						//Log.e("message 2",list.size()+"");
 						adapter=new VideoAdapter(GlobalContext.getContext(), list);
 						recyclerView.setAdapter(adapter);
 						adapter.notifyDataSetChanged();
@@ -267,6 +272,7 @@ public class VideoFragment extends Fragment {
 				if(resultCode==getActivity().RESULT_OK){
 					Log.e("result","ok");
 					list=DbManager.query();
+					Collections.sort(list, new VideoNameComparator());
 					adapter=new VideoAdapter(GlobalContext.getContext(), list);
 					recyclerView.setAdapter(adapter);
 					adapter.notifyDataSetChanged();

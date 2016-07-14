@@ -24,17 +24,31 @@
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_18"
             android:text="视频" />
-        <ImageButton
-            android:id="@+id/meun"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/menu"
-            android:layout_marginRight="16dp"/>
+            android:layout_marginRight="16dp">
+            <ImageButton
+                android:id="@+id/sort"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/sort_selector"
+                android:layout_marginRight="16dp"/>
+            <ImageButton
+                android:id="@+id/video_meun"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/menu_selector"/>
+
+        </LinearLayout>
+
 
     </RelativeLayout>
-    <android.support.v4.widget.SwipeRefreshLayout
+
+   <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.Comparator;
 
 /**
  * Created by lenovo on 2016/7/5.
@@ -91,4 +92,6 @@ public class Video implements Serializable{
     public void setSelected(String selected) {
         this.selected = selected;
     }
+
+
 }

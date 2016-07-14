@@ -10,9 +10,11 @@ import com.example.lenovo.videodemo.global.GlobalContext;
 import com.example.lenovo.videodemo.util.DbManager;
 import com.example.lenovo.videodemo.util.FileUtil;
 import com.example.lenovo.videodemo.util.MediaUtil;
+import com.example.lenovo.videodemo.util.VideoNameComparator;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -41,6 +43,10 @@ public class ScanTask extends AsyncTask<Void, Integer, Boolean>{
         Log.e("ScanTask", "start scan");
         File file= Environment.getExternalStorageDirectory();
         FileUtil.getFile(file, time, imageUrl, list);
+        Collections.sort(list, new VideoNameComparator());
+       // for(int i=0;i<list.size();i++){
+       //     Log.e("sort list", list.get(i).getName());
+       // }
         MediaUtil.setNext(list);
         ScanThread[] scanThread=new ScanThread[num];
         block=list.size()/num;
