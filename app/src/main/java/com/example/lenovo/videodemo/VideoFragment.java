@@ -79,10 +79,24 @@ public class VideoFragment extends Fragment {
 	private IntentFilter videoFilter;
 	private EditBroad editBroad;
 	private VideoBroad videoBroad;
-	private ServiceConnection connection;
+
 	private ScanService scanService;
 	private int type;
+	private boolean isBind=false;
+	private ServiceConnection connection=new ServiceConnection() {
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			Log.e("ScanService", "connection");
+			scanService=((ScanService.ScanBinder) service).getService();
+			scanService.scan();
 
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			Log.e("ScanService", "disconnection");
+		}
+	};
 	@Override	
 	public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
 		super.onCreateView(inflater, container, savedInstanceState);
@@ -101,20 +115,6 @@ public class VideoFragment extends Fragment {
 		{
 			parent.removeView(view);
 		}
-		connection=new ServiceConnection() {
-			@Override
-			public void onServiceConnected(ComponentName name, IBinder service) {
-				Log.e("ScanService", "connection");
-				scanService=((ScanService.ScanBinder) service).getService();
-				scanService.scan();
-				getActivity().registerReceiver(videoBroad, videoFilter);
-			}
-
-			@Override
-			public void onServiceDisconnected(ComponentName name) {
-				Log.e("ScanService", "disconnection");
-			}
-		};
 
 		initHandler();
 		if (isLoad){
@@ -146,6 +146,8 @@ public class VideoFragment extends Fragment {
 		recyclerView.setLayoutManager(linearLayoutManager);
 		recyclerView.setAdapter(adapter);
 		swipeRefreshLayout=(SwipeRefreshLayout)view.findViewById(R.id.swipe);
+		getActivity().registerReceiver(videoBroad, videoFilter);
+		getActivity().registerReceiver(editBroad, intentFilter);
 
 	}
 
@@ -179,7 +181,7 @@ public class VideoFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				showPopWindow(v);
-				getActivity().registerReceiver(editBroad, intentFilter);
+				//getActivity().registerReceiver(editBroad, intentFilter);
 			}
 		});
 	}
@@ -236,8 +238,11 @@ public class VideoFragment extends Fragment {
 					//Message msg=new Message();
 					//msg.what=type;
 					//handler.sendMessage(msg);
-					Intent intent=new Intent(getActivity(), ScanService.class);
+					//Intent intent=new Intent(GlobalContext.getContext(), ScanService.class);
+					//getActivity().bindService(intent, connection, Context.BIND_AUTO_CREATE);
+					Intent intent=new Intent(GlobalContext.getContext(), ScanService.class);
 					getActivity().bindService(intent, connection, Context.BIND_AUTO_CREATE);
+                   // isBind=true;
 
 				}
 				else{

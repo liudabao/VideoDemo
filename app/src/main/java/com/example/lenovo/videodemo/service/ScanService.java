@@ -26,4 +26,10 @@ public class ScanService extends Service {
         Log.e("ScanService", "start scan");
         new ScanTask().execute();
     }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        Log.e("ScanService", "destroy");
+    }
 }

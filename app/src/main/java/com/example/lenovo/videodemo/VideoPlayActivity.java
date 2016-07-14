@@ -89,12 +89,12 @@ public class VideoPlayActivity extends AppCompatActivity implements
         if (video.getNextUrl()==null){
            // next.setClickable(false);
             next.setEnabled(false);
-            next.setBackgroundResource(R.drawable.next_back);
+            //next.setBackgroundResource(R.drawable.next_back);
         }
         if(video.getPrevUrl()==null){
             //prev.setClickable(false);
             prev.setEnabled(false);
-            prev.setBackgroundResource(R.drawable.prev_back);
+            //prev.setBackgroundResource(R.drawable.prev_back);
         }
         next.setOnClickListener(this);
         prev.setOnClickListener(this);
@@ -234,19 +234,19 @@ public class VideoPlayActivity extends AppCompatActivity implements
         video=dbUtil.queryByUrl(GlobalValue.TABLE, video.getNextUrl());
         if(video.getNextUrl()==null){
             next.setEnabled(false);
-            next.setBackgroundResource(R.drawable.next_back);
+            //next.setBackgroundResource(R.drawable.next_back);
         }
         else {
             next.setEnabled(true);
-            next.setBackgroundResource(R.drawable.next);
+           // next.setBackgroundResource(R.drawable.next);
         }
         if(video.getPrevUrl()==null){
             prev.setEnabled(false);
-            prev.setBackgroundResource(R.drawable.prev_back);
+           // prev.setBackgroundResource(R.drawable.prev_back);
         }
         else {
             prev.setEnabled(true);
-            prev.setBackgroundResource(R.drawable.prev);
+           // prev.setBackgroundResource(R.drawable.prev);
         }
         //url=nextUrl;
         play();
@@ -262,19 +262,19 @@ public class VideoPlayActivity extends AppCompatActivity implements
         video=dbUtil.queryByUrl(GlobalValue.TABLE, video.getPrevUrl());
         if(video.getPrevUrl()==null){
             prev.setEnabled(false);
-            prev.setBackgroundResource(R.drawable.prev_back);
+           // prev.setBackgroundResource(R.drawable.prev_back);
         }
         else {
             prev.setEnabled(true);
-            prev.setBackgroundResource(R.drawable.prev);
+           // prev.setBackgroundResource(R.drawable.prev);
         }
         if(video.getNextUrl()==null){
             next.setEnabled(false);
-            next.setBackgroundResource(R.drawable.next_back);
+            //next.setBackgroundResource(R.drawable.next_back);
         }
         else {
             next.setEnabled(true);
-            next.setBackgroundResource(R.drawable.next);
+            //next.setBackgroundResource(R.drawable.next);
         }
         play();
     }
@@ -290,7 +290,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
     public void onPrepared(MediaPlayer mp) {
         Log.e("video", "prepare start "+video.getPosition());
 
-        progressBar.setVisibility(View.GONE);
+        //progressBar.setVisibility(View.GONE);
         player.start();
       //  start.setText("pause");
         surfaceHolder.setKeepScreenOn(true);

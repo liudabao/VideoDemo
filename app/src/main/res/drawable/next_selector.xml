@@ -5,5 +5,4 @@
     <!-- 默认时 -->
     <item android:drawable="@drawable/next"  />
 
-    <item android:drawable="@drawable/next_back" android:state_focused="false" />
 </selector>

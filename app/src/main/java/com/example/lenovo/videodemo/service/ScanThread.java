@@ -1,9 +1,11 @@
 package com.example.lenovo.videodemo.service;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.example.lenovo.videodemo.entity.Video;
+import com.example.lenovo.videodemo.global.GlobalContext;
 import com.example.lenovo.videodemo.util.DbManager;
 import com.example.lenovo.videodemo.util.DbUtil;
 import com.example.lenovo.videodemo.util.FileUtil;
@@ -33,7 +35,7 @@ public class ScanThread extends Thread{
 
     public void run(){
         Log.e("Thread "+id, "start");
-        for(int i=start;i<end;i++){
+        for(int i=start;i<=end;i++){
             Video video=list.get(i);
             File f=new File(video.getUrl());
             Bitmap bitmap= ImageUtil.getImage(f, video.getPosition());
@@ -48,7 +50,10 @@ public class ScanThread extends Thread{
             }
             video.setTime(time);
             video.setImageUrl(imageUrl);
-           // DbManager.insert(video);
+            DbManager.insert(video);
+            Intent intent=new Intent();
+            intent.setAction("android.video.delete");
+            GlobalContext.getContext().sendBroadcast(intent);
         }
         isFinish=true;
         Log.e("Thread "+id, "end");

@@ -60,7 +60,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyRecyclerVi
         else {
             holder.tv_play_time.setVisibility(View.VISIBLE);
         }
-       // Log.e("imagurl", video.getImageUrl());
+       // Log.e("adapter imagurl", video.getImageUrl());
        // holder.iv.setImageBitmap(video.getBitmap());
        // holder.iv.setBackgroundResource(R.mipmap.ic_launcher);
        //

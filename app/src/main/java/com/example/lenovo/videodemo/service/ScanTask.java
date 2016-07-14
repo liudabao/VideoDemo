@@ -22,7 +22,7 @@ public class ScanTask extends AsyncTask<Void, Integer, Boolean>{
     String time;
     String imageUrl;
     List<Video> list=new ArrayList<>();
-    int num=3;
+    int num=10;
     int block;
     boolean isFinish=false;
 
@@ -45,7 +45,12 @@ public class ScanTask extends AsyncTask<Void, Integer, Boolean>{
         ScanThread[] scanThread=new ScanThread[num];
         block=list.size()/num;
         for(int i=0;i<num;i++){
-            scanThread[i]=new ScanThread(list, i*block, (i+1)*block-1, i+1);
+            if(i==num-1){
+                scanThread[i]=new ScanThread(list, i*block, (i+1)*block-1+list.size()%num, i+1);
+            }
+            else {
+                scanThread[i]=new ScanThread(list, i*block, (i+1)*block-1, i+1);
+            }
             scanThread[i].start();
         }
         while (!isFinish){
@@ -58,6 +63,9 @@ public class ScanTask extends AsyncTask<Void, Integer, Boolean>{
             }
         }
         DbManager.insert(list);
+        //for(int i=0;i<list.size();i++){
+        //    Log.e("task", list.get(i).getName()+" "+list.get(i).getImageUrl());
+        //}
         return true;
     }
 
@@ -69,6 +77,7 @@ public class ScanTask extends AsyncTask<Void, Integer, Boolean>{
     @Override
     protected void onPostExecute(Boolean result){
         super.onPostExecute(result);
+        Log.e("ScanTask", "scan finish");
         if(result){
             Intent intent=new Intent();
             intent.setAction("android.video.scan");
