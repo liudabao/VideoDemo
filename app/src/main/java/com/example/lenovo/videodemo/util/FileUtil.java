@@ -1,11 +1,13 @@
 package com.example.lenovo.videodemo.util;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.example.lenovo.videodemo.entity.Find;
 import com.example.lenovo.videodemo.entity.Version;
 import com.example.lenovo.videodemo.entity.Video;
+import com.example.lenovo.videodemo.global.GlobalContext;
 import com.example.lenovo.videodemo.global.GlobalValue;
 
 import java.io.File;
@@ -48,19 +50,19 @@ public class FileUtil {
                         if(flag){
                             Video video=new Video();
                            // Bitmap bitmap= ImageUtil.getImage(f, video.getPosition());
-                          //  time=MediaUtil.getMediaTime(f);
-                           /* try {
-                                imageUrl=ImageUtil.saveBitmap(name, bitmap);
-                                Log.e("vedio local", file.getPath()+": "+name+" "+formetFileSize(getFileSizes(f)));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }*/
+                           // time=MediaUtil.getMediaTime(f);
+                           // try {
+                           //     imageUrl=ImageUtil.saveBitmap(name, bitmap);
+                           //     Log.e("vedio local", file.getPath()+": "+name+" "+formetFileSize(getFileSizes(f)));
+                          //  } catch (IOException e) {
+                          //      e.printStackTrace();
+                          //  }
 
                             video.setName(name);
                             video.setSize(FileUtil.formetFileSize(FileUtil.getFileSizes(f)));
                             video.setUrl(f.getAbsolutePath());
-                            //video.setTime(time);
-                            //video.setImageUrl(imageUrl);
+                            video.setTime(time);
+                            video.setImageUrl(imageUrl);
                             video.setSelected("false");
                            // Log.e("video detail", name+" * "+FileUtil.formetFileSize(FileUtil.getFileSizes(f))+" * "+f.getAbsolutePath()+" * "+time+" * "+imageUrl);
                            // if(list.size()>0){
@@ -71,6 +73,10 @@ public class FileUtil {
                            //     video.setPrevUrl(null);
                            // }
                             list.add(video);
+                            //DbManager.insert(video);
+                           // Intent intent=new Intent();
+                           // intent.setAction("android.video.delete");
+                            //GlobalContext.getContext().sendBroadcast(intent);
                         }
 
                     }

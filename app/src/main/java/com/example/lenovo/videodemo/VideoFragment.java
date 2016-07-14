@@ -128,7 +128,9 @@ public class VideoFragment extends Fragment {
 		list=DbManager.query();
 		initView();
 		initEvent();
-		//showProgressDialog();
+		if(list.size()==0){
+			showProgressDialog();
+		}
 	}
 
 	private void initView(){
@@ -192,8 +194,11 @@ public class VideoFragment extends Fragment {
 				switch (msg.what) {
 					case GlobalValue.TYPE_ENTER:
 						//initView();
+						if(progress.isShowing()){
+							progress.dismiss();
+						}
 						list=DbManager.query();
-						Log.e("message 2",list.size()+"");
+						Log.e("message 1",list.size()+"");
 						adapter=new VideoAdapter(GlobalContext.getContext(), list);
 						recyclerView.setAdapter(adapter);
 						adapter.notifyDataSetChanged();
