@@ -53,7 +53,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyRecyclerVi
         holder.tv_size.setText(video.getSize());
         holder.tv_time.setText(video.getTime());
         holder.iv.setImageBitmap(BitmapFactory.decodeFile(video.getImageUrl()));
-        holder.tv_play_time.setText("已播放 "+MediaUtil.getShowTime(video.getPosition()));
+        holder.tv_play_time.setText("看到 "+MediaUtil.getShowTime(video.getPosition()));
         if(video.getPosition()==0){
             holder.tv_play_time.setVisibility(View.GONE);
         }

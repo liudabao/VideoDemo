@@ -2,15 +2,18 @@ package com.example.lenovo.videodemo;
 
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -34,9 +37,12 @@ import android.widget.Toast;
 import com.example.lenovo.videodemo.entity.Video;
 import com.example.lenovo.videodemo.global.GlobalContext;
 import com.example.lenovo.videodemo.global.GlobalValue;
+import com.example.lenovo.videodemo.service.ScanService;
+import com.example.lenovo.videodemo.util.DbManager;
 import com.example.lenovo.videodemo.util.DbUtil;
 import com.example.lenovo.videodemo.util.FileUtil;
 import com.example.lenovo.videodemo.util.ImageUtil;
+import com.example.lenovo.videodemo.util.MediaUtil;
 import com.example.lenovo.videodemo.util.VideoAdapter;
 
 import java.io.File;
@@ -53,7 +59,6 @@ import java.util.TimeZone;
 
 public class VideoFragment extends Fragment {
 
-
 	private View view;
 	private RecyclerView recyclerView;
 	private LinearLayoutManager linearLayoutManager;
@@ -62,18 +67,18 @@ public class VideoFragment extends Fragment {
 	private ImageButton menu;
 	private List<Video> list=new ArrayList<>();
 	private Handler handler;
-	//private MediaPlayer player;
 	private String time;
 	private String imageUrl;
 	private SwipeRefreshLayout swipeRefreshLayout;
 	private DbUtil dbUtil;
-	private Toolbar toolbar;
+	//private Toolbar toolbar;
 	private boolean isLoad=false;
 	private PopupWindow popupWindow;
     private ListView listView;
-
 	private IntentFilter intentFilter;
 	private EditBroad editBroad;
+	private ServiceConnection connection;
+	private ScanService scanService;
 
 	@Override	
 	public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
@@ -93,6 +98,20 @@ public class VideoFragment extends Fragment {
 		{
 			parent.removeView(view);
 		}
+		connection=new ServiceConnection() {
+			@Override
+			public void onServiceConnected(ComponentName name, IBinder service) {
+				Log.e("ScanService", "connection");
+				scanService=((ScanService.ScanBinder) service).getService();
+				scanService.scan();
+			}
+
+			@Override
+			public void onServiceDisconnected(ComponentName name) {
+				Log.e("ScanService", "disconnection");
+			}
+		};
+
 		initHandler();
 		if (isLoad){
 			initData();
@@ -102,11 +121,12 @@ public class VideoFragment extends Fragment {
 	}
 
 	private void initData(){
-		query();
+		list=DbManager.query();
 		if(list.size()>0){
+			Log.e("video query", list.size()+"");
 			initView();
 		}
-		showProgressDialog();
+		//showProgressDialog();
 
 	}
 
@@ -165,11 +185,12 @@ public class VideoFragment extends Fragment {
 			public void handleMessage(Message msg){
 				switch (msg.what) {
 					case 1:
-						progress.dismiss();
+						//progress.dismiss();
 						initView();
 						initEvent();
-						setNext();
-						insert();
+						//setNext();
+						MediaUtil.setNext(list);
+						DbManager.insert(list);
 						break;
 					case 2:
 						//initView();
@@ -177,8 +198,9 @@ public class VideoFragment extends Fragment {
 						recyclerView.setAdapter(adapter);
 						adapter.notifyDataSetChanged();
 						initEvent();
-						setNext();
-						insert();
+						//setNext();
+						MediaUtil.setNext(list);
+						DbManager.insert(list);
 						swipeRefreshLayout.setRefreshing(false);
 						break;
 					case 3:
@@ -187,18 +209,21 @@ public class VideoFragment extends Fragment {
 						recyclerView.setAdapter(adapter);
 						adapter.notifyDataSetChanged();
 						initEvent();
-						setNext();
-						insert();
+						//setNext();
+						MediaUtil.setNext(list);
+						DbManager.insert(list);
 						break;
 					case 4:
 						//initView();
+						list=DbManager.query();
 						adapter=new VideoAdapter(GlobalContext.getContext(), list);
 						recyclerView.setAdapter(adapter);
 						adapter.notifyDataSetChanged();
 						Log.e("delete", "refreash");
 						initEvent();
-						setNext();
-						insert();
+						//setNext();
+						MediaUtil.setNext(list);
+						DbManager.insert(list);
 						break;
 					default:
 						break;
@@ -217,10 +242,12 @@ public class VideoFragment extends Fragment {
 				if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
 					//File file=new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"Download");
 					File file=Environment.getExternalStorageDirectory();
-					FileUtil.getFile(file, time, imageUrl, list);
+					//FileUtil.getFile(file, time, imageUrl, list);
 					Message msg=new Message();
 					msg.what=type;
-					handler.sendMessage(msg);
+					//handler.sendMessage(msg);
+					Intent intent=new Intent(getActivity(), ScanService.class);
+					getActivity().bindService(intent, connection, Context.BIND_AUTO_CREATE);
 				}
 				else{
 					Log.e("TAG", "no sdcard");
@@ -238,7 +265,7 @@ public class VideoFragment extends Fragment {
 			case GlobalValue.REQUEST_CODE_PLAY:
 				if(resultCode==getActivity().RESULT_OK){
 					Log.e("result","ok");
-					query();
+					list=DbManager.query();
 					adapter=new VideoAdapter(GlobalContext.getContext(), list);
 					recyclerView.setAdapter(adapter);
 					adapter.notifyDataSetChanged();
@@ -254,7 +281,7 @@ public class VideoFragment extends Fragment {
 		}
 	}
 
-	private void setNext(){
+	/*private void setNext(){
 		for(int i=0;i<list.size();i++){
 			if(i>0){
 				list.get(i).setPrevUrl(list.get(i-1).getUrl());
@@ -264,7 +291,7 @@ public class VideoFragment extends Fragment {
 			}
 
 		}
-	}
+	}*/
 
 	private void showProgressDialog(){
 		progress=new ProgressDialog(getActivity());
@@ -471,7 +498,7 @@ public class VideoFragment extends Fragment {
 		return dateFormat.format(milliseconds);
 	}*/
 
-	private void insert(){
+	/*private void insert(){
 
 		dbUtil=new DbUtil();
 		for(Video video:list){
@@ -492,7 +519,7 @@ public class VideoFragment extends Fragment {
 		dbUtil=new DbUtil();
 		list=dbUtil.queryAll(GlobalValue.TABLE);
 
-	}
+	}*/
 
 	@Override
 	public void onDestroy() {
@@ -507,7 +534,8 @@ public class VideoFragment extends Fragment {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Log.e("broad", "i receive");
-			list=dbUtil.queryAll(GlobalValue.TABLE);
+			//list=dbUtil.queryAll(GlobalValue.TABLE);
+
 			Message msg=new Message();
 			msg.what=4;
 			handler.sendMessage(msg);

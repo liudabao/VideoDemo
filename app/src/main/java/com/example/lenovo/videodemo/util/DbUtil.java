@@ -191,7 +191,7 @@ public class DbUtil {
                         video.setSelected(cursor.getString(cursor.getColumnIndex("selected")));
                         video.setImageUrl(cursor.getString(cursor.getColumnIndex("imageUrl")));
                         if(video.getSelected().equals("false")){
-                            Log.e("query all", "add");
+                            Log.e("query all", "add "+video.getName());
                             list.add(video);
                         }
                         //list.add(video);

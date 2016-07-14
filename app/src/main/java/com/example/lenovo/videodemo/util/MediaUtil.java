@@ -4,8 +4,11 @@ import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
+import com.example.lenovo.videodemo.entity.Video;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -41,4 +44,17 @@ public class MediaUtil {
        // Log.e("time size", milliseconds+" and "+dateFormat.format(milliseconds));
         return dateFormat.format(milliseconds);
     }
+
+    public static  void setNext(List<Video> list){
+        for(int i=0;i<list.size();i++){
+            if(i>0){
+                list.get(i).setPrevUrl(list.get(i-1).getUrl());
+            }
+            if(i<list.size()-1){
+                list.get(i).setNextUrl(list.get(i+1).getUrl());
+            }
+
+        }
+    }
+
 }

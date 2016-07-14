@@ -266,7 +266,9 @@ public class SetFragment extends Fragment {
 	@Override
 	public void onDestroy(){
 		super.onDestroy();
-		getActivity().unbindService(connection);
+		if(connection==null){
+			getActivity().unbindService(connection);
+		}
 		getActivity().unregisterReceiver(receiver);
 	}
 

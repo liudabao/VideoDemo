@@ -19,10 +19,11 @@
             android:id="@+id/play_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="2dp"
+            android:padding="1dp"
             android:background="@color/bg_transprent"
-            android:gravity="center"
+            android:gravity="left"
             android:text="00:00"
+            android:textSize="@dimen/text_size_12"
             android:layout_alignParentBottom="true"/>
     </RelativeLayout>
     <RelativeLayout

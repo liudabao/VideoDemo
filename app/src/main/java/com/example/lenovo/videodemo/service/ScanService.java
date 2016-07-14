@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 
 public class ScanService extends Service {
 
@@ -15,9 +16,14 @@ public class ScanService extends Service {
         return binder;
     }
 
-    class ScanBinder extends Binder {
+    public class ScanBinder extends Binder {
         public ScanService getService(){
             return ScanService.this;
         }
+    }
+
+    public void scan(){
+        Log.e("ScanService", "start scan");
+        new ScanTask().execute();
     }
 }

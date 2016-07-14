@@ -32,22 +32,26 @@ public class FileUtil {
                     String name=f.getName();
                     if(name.trim().toLowerCase().endsWith(".mp4")||name.trim().toLowerCase().endsWith(".rmvb")||name.trim().toLowerCase().endsWith(".avi")
                             ||name.trim().toLowerCase().endsWith(".mkv")){
-
-
-                        for(Video v:list){
+                        /*for(Video v:list){
                             if(v.getName().equals(name)||(v.getSelected()!=null&&v.getSelected().equals("true"))){
                                 flag=false;
                                 break;
                             }
+                        }*/
+                        DbUtil dbUtil=new DbUtil();
+                        if(dbUtil.isExist(GlobalValue.TABLE, name)||dbUtil.queryByName(GlobalValue.TABLE, name).getSelected()=="true"){
+                           /* Video video=dbUtil.queryByName(GlobalValue.TABLE, name);
+                            list.add(video);
+                            Log.e("vedio db", file.getPath()+": "+name+" "+formetFileSize(getFileSizes(f)));*/
+                            flag=false;
                         }
                         if(flag){
-
                             Video video=new Video();
                             Bitmap bitmap= ImageUtil.getImage(f, video.getPosition());
                             time=MediaUtil.getMediaTime(f);
                             try {
                                 imageUrl=ImageUtil.saveBitmap(name, bitmap);
-                                // Log.e("vedio", file.getPath()+": "+name+" "+formetFileSize(getFileSizes(f)));
+                                Log.e("vedio local", file.getPath()+": "+name+" "+formetFileSize(getFileSizes(f)));
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
