@@ -47,6 +47,7 @@ public class MediaUtil {
 
     public static  void setNext(List<Video> list){
         for(int i=0;i<list.size();i++){
+            Log.e("next", i+"");
             if(i>0){
                 list.get(i).setPrevUrl(list.get(i-1).getUrl());
             }

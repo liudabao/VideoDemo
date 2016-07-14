@@ -47,26 +47,29 @@ public class FileUtil {
                         }
                         if(flag){
                             Video video=new Video();
-                            Bitmap bitmap= ImageUtil.getImage(f, video.getPosition());
-                            time=MediaUtil.getMediaTime(f);
-                            try {
-                                imageUrl=ImageUtil.saveBitmap(name, bitmap);
+                            //Bitmap bitmap= ImageUtil.getImage(f, video.getPosition());
+                            //time=MediaUtil.getMediaTime(f);
+                            //try {
+                               // imageUrl=ImageUtil.saveBitmap(name, bitmap);
                                 Log.e("vedio local", file.getPath()+": "+name+" "+formetFileSize(getFileSizes(f)));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            try {
-                               // Log.e("vedio", file.getPath()+": "+name+" "+formetFileSize(getFileSizes(f)));
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                           // } catch (IOException e) {
+                           //     e.printStackTrace();
+                           // }
+
                             video.setName(name);
                             video.setSize(FileUtil.formetFileSize(FileUtil.getFileSizes(f)));
                             video.setUrl(f.getAbsolutePath());
-                            video.setTime(time);
-                            video.setImageUrl(imageUrl);
+                           // video.setTime(time);
+                           // video.setImageUrl(imageUrl);
                             video.setSelected("false");
                            // Log.e("video detail", name+" * "+FileUtil.formetFileSize(FileUtil.getFileSizes(f))+" * "+f.getAbsolutePath()+" * "+time+" * "+imageUrl);
+                           // if(list.size()>0){
+                           //     list.get(list.size()-1).setNextUrl(video.getUrl());
+                           //     video.setPrevUrl(list.get(list.size()-1).getUrl());
+                           // }
+                           // else if (list.size()==0){
+                           //     video.setPrevUrl(null);
+                           // }
                             list.add(video);
                         }
 

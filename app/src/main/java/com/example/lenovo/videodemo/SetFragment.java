@@ -55,6 +55,7 @@ public class SetFragment extends Fragment {
 	@Override	
 	public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
 		super.onCreateView(inflater, container, savedInstanceState);
+		Log.e("set fragment", "onCreateView");
 		view=inflater.inflate(R.layout.layout_set, container, false);
 		connection=new ServiceConnection() {
 			@Override

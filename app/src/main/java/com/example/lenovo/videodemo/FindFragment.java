@@ -100,7 +100,7 @@ public class FindFragment extends Fragment {
                 }
                 else if(find.getType()==GlobalValue.FILE_TYPE_MOVE){
                     Video video=dbUtil.queryByName(GlobalValue.TABLE, find.getName());
-                    Intent intent=new Intent();
+                    Intent intent=new Intent(getActivity(), VideoPlayActivity.class);
                     Bundle bundle=new Bundle();
                     bundle.putSerializable(GlobalValue.KEY, video);
                     intent.putExtras(bundle);

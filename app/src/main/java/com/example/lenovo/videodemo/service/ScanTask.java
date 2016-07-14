@@ -1,10 +1,13 @@
 package com.example.lenovo.videodemo.service;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 
 import com.example.lenovo.videodemo.entity.Video;
+import com.example.lenovo.videodemo.global.GlobalContext;
+import com.example.lenovo.videodemo.util.DbManager;
 import com.example.lenovo.videodemo.util.FileUtil;
 import com.example.lenovo.videodemo.util.MediaUtil;
 
@@ -19,6 +22,9 @@ public class ScanTask extends AsyncTask<Void, Integer, Boolean>{
     String time;
     String imageUrl;
     List<Video> list=new ArrayList<>();
+    int num=3;
+    int block;
+    boolean isFinish=false;
 
     public ScanTask(){
 
@@ -36,7 +42,22 @@ public class ScanTask extends AsyncTask<Void, Integer, Boolean>{
         File file= Environment.getExternalStorageDirectory();
         FileUtil.getFile(file, time, imageUrl, list);
         MediaUtil.setNext(list);
-
+        ScanThread[] scanThread=new ScanThread[num];
+        block=list.size()/num;
+        for(int i=0;i<num;i++){
+            scanThread[i]=new ScanThread(list, i*block, (i+1)*block-1, i+1);
+            scanThread[i].start();
+        }
+        while (!isFinish){
+            isFinish=true;
+            for(int i=0; i<num; i++){
+                if(!scanThread[i].getFinish()){
+                    isFinish=false;
+                    break;
+                }
+            }
+        }
+        DbManager.insert(list);
         return true;
     }
 
@@ -48,6 +69,11 @@ public class ScanTask extends AsyncTask<Void, Integer, Boolean>{
     @Override
     protected void onPostExecute(Boolean result){
         super.onPostExecute(result);
+        if(result){
+            Intent intent=new Intent();
+            intent.setAction("android.video.scan");
+            GlobalContext.getContext().sendBroadcast(intent);
+        }
     }
 
 

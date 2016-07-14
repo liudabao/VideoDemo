@@ -29,6 +29,20 @@ public class DbManager {
         //dbUtil.insert(list, GlobalValue.TABLE);
     }
 
+    public static  void insert(Video video){
+
+        DbUtil dbUtil=new DbUtil();
+        if(!dbUtil.isExist(GlobalValue.TABLE, video.getName())){
+            Log.e("video insert","insert");
+            dbUtil.insert(video, GlobalValue.TABLE);
+        }
+        else {
+            Log.e("video insert","update");
+            dbUtil.update(video, GlobalValue.TABLE);
+        }
+        //dbUtil.insert(list, GlobalValue.TABLE);
+    }
+
     public static  List<Video> query(){
         DbUtil dbUtil=new DbUtil();
         return dbUtil.queryAll(GlobalValue.TABLE);

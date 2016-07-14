@@ -67,18 +67,21 @@ public class VideoFragment extends Fragment {
 	private ImageButton menu;
 	private List<Video> list=new ArrayList<>();
 	private Handler handler;
-	private String time;
-	private String imageUrl;
+	//private String time;
+	//private String imageUrl;
 	private SwipeRefreshLayout swipeRefreshLayout;
-	private DbUtil dbUtil;
+	//private DbUtil dbUtil;
 	//private Toolbar toolbar;
 	private boolean isLoad=false;
 	private PopupWindow popupWindow;
     private ListView listView;
 	private IntentFilter intentFilter;
+	private IntentFilter videoFilter;
 	private EditBroad editBroad;
+	private VideoBroad videoBroad;
 	private ServiceConnection connection;
 	private ScanService scanService;
+	private int type;
 
 	@Override	
 	public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
@@ -104,6 +107,7 @@ public class VideoFragment extends Fragment {
 				Log.e("ScanService", "connection");
 				scanService=((ScanService.ScanBinder) service).getService();
 				scanService.scan();
+				getActivity().registerReceiver(videoBroad, videoFilter);
 			}
 
 			@Override
@@ -122,18 +126,18 @@ public class VideoFragment extends Fragment {
 
 	private void initData(){
 		list=DbManager.query();
-		if(list.size()>0){
-			Log.e("video query", list.size()+"");
-			initView();
-		}
+		initView();
+		initEvent();
 		//showProgressDialog();
-
 	}
 
 	private void initView(){
 		intentFilter=new IntentFilter();
 		editBroad=new EditBroad();
+		videoBroad=new VideoBroad();
 		intentFilter.addAction("android.video.delete");
+		videoFilter=new IntentFilter();
+		videoFilter.addAction("android.video.scan");
 		//getActivity().registerReceiver(editBroad, intentFilter);
         menu=(ImageButton)view.findViewById(R.id.meun) ;
 		recyclerView=(RecyclerView)view.findViewById(R.id.recyclerView);
@@ -184,46 +188,31 @@ public class VideoFragment extends Fragment {
 		handler=new Handler(){
 			public void handleMessage(Message msg){
 				switch (msg.what) {
-					case 1:
-						//progress.dismiss();
-						initView();
-						initEvent();
-						//setNext();
-						MediaUtil.setNext(list);
-						DbManager.insert(list);
-						break;
-					case 2:
-						//initView();
-						adapter=new VideoAdapter(GlobalContext.getContext(), list);
-						recyclerView.setAdapter(adapter);
-						adapter.notifyDataSetChanged();
-						initEvent();
-						//setNext();
-						MediaUtil.setNext(list);
-						DbManager.insert(list);
-						swipeRefreshLayout.setRefreshing(false);
-						break;
-					case 3:
-						//initView();
-						adapter=new VideoAdapter(GlobalContext.getContext(), list);
-						recyclerView.setAdapter(adapter);
-						adapter.notifyDataSetChanged();
-						initEvent();
-						//setNext();
-						MediaUtil.setNext(list);
-						DbManager.insert(list);
-						break;
-					case 4:
+					case GlobalValue.TYPE_ENTER:
 						//initView();
 						list=DbManager.query();
+						Log.e("message 2",list.size()+"");
 						adapter=new VideoAdapter(GlobalContext.getContext(), list);
 						recyclerView.setAdapter(adapter);
 						adapter.notifyDataSetChanged();
-						Log.e("delete", "refreash");
 						initEvent();
 						//setNext();
-						MediaUtil.setNext(list);
-						DbManager.insert(list);
+						//MediaUtil.setNext(list);
+						//DbManager.insert(list);
+						//swipeRefreshLayout.setRefreshing(false);
+						break;
+					case GlobalValue.TYPE_REFREASH:
+						//initView();
+						list=DbManager.query();
+						Log.e("message 2",list.size()+"");
+						adapter=new VideoAdapter(GlobalContext.getContext(), list);
+						recyclerView.setAdapter(adapter);
+						adapter.notifyDataSetChanged();
+						initEvent();
+						//setNext();
+						//MediaUtil.setNext(list);
+						//DbManager.insert(list);
+						swipeRefreshLayout.setRefreshing(false);
 						break;
 					default:
 						break;
@@ -232,7 +221,8 @@ public class VideoFragment extends Fragment {
 		};
 	}
 
-	private void init(final int type){
+	private void init(int type){
+		this.type=type;
 		//player = new MediaPlayer();
 		new Thread(new Runnable() {
 
@@ -241,13 +231,14 @@ public class VideoFragment extends Fragment {
 				// TODO Auto-generated method stub
 				if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
 					//File file=new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"Download");
-					File file=Environment.getExternalStorageDirectory();
+					//File file=Environment.getExternalStorageDirectory();
 					//FileUtil.getFile(file, time, imageUrl, list);
-					Message msg=new Message();
-					msg.what=type;
+					//Message msg=new Message();
+					//msg.what=type;
 					//handler.sendMessage(msg);
 					Intent intent=new Intent(getActivity(), ScanService.class);
 					getActivity().bindService(intent, connection, Context.BIND_AUTO_CREATE);
+
 				}
 				else{
 					Log.e("TAG", "no sdcard");
@@ -280,18 +271,6 @@ public class VideoFragment extends Fragment {
 
 		}
 	}
-
-	/*private void setNext(){
-		for(int i=0;i<list.size();i++){
-			if(i>0){
-				list.get(i).setPrevUrl(list.get(i-1).getUrl());
-			}
-			if(i<list.size()-1){
-				list.get(i).setNextUrl(list.get(i+1).getUrl());
-			}
-
-		}
-	}*/
 
 	private void showProgressDialog(){
 		progress=new ProgressDialog(getActivity());
@@ -328,12 +307,12 @@ public class VideoFragment extends Fragment {
 					case 0:
 						EditFragment editFragment=new EditFragment();
 						replace(editFragment);
-						Toast.makeText(GlobalContext.getContext(),""+position, Toast.LENGTH_SHORT).show();
+						//Toast.makeText(GlobalContext.getContext(),""+position, Toast.LENGTH_SHORT).show();
 						break;
 					case 1:
 						FindFragment findFragment=new FindFragment();
 						replace(findFragment);
-						Toast.makeText(GlobalContext.getContext(),""+position, Toast.LENGTH_SHORT).show();
+						//Toast.makeText(GlobalContext.getContext(),""+position, Toast.LENGTH_SHORT).show();
 						break;
 					default:
 						break;
@@ -353,179 +332,12 @@ public class VideoFragment extends Fragment {
 		transaction.commit();
 	}
 
-	/*private void getFile(File file){
-		File[] subFiles=file.listFiles();
-		//Log.e("file", file.getAbsolutePath());
-		if(subFiles!=null){
-			for(File f:subFiles){
-				boolean flag=true;
-				if(f.isFile()){
-					String name=f.getName();
-					if(name.trim().toLowerCase().endsWith(".mp4")||name.trim().toLowerCase().endsWith(".rmvb")||name.trim().toLowerCase().endsWith(".avi")
-							||name.trim().toLowerCase().endsWith(".mkv")){
-
-						Bitmap bitmap= ImageUtil.getImage(time,f);
-						try {
-							imageUrl=ImageUtil.saveBitmap(name, bitmap);
-
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						for(Video v:list){
-							if(v.getName().equals(name)){
-								flag=false;
-								break;
-							}
-						}
-						if(flag){
-
-							Video video=new Video();
-							try {
-								//Log.e("vedio", file.getPath()+": "+name+" "+formetFileSize(getFileSizes(f)));
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-							video.setName(name);
-							video.setSize(FileUtil.formetFileSize(FileUtil.getFileSizes(f)));
-							video.setUrl(f.getAbsolutePath());
-							video.setTime(time);
-							video.setImageUrl(imageUrl);
-							list.add(video);
-						}
-
-					}
-				}
-				else if(f.isDirectory()&&f.getPath().indexOf("/.")==-1){
-					getFile(f);
-				}
-
-			}
-			/*if(list.size()>0){
-				int positon=file.getPath().lastIndexOf("/");
-				Log.e("file",file.getPath().substring(positon+1,file.getPath().length()));
-
-			}
-
-		}
-
-	}*/
-
-	/*private Bitmap getImage(File file){
-		MediaMetadataRetriever retriever=new MediaMetadataRetriever();
-		//File file=new File(Environment.getExternalStorageDirectory(),"Download/test.mp4");
-		//Log.e("bitmap", file.getPath());
-		retriever.setDataSource(file.getPath());
-		String duration=retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-		//Log.e("url", file.getPath()+": "+time+" "+getShowTime(Long.parseLong(duration)));
-        time=getShowTime(Long.parseLong(duration));
-		Bitmap bitmap=retriever.getFrameAtTime(Long.parseLong(duration));
-		return bitmap;
-
-	}
-
-	private String saveBitmap(String name,Bitmap bm) throws IOException {
-		//File f = new File(getActivity().getFilesDir(), name);
-		File f = new File(GlobalContext.getContext().getExternalCacheDir(), name+".png");
-		//Log.e("path",f.getPath() );
-		if (f.exists()) {
-			f.delete();
-		}
-		FileOutputStream out=null;
-		try {
-			out = new FileOutputStream(f);
-			bm.compress(Bitmap.CompressFormat.PNG, 90, out);
-			out.flush();
-
-			Log.i("Bitmap", "已经保存");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}finally {
-			out.close();
-		}
-		return f.getPath();
-	}
-
-	private long getFileSizes(File file){
-		long size = 0;
-		//File file=new File(path);
-		if (file.exists()) {
-			FileInputStream fis = null;
-			try {
-				fis = new FileInputStream(file);
-				size = fis.available();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return size;
-	}
-
-	private  String formetFileSize(long fileS) {
-		DecimalFormat df = new DecimalFormat("#.00");
-		String fileSize = "";
-		if (fileS < 1024) {
-			fileSize = df.format((double) fileS) + "B";
-		} else if (fileS < 1048576) {
-			fileSize = df.format((double) fileS / 1024) + "KB";
-		} else if (fileS < 1073741824) {
-			fileSize = df.format((double) fileS / 1048576) + "MB";
-		} else {
-			fileSize = df.format((double) fileS / 1073741824) + "GB";
-		}
-		return fileSize;
-	}
-
-	private String getShowTime(long milliseconds) {
-		// 获取日历函数
-		//Calendar calendar = Calendar.getInstance();
-		//calendar.setTimeInMillis(milliseconds);
-
-		SimpleDateFormat dateFormat = null;
-		// 判断是否大于60分钟，如果大于就显示小时。设置日期格式
-		if (milliseconds > 3600*1000) {
-
-			dateFormat = new SimpleDateFormat("HH:mm:ss");
-		} else {
-			dateFormat = new SimpleDateFormat("mm:ss");
-		}
-		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-		//return dateFormat.format(calendar.getTime());
-		Log.e("time size", milliseconds+" and "+dateFormat.format(milliseconds));
-		return dateFormat.format(milliseconds);
-	}*/
-
-	/*private void insert(){
-
-		dbUtil=new DbUtil();
-		for(Video video:list){
-			if(!dbUtil.isExist(GlobalValue.TABLE, video.getName())){
-				Log.e("video insert","insert");
-				dbUtil.insert(video, GlobalValue.TABLE);
-			}
-			else {
-				Log.e("video insert","update");
-				dbUtil.update(video, GlobalValue.TABLE);
-			}
-		}
-		//dbUtil.insert(list, GlobalValue.TABLE);
-	}
-
-	private void query(){
-		list.clear();
-		dbUtil=new DbUtil();
-		list=dbUtil.queryAll(GlobalValue.TABLE);
-
-	}*/
-
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		getActivity().unregisterReceiver(editBroad);
+		getActivity().unregisterReceiver(videoBroad);
 
 	}
 
@@ -535,9 +347,20 @@ public class VideoFragment extends Fragment {
 		public void onReceive(Context context, Intent intent) {
 			Log.e("broad", "i receive");
 			//list=dbUtil.queryAll(GlobalValue.TABLE);
-
 			Message msg=new Message();
-			msg.what=4;
+			msg.what=GlobalValue.TYPE_ENTER;
+			handler.sendMessage(msg);
+		}
+	}
+
+	class VideoBroad extends BroadcastReceiver{
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.e("broad", "i receive 2");
+			getActivity().unbindService(connection);
+			Message msg=new Message();
+			msg.what=type;
 			handler.sendMessage(msg);
 		}
 	}
