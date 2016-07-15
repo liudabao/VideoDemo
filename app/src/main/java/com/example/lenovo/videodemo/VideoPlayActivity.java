@@ -100,6 +100,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
         prev.setOnClickListener(this);
         back.setOnClickListener(this);
         progressBar.setVisibility(View.VISIBLE);
+        seekBar.setOnSeekBarChangeListener(VideoPlayActivity.this);
 
     }
 
@@ -301,7 +302,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
         seekBar.setMax(player.getDuration());
         time= MediaUtil.getShowTime(player.getDuration());
         textView.setText("00:00:00/" + time);
-        seekBar.setOnSeekBarChangeListener(VideoPlayActivity.this);
+        //seekBar.setOnSeekBarChangeListener(VideoPlayActivity.this);
         flag=true;
         new Thread(new Runnable() {
             @Override

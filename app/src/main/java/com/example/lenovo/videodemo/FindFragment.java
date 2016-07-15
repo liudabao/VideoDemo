@@ -127,6 +127,7 @@ public class FindFragment extends Fragment {
                 for(int i=fileList.size()-1; i>position; i--){
                     fileList.remove(i);
                 }
+                Collections.sort(moveList, new FindNameComparator());
                 contentAdapter.notifyDataSetChanged();
                 headAdapter.notifyDataSetChanged();
             }

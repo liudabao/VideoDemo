@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import com.example.lenovo.videodemo.R;
 import com.example.lenovo.videodemo.global.GlobalContext;
 import com.example.lenovo.videodemo.global.GlobalValue;
+import com.example.lenovo.videodemo.listener.OnProgressListener;
 
 import java.io.File;
 
@@ -21,6 +22,8 @@ public class DownloadService extends Service {
     DownloadBinder binder=new DownloadBinder();
     private DownloadTask task;
     private ProgressDialog progress;
+    private int percent;
+    private OnProgressListener listener;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -39,6 +42,7 @@ public class DownloadService extends Service {
         File file=new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"test.apk");
         showProgressDialog();
         task=new DownloadTask(GlobalValue.url, 3, file, progress);
+       // task=new DownloadTask(GlobalValue.url, 3, file);
         task.execute();
 
     }
@@ -55,6 +59,10 @@ public class DownloadService extends Service {
         progress.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         progress.show();
 
+    }
+
+    public void setOnProgressListener(OnProgressListener listener){
+        this.listener=listener;
     }
 
     @Override

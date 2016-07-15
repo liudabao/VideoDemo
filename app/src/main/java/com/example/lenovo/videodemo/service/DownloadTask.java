@@ -23,13 +23,20 @@ public class DownloadTask  extends AsyncTask<Void, Integer, Boolean> {
     private int blockSize;// 每一个线程的下载量
     private ProgressDialog dialog;
     private int fileSize;
-
+    private int percent=0;
+    private int temp=0;
 
     public DownloadTask(String downloadUrl, int threadNum, File fileptah, ProgressDialog dialog) {
         this.downloadUrl = downloadUrl;
         this.threadNum = threadNum;
         this.filePath = fileptah;
         this.dialog=dialog;
+    }
+
+    public DownloadTask(String downloadUrl, int threadNum, File fileptah) {
+        this.downloadUrl = downloadUrl;
+        this.threadNum = threadNum;
+        this.filePath = fileptah;
     }
 
     @Override
@@ -86,8 +93,14 @@ public class DownloadTask  extends AsyncTask<Void, Integer, Boolean> {
     @Override
     protected void onProgressUpdate(Integer... values){
         // Log.e("percent", values[0]+"");
-        int percent=values[0]*100/fileSize;
-        dialog.setProgress(percent);
+        percent=values[0]*100/fileSize;
+        if(percent-temp>3){
+            Log.e("download percent", percent+"");
+            dialog.setProgress(percent);
+            temp=percent;
+        }
+
+
     }
 
     @Override
@@ -96,6 +109,11 @@ public class DownloadTask  extends AsyncTask<Void, Integer, Boolean> {
         Intent intent=new Intent("android.video.update");
         GlobalContext.getContext().sendBroadcast(intent);
         Log.e("percent", "finish");
+    }
+
+
+    public int getPercent(){
+        return percent;
     }
 
 }

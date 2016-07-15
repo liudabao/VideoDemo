@@ -25,10 +25,12 @@ import com.example.lenovo.videodemo.global.GlobalValue;
 import com.example.lenovo.videodemo.util.DbUtil;
 import com.example.lenovo.videodemo.util.DialogUtil;
 import com.example.lenovo.videodemo.util.EditAdapter;
+import com.example.lenovo.videodemo.util.VideoNameComparator;
 
 import org.w3c.dom.Text;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 public class EditFragment extends Fragment {
@@ -63,6 +65,7 @@ public class EditFragment extends Fragment {
 	private void initData(){
 		dbUtil=new DbUtil();
 		list=dbUtil.queryAll(GlobalValue.TABLE);
+		Collections.sort(list, new VideoNameComparator());
 		Log.e("delet list", list.size()+"");
 	}
 
@@ -140,6 +143,22 @@ public class EditFragment extends Fragment {
 					list.get(position).setSelected("false");
 				}
 				adapter.notifyDataSetChanged();
+				boolean flag=true;
+				for(Video video:list){
+					if(video.getSelected().equals("false")){
+						flag=false;
+					}
+				}
+				if(flag){
+					isSelected=true;
+					text_select.setTextColor(getResources().getColor(R.color.skyblue));
+					select.setBackgroundResource(R.drawable.select);
+				}
+				else {
+					isSelected=false;
+					select.setBackgroundResource(R.drawable.unselect);
+					text_select.setTextColor(getResources().getColor(R.color.md_gray_500));
+				}
 			}
 
 			@Override
@@ -211,5 +230,6 @@ public class EditFragment extends Fragment {
 		dialog.dismiss();
 
 	}
+
 
 }
