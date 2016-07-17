@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<<<<<<< HEAD
     package="com.example.administrator.videotest">
+=======
+    package="com.example.lenovo.videodemo"
+    android:versionCode="3"
+    android:versionName="3.0">
+>>>>>>> 2136709a17b18e7aa3dfdb8821c8d9f2f02d0ae9
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -9,21 +15,34 @@
     <application
         android:name=".global.GlobalContext"
         android:allowBackup="true"
+<<<<<<< HEAD
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name=".LogoActivity">
+=======
+        android:configChanges="orientation|keyboardHidden|screenSize"
+        android:icon="@drawable/panda"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".MainActivity">
+>>>>>>> 2136709a17b18e7aa3dfdb8821c8d9f2f02d0ae9
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<<<<<<< HEAD
         <activity
             android:name=".VideoPlayActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
+=======
+        <activity android:name=".VideoPlayActivity" />
+>>>>>>> 2136709a17b18e7aa3dfdb8821c8d9f2f02d0ae9
         <activity android:name=".CommentActivity" />
 
         <service
@@ -33,9 +52,13 @@
         <service
             android:name=".service.ScanService"
             android:enabled="true"
+<<<<<<< HEAD
             android:exported="true" />
 
         <activity android:name=".HomeActivity"></activity>
+=======
+            android:exported="true"></service>
+>>>>>>> 2136709a17b18e7aa3dfdb8821c8d9f2f02d0ae9
     </application>
 
 </manifest>

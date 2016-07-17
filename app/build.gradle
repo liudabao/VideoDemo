@@ -2,10 +2,17 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
+<<<<<<< HEAD
     buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "com.example.administrator.videotest"
+=======
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        applicationId "com.example.lenovo.videodemo"
+>>>>>>> 2136709a17b18e7aa3dfdb8821c8d9f2f02d0ae9
         minSdkVersion 21
         targetSdkVersion 23
         versionCode 1
@@ -22,11 +29,18 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
+<<<<<<< HEAD
     compile 'com.android.support:appcompat-v7:23.3.0'
+=======
+    compile 'com.android.support:appcompat-v7:23.2.1'
+>>>>>>> 2136709a17b18e7aa3dfdb8821c8d9f2f02d0ae9
     compile 'com.android.support:design:23.2.1'
     compile 'com.android.support:recyclerview-v7:23.2.1'
     compile 'com.android.support:support-v4:23.2.1'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.squareup.okhttp:okhttp:2.4.0'
+<<<<<<< HEAD
     compile 'com.github.bumptech.glide:glide:3.5.2'
+=======
+>>>>>>> 2136709a17b18e7aa3dfdb8821c8d9f2f02d0ae9
 }

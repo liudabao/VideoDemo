@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/sort"
+        android:title="add"
+        android:icon="@drawable/menu"
+        android:orderInCategory="80"
+        app:showAsAction="ifRoom" />
+
+    <item android:id="@+id/removes"
+        android:title="remove"
+        android:orderInCategory="90"
+        app:showAsAction="ifRoom" />
+
+    <group>
+        <item android:id="@+id/add"
+            android:title="add"
+            android:orderInCategory="100"
+            app:showAsAction="ifRoom" />
+        <item android:id="@+id/remove"
+            android:title="remvoe"
+            android:orderInCategory="110"
+            app:showAsAction="ifRoom" />
+    </group>
+
+</menu>

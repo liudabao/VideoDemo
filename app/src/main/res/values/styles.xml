@@ -9,7 +9,10 @@
     </style>
 
     <style name="AppTheme.NoActionBar">
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2136709a17b18e7aa3dfdb8821c8d9f2f02d0ae9
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>

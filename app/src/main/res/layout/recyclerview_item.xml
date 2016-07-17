@@ -38,7 +38,11 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginRight="8dp"
+<<<<<<< HEAD
             android:textSize="@dimen/text_size_14"
+=======
+            android:textSize="@dimen/text_size_16"
+>>>>>>> 2136709a17b18e7aa3dfdb8821c8d9f2f02d0ae9
             android:textColor="@color/md_gray_850"/>
         <TextView
             android:id="@+id/time"

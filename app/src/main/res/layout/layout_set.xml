@@ -158,5 +158,17 @@
             android:text="关于" />
     </LinearLayout>
 
+<<<<<<< HEAD
+=======
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="熊猫的尾巴@copy right 2016"
+        android:textColor="@color/gray"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        />
+>>>>>>> 2136709a17b18e7aa3dfdb8821c8d9f2f02d0ae9
 
 </LinearLayout>
