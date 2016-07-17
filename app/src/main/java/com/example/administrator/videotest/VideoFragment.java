@@ -305,6 +305,7 @@ public class VideoFragment extends Fragment {
 					case 0:
 						EditFragment editFragment=new EditFragment();
 						replace(editFragment);
+						type=GlobalValue.TYPE_ENTER;
 						//Toast.makeText(GlobalContext.getContext(),""+position, Toast.LENGTH_SHORT).show();
 						break;
 					case 1:
@@ -346,7 +347,8 @@ public class VideoFragment extends Fragment {
 			Log.e("broad", "i receive");
 			//list=dbUtil.queryAll(GlobalValue.TABLE);
 			Message msg=new Message();
-			msg.what=GlobalValue.TYPE_ENTER;
+			//msg.what=GlobalValue.TYPE_ENTER;
+			msg.what=type;
 			handler.sendMessage(msg);
 		}
 	}

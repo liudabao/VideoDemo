@@ -3,8 +3,11 @@ package com.example.administrator.videotest.util;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
+import android.widget.ImageView;
 
 
+import com.bumptech.glide.Glide;
+import com.example.administrator.videotest.R;
 import com.example.administrator.videotest.global.GlobalContext;
 
 import java.io.File;
@@ -54,5 +57,16 @@ public class ImageUtil {
             out.close();
         }
         return f.getPath();
+    }
+
+    public static void display(ImageView imageView, int imageId) {
+        // TODO Auto-generated method stub
+
+        Glide.with(GlobalContext.getContext())
+                .load(imageId)
+                .centerCrop()
+                .crossFade()
+                .error(R.mipmap.ic_launcher)
+                .into(imageView);
     }
 }

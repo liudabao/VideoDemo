@@ -32,16 +32,14 @@ public class HomeActivity extends FragmentActivity {
     private int mImageArray[] = {R.drawable.video_selector, R.drawable.set_selector};
     private Class fragmentArray[] = {VideoFragment.class, SetFragment.class};
     // private Fragment mFragment[] = {new VideoFragment(),new SetFragment()};
-    private final int SDK_PERMISSION_REQUEST = 127;
-    private String permissionInfo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         // initEvent();
-        getPersimmions();
+        //getPersimmions();
         //init();
         initView();
     }
@@ -122,66 +120,6 @@ public class HomeActivity extends FragmentActivity {
         textView.setText(mTextviewArray[index]);
 
         return view;
-    }
-
-    @TargetApi(23)
-    private void getPersimmions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ArrayList<String> permissions = new ArrayList<String>();
-
-            // 读写权限
-            if (addPermission(permissions, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                permissionInfo += "Manifest.permission.WRITE_EXTERNAL_STORAGE Deny \n";
-            }
-
-            if (permissions.size() > 0) {
-                requestPermissions(permissions.toArray(new String[permissions.size()]), SDK_PERMISSION_REQUEST);
-            } else {
-                // init();
-            }
-        }
-    }
-
-    @TargetApi(23)
-    private boolean addPermission(ArrayList<String> permissionsList, String permission) {
-        if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) { // 如果应用没有获得对应权限,则添加到列表中,准备批量申请
-            if (shouldShowRequestPermissionRationale(permission)) {
-                return true;
-            } else {
-                permissionsList.add(permission);
-                return false;
-            }
-
-        } else {
-            return true;
-        }
-    }
-
-    @TargetApi(23)
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        // TODO Auto-generated method stub
-        // super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case SDK_PERMISSION_REQUEST: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.e("permission", "success");
-                    //init();
-
-                } else {
-                    Log.e("permission", "fail");
-                  //  DialogUtil.showDialog(this, GlobalValue.PERMISSIONS_TIPS);
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
     }
 
     @Override

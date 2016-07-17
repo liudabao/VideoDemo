@@ -14,8 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name=".HomeActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize">
+            android:name=".LogoActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,7 +35,7 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".LogoActivity"></activity>
+        <activity android:name=".HomeActivity"></activity>
     </application>
 
 </manifest>

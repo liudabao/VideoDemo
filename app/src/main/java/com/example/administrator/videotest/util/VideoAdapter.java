@@ -49,6 +49,9 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyRecyclerVi
         // TODO Auto-generated method stub
         Video video=list.get(position);
         holder.tv_name.setText(video.getName());
+        if(video.getName().length()>50){
+            holder.tv_name.setText(video.getName().substring(0,50)+".....");
+        }
         holder.tv_size.setText(video.getSize());
         holder.tv_time.setText(video.getTime());
         holder.iv.setImageBitmap(BitmapFactory.decodeFile(video.getImageUrl()));
