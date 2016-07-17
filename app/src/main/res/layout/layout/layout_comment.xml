@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_color_e0e0e0"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:id="@+id/comment_top"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_retangle"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/text_comment_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_18"
+            android:text="反馈" />
+        <ImageButton
+            android:id="@+id/comment_back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/edit_back_selector"
+            android:layout_marginLeft="16dp"/>
+    </RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="请输入您的改进意见"
+        android:textSize="@dimen/text_size_18"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="24dp"/>
+
+    <EditText
+        android:id="@+id/comments"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/white"/>
+
+    <Button
+        android:id="@+id/send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="24dp"
+        android:text="发送"/>
+
+</LinearLayout>
