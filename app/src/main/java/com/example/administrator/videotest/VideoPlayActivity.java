@@ -8,10 +8,12 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -21,6 +23,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.administrator.videotest.entity.Video;
+import com.example.administrator.videotest.global.GlobalContext;
 import com.example.administrator.videotest.global.GlobalValue;
 import com.example.administrator.videotest.util.DbUtil;
 import com.example.administrator.videotest.util.MediaUtil;
@@ -41,11 +44,12 @@ public class VideoPlayActivity extends AppCompatActivity implements
     private SeekBar seekBar;
     private TextView textView;
     private ProgressBar progressBar;
+    private RelativeLayout progressLayout;
     private String time;
     private boolean flag;
     private boolean isFinish=false;
-    private LinearLayout linearLayout;
-    private RelativeLayout relativeLayout;
+    private LinearLayout topLinearLayout;
+    private RelativeLayout bottomRelativeLayout;
     private Video video;
     private DbUtil dbUtil;
     @Override
@@ -54,6 +58,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_video_play);
+        showProgressBar();
         Bundle bundle=getIntent().getExtras();
         video=(Video)bundle.getSerializable(GlobalValue.KEY);
         initView();
@@ -67,9 +72,9 @@ public class VideoPlayActivity extends AppCompatActivity implements
 
     private void initView() {
         dbUtil=new DbUtil();
-        relativeLayout=(RelativeLayout)findViewById(R.id.video_bottom);
-        linearLayout=(LinearLayout)findViewById(R.id.video_top);
-        progressBar=(ProgressBar)findViewById(R.id.progressBar);
+        bottomRelativeLayout=(RelativeLayout)findViewById(R.id.video_bottom);
+        topLinearLayout=(LinearLayout)findViewById(R.id.video_top);
+        //progressBar=(ProgressBar)findViewById(R.id.progressBar);
         textView=(TextView)findViewById(R.id.text);
         seekBar=(SeekBar)findViewById(R.id.progress);
         start=(ImageButton)findViewById(R.id.start);
@@ -91,7 +96,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
         next.setOnClickListener(this);
         prev.setOnClickListener(this);
         back.setOnClickListener(this);
-        progressBar.setVisibility(View.VISIBLE);
+        //progressBar.setVisibility(View.VISIBLE);
         seekBar.setOnSeekBarChangeListener(this);
 
     }
@@ -122,14 +127,14 @@ public class VideoPlayActivity extends AppCompatActivity implements
         super.onTouchEvent(event);
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                if(linearLayout.getVisibility()==View.GONE){
-                    linearLayout.setVisibility(View.VISIBLE);
-                    relativeLayout.setVisibility(View.VISIBLE);
+                if(topLinearLayout.getVisibility()==View.GONE){
+                    topLinearLayout.setVisibility(View.VISIBLE);
+                    bottomRelativeLayout.setVisibility(View.VISIBLE);
                     seekBar.setVisibility(View.VISIBLE);
                 }
                 else {
-                    linearLayout.setVisibility(View.GONE);
-                    relativeLayout.setVisibility(View.GONE);
+                    topLinearLayout.setVisibility(View.GONE);
+                    bottomRelativeLayout.setVisibility(View.GONE);
                     seekBar.setVisibility(View.GONE);
                 }
                 break;
@@ -189,6 +194,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
     @Override
     public void onPrepared(MediaPlayer mp) {
         Log.e("video","prepare start");
+        hideProgressBar();
        // Log.e("video", "prepare start "+video.getPosition());
         //progressBar.setVisibility(View.GONE);
         player.start();
@@ -336,7 +342,11 @@ public class VideoPlayActivity extends AppCompatActivity implements
     }
 
     private void back(){
-        player.stop();
+        if(player!=null){
+            if (player.isPlaying()) {
+                player.stop();
+            }
+        }
         Intent intent=new Intent();
         setResult(RESULT_OK, intent);
         finish();
@@ -366,6 +376,23 @@ public class VideoPlayActivity extends AppCompatActivity implements
             }
             player.release();
         }
+    }
+
+    private void showProgressBar(){
+        progressLayout=(RelativeLayout) findViewById(R.id.progress_layout);
+        RelativeLayout.LayoutParams lParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+       // lParams.= Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
+        lParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        progressBar=new ProgressBar(GlobalContext.getContext());
+        progressBar.setVisibility(View.VISIBLE);
+        //surfaceviewLayout.setVisibility(View.INVISIBLE);
+        progressBar.setLayoutParams(lParams);
+        progressLayout.addView(progressBar);
+    }
+
+    private void hideProgressBar(){
+        progressLayout.setVisibility(View.INVISIBLE);
+        //surfaceviewLayout.setVisibility(View.VISIBLE);
     }
 
 }
