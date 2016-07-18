@@ -75,6 +75,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
     int windowHeight;
     private LinearLayout volumeLayout;
     private VerticalSeekBar volumeBar;
+    private boolean isShow=true;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -235,31 +236,44 @@ public class VideoPlayActivity extends AppCompatActivity implements
         super.onTouchEvent(event);
         //currentVum=audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         //detector.onTouchEvent(event);
-
+        Boolean isShow=true;
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
                 oldX=event.getX();
                 oldY=event.getY();
-                if(topLinearLayout.getVisibility()==View.GONE){
+                /*if(topLinearLayout.getVisibility()==View.GONE){
                     topLinearLayout.setVisibility(View.VISIBLE);
                     bottomRelativeLayout.setVisibility(View.VISIBLE);
                     seekBar.setVisibility(View.VISIBLE);
+                    //isShow=false;
                 }
-
-
+                else {
+                    topLinearLayout.setVisibility(View.GONE);
+                    bottomRelativeLayout.setVisibility(View.GONE);
+                    seekBar.setVisibility(View.GONE);
+                }*/
+                showTopBottom();
                 break;
             case MotionEvent.ACTION_MOVE:
                 if(event.getY()-oldY>FLING_MIN_DISTANCE){
                     //Log.e("上下滑动","下滑"+event.getY()+" "+oldY+" "+windowHeight);
+                   // hideTopBottom();
                     volumeLayout.setVisibility(View.VISIBLE);
                     vumChange((oldY-event.getY())/windowHeight);
                 }
                 else if(oldY-event.getY()>FLING_MIN_DISTANCE){
                     //Log.e("上下滑动","上滑"+event.getY()+" "+oldY+" "+windowHeight);
+                    //hideTopBottom();
                     volumeLayout.setVisibility(View.VISIBLE);
                     vumChange((oldY-event.getY())/windowHeight);
                 }
-
+                else if(event.getX()-oldX>FLING_MIN_DISTANCE){
+                    //showTopBottom();
+                }
+                else if(oldX-event.getX()>FLING_MIN_DISTANCE){
+                    //showTopBottom();
+                }
+               // isShow=true;
                 break;
             case MotionEvent.ACTION_UP:
                 if(event.getX()-oldX>FLING_MIN_DISTANCE){
@@ -270,11 +284,6 @@ public class VideoPlayActivity extends AppCompatActivity implements
                     Log.e("左右滑动","左滑");
                     progressChange(-5000);
                 }
-                //if(topLinearLayout.getVisibility()==View.VISIBLE){
-               //     topLinearLayout.setVisibility(View.GONE);
-               //     bottomRelativeLayout.setVisibility(View.GONE);
-               //     seekBar.setVisibility(View.GONE);
-               //  }
                 currentVum=audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
                 volumeLayout.setVisibility(View.GONE);
             default:
@@ -524,9 +533,15 @@ public class VideoPlayActivity extends AppCompatActivity implements
     }
 
     private void progressChange(int seconds){
+
         int position=player.getCurrentPosition()+seconds;
         video.setPosition(position);
         player.seekTo(position);
+        if(!player.isPlaying()){
+            player.start();
+            player.pause();
+        }
+
 
     }
 
@@ -575,13 +590,21 @@ public class VideoPlayActivity extends AppCompatActivity implements
         //surfaceviewLayout.setVisibility(View.VISIBLE);
     }
 
-
-    private void showVolumeBar(){
-        volumeBar.setMax(maxVum);
-        volumeBar.setProgress(currentVum);
-        //volumeLayout.setVisibility(View.VISIBLE);
+    private void showTopBottom(){
+        if(topLinearLayout.getVisibility()==View.GONE){
+            topLinearLayout.setVisibility(View.VISIBLE);
+            bottomRelativeLayout.setVisibility(View.VISIBLE);
+            seekBar.setVisibility(View.VISIBLE);
+            //isShow=false;
+        }
     }
 
-
+    private void hideTopBottom(){
+        if(topLinearLayout.getVisibility()==View.VISIBLE) {
+            topLinearLayout.setVisibility(View.GONE);
+            bottomRelativeLayout.setVisibility(View.GONE);
+            seekBar.setVisibility(View.GONE);
+        }
+    }
 
 }
