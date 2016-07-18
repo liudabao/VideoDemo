@@ -4,22 +4,29 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -28,6 +35,7 @@ import android.widget.TextView;
 import com.example.administrator.videotest.entity.Video;
 import com.example.administrator.videotest.global.GlobalContext;
 import com.example.administrator.videotest.global.GlobalValue;
+import com.example.administrator.videotest.ui.VerticalSeekBar;
 import com.example.administrator.videotest.util.DbUtil;
 import com.example.administrator.videotest.util.MediaUtil;
 
@@ -60,9 +68,13 @@ public class VideoPlayActivity extends AppCompatActivity implements
     public final static int FLING_MIN_DISTANCE=100;
     private AudioManager audioManager;
     private int maxVum;
-    float oldY=0;
+    private int currentVum;
+    float oldX = 0;
+    float oldY = 0;
     int windowWidth;
     int windowHeight;
+    private LinearLayout volumeLayout;
+    private VerticalSeekBar volumeBar;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,15 +82,20 @@ public class VideoPlayActivity extends AppCompatActivity implements
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_video_play);
         //showProgressBar();
-        Bundle bundle=getIntent().getExtras();
-        video=(Video)bundle.getSerializable(GlobalValue.KEY);
+        initData();
         initView();
+        initEvent();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
+    }
+
+    private void initData(){
+        Bundle bundle=getIntent().getExtras();
+        video=(Video)bundle.getSerializable(GlobalValue.KEY);
     }
 
     private void initView() {
@@ -88,6 +105,8 @@ public class VideoPlayActivity extends AppCompatActivity implements
         dbUtil=new DbUtil();
         bottomRelativeLayout=(RelativeLayout)findViewById(R.id.video_bottom);
         topLinearLayout=(LinearLayout)findViewById(R.id.video_top);
+        volumeLayout=(LinearLayout)findViewById(R.id.volume_layout);
+        volumeBar=(VerticalSeekBar)findViewById(R.id.volume_seek);
         //progressBar=(ProgressBar)findViewById(R.id.progressBar);
         textView=(TextView)findViewById(R.id.text);
         seekBar=(SeekBar)findViewById(R.id.progress);
@@ -97,7 +116,17 @@ public class VideoPlayActivity extends AppCompatActivity implements
         back=(ImageButton)findViewById(R.id.back);
         surface = (SurfaceView) findViewById(R.id.view);
         surfaceHolder = surface.getHolder(); // SurfaceHolder是SurfaceView的控制接口
+        audioManager=(AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        maxVum=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        currentVum=audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        volumeBar.setMax(maxVum);
+        volumeBar.setProgress(currentVum);
+        volumeLayout.setVisibility(View.GONE);
+    }
+
+    private void initEvent(){
         surfaceHolder.addCallback(this); // 因为这个类实现了SurfaceHolder.Callback接口，所以回调参数直接this
+        seekBar.setOnSeekBarChangeListener(this);
         start.setOnClickListener(this);
         if (video.getNextUrl()==null){
             next.setEnabled(false);
@@ -111,9 +140,6 @@ public class VideoPlayActivity extends AppCompatActivity implements
         prev.setOnClickListener(this);
         back.setOnClickListener(this);
         //progressBar.setVisibility(View.VISIBLE);
-        seekBar.setOnSeekBarChangeListener(this);
-        audioManager=(AudioManager)getSystemService(Context.AUDIO_SERVICE);
-        maxVum=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         detector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
             @Override
             public boolean onDown(MotionEvent e) {
@@ -122,11 +148,12 @@ public class VideoPlayActivity extends AppCompatActivity implements
                     bottomRelativeLayout.setVisibility(View.VISIBLE);
                     seekBar.setVisibility(View.VISIBLE);
                 }
-                else {
-                    topLinearLayout.setVisibility(View.GONE);
-                    bottomRelativeLayout.setVisibility(View.GONE);
-                    seekBar.setVisibility(View.GONE);
-                }
+              //  else{
+              //      topLinearLayout.setVisibility(View.GONE);
+              //      bottomRelativeLayout.setVisibility(View.GONE);
+              //      seekBar.setVisibility(View.GONE);
+               // }
+
                 return false;
             }
 
@@ -137,26 +164,38 @@ public class VideoPlayActivity extends AppCompatActivity implements
 
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
+                Log.e("上下滑动","up");
+
+                if(volumeLayout.getVisibility()==View.VISIBLE){
+                    volumeLayout.setVisibility(View.GONE);
+                }
+
                 return false;
             }
 
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 
-
+                if(topLinearLayout.getVisibility()==View.GONE){
+                    topLinearLayout.setVisibility(View.VISIBLE);
+                    bottomRelativeLayout.setVisibility(View.VISIBLE);
+                    seekBar.setVisibility(View.VISIBLE);
+                }
                 if(e1.getY()-e2.getY()>FLING_MIN_DISTANCE){
                     Log.e("上下滑动","上滑"+e1.getY()+" "+e2.getY()+" "+windowHeight);
+                    volumeLayout.setVisibility(View.VISIBLE);
                     vumChange((e1.getY()-e2.getY())/windowHeight);
-                   // audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                    // audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
                     //        AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 
                 }
                 else if(e2.getY()-e1.getY()>FLING_MIN_DISTANCE){
                     Log.e("上下滑动","下滑"+e1.getY()+" "+e2.getY()+" "+windowHeight);
-                    vumChange((e1.getY()-e2.getY())/windowHeight);
-                   // audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
-                   //         AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
 
+                    // audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                    //         AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
+                    volumeLayout.setVisibility(View.VISIBLE);
+                    vumChange((e1.getY()-e2.getY())/windowHeight);
 
                 }
 
@@ -178,11 +217,71 @@ public class VideoPlayActivity extends AppCompatActivity implements
                     Log.e("左右滑动","左滑");
                     progressChange(-5000);
                 }
+                if(topLinearLayout.getVisibility()==View.VISIBLE) {
+                    topLinearLayout.setVisibility(View.GONE);
+                    bottomRelativeLayout.setVisibility(View.GONE);
+                    seekBar.setVisibility(View.GONE);
+                }
+                if(volumeLayout.getVisibility()==View.VISIBLE){
+                    volumeLayout.setVisibility(View.GONE);
+                }
+                currentVum=audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
                 return false;
             }
         });
     }
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        super.onTouchEvent(event);
+        //currentVum=audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        //detector.onTouchEvent(event);
 
+        switch (event.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                oldX=event.getX();
+                oldY=event.getY();
+                if(topLinearLayout.getVisibility()==View.GONE){
+                    topLinearLayout.setVisibility(View.VISIBLE);
+                    bottomRelativeLayout.setVisibility(View.VISIBLE);
+                    seekBar.setVisibility(View.VISIBLE);
+                }
+
+
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if(event.getY()-oldY>FLING_MIN_DISTANCE){
+                    //Log.e("上下滑动","下滑"+event.getY()+" "+oldY+" "+windowHeight);
+                    volumeLayout.setVisibility(View.VISIBLE);
+                    vumChange((oldY-event.getY())/windowHeight);
+                }
+                else if(oldY-event.getY()>FLING_MIN_DISTANCE){
+                    //Log.e("上下滑动","上滑"+event.getY()+" "+oldY+" "+windowHeight);
+                    volumeLayout.setVisibility(View.VISIBLE);
+                    vumChange((oldY-event.getY())/windowHeight);
+                }
+
+                break;
+            case MotionEvent.ACTION_UP:
+                if(event.getX()-oldX>FLING_MIN_DISTANCE){
+                    Log.e("左右滑动","右滑"+event.getX()+" "+oldX);
+                    progressChange(5000);
+                }
+                else if(oldX-event.getX()>FLING_MIN_DISTANCE){
+                    Log.e("左右滑动","左滑");
+                    progressChange(-5000);
+                }
+                //if(topLinearLayout.getVisibility()==View.VISIBLE){
+               //     topLinearLayout.setVisibility(View.GONE);
+               //     bottomRelativeLayout.setVisibility(View.GONE);
+               //     seekBar.setVisibility(View.GONE);
+               //  }
+                currentVum=audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                volumeLayout.setVisibility(View.GONE);
+            default:
+                break;
+        }
+        return true;
+    }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
@@ -202,29 +301,6 @@ public class VideoPlayActivity extends AppCompatActivity implements
     public void surfaceDestroyed(SurfaceHolder arg0) {
         // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event){
-       // super.onTouchEvent(event);
-        detector.onTouchEvent(event);
-        /*switch (event.getAction()){
-            case MotionEvent.ACTION_DOWN:
-                if(topLinearLayout.getVisibility()==View.GONE){
-                    topLinearLayout.setVisibility(View.VISIBLE);
-                    bottomRelativeLayout.setVisibility(View.VISIBLE);
-                    seekBar.setVisibility(View.VISIBLE);
-                }
-                else {
-                    topLinearLayout.setVisibility(View.GONE);
-                    bottomRelativeLayout.setVisibility(View.GONE);
-                    seekBar.setVisibility(View.GONE);
-                }
-                break;
-            default:
-                break;
-        }*/
-        return true;
     }
 
     @Override
@@ -436,7 +512,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
     }
 
     private void vumChange(float percent){
-        int currentVum=audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+
         int index = (int) (percent * maxVum) + currentVum;
         if (index > maxVum)
             index = maxVum;
@@ -444,11 +520,14 @@ public class VideoPlayActivity extends AppCompatActivity implements
             index = 0;
         Log.e("volum",index+" "+maxVum+" "+currentVum+" "+percent);
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, index, 0);
+        volumeBar.setProgress(index);
     }
 
     private void progressChange(int seconds){
-        player.seekTo(player.getCurrentPosition()+seconds);
-        video.setPosition(player.getCurrentPosition());
+        int position=player.getCurrentPosition()+seconds;
+        video.setPosition(position);
+        player.seekTo(position);
+
     }
 
 
@@ -495,5 +574,14 @@ public class VideoPlayActivity extends AppCompatActivity implements
         //progressLayout.setVisibility(View.INVISIBLE);
         //surfaceviewLayout.setVisibility(View.VISIBLE);
     }
+
+
+    private void showVolumeBar(){
+        volumeBar.setMax(maxVum);
+        volumeBar.setProgress(currentVum);
+        //volumeLayout.setVisibility(View.VISIBLE);
+    }
+
+
 
 }
