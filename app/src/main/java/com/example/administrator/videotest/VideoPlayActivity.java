@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -82,9 +83,10 @@ public class VideoPlayActivity extends AppCompatActivity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFormat(PixelFormat.TRANSLUCENT);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_video_play);
-        //showProgressBar();
+
         initData();
         initView();
         initEvent();
@@ -99,12 +101,13 @@ public class VideoPlayActivity extends AppCompatActivity implements
     private void initData(){
         Bundle bundle=getIntent().getExtras();
         video=(Video)bundle.getSerializable(GlobalValue.KEY);
-    }
-
-    private void initView() {
         Display disp = getWindowManager().getDefaultDisplay();
         windowWidth = disp.getWidth();
         windowHeight = disp.getHeight();
+    }
+
+    private void initView() {
+
         dbUtil=new DbUtil();
         bottomRelativeLayout=(RelativeLayout)findViewById(R.id.video_bottom);
         topLinearLayout=(LinearLayout)findViewById(R.id.video_top);
@@ -119,6 +122,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
         back=(ImageButton)findViewById(R.id.back);
         surface = (SurfaceView) findViewById(R.id.view);
         surfaceHolder = surface.getHolder(); // SurfaceHolder是SurfaceView的控制接口
+        //surfaceHolder.setFormat(PixelFormat.TRANSPARENT);
         audioManager=(AudioManager)getSystemService(Context.AUDIO_SERVICE);
         maxVum=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         currentVum=audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -143,95 +147,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
         prev.setOnClickListener(this);
         back.setOnClickListener(this);
         //progressBar.setVisibility(View.VISIBLE);
-        detector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
-            @Override
-            public boolean onDown(MotionEvent e) {
-                if(topLinearLayout.getVisibility()==View.GONE){
-                    topLinearLayout.setVisibility(View.VISIBLE);
-                    bottomRelativeLayout.setVisibility(View.VISIBLE);
-                    seekBar.setVisibility(View.VISIBLE);
-                }
-              //  else{
-              //      topLinearLayout.setVisibility(View.GONE);
-              //      bottomRelativeLayout.setVisibility(View.GONE);
-              //      seekBar.setVisibility(View.GONE);
-               // }
 
-                return false;
-            }
-
-            @Override
-            public void onShowPress(MotionEvent e) {
-
-            }
-
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                Log.e("上下滑动","up");
-
-                if(volumeLayout.getVisibility()==View.VISIBLE){
-                    volumeLayout.setVisibility(View.GONE);
-                }
-
-                return false;
-            }
-
-            @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-
-                if(topLinearLayout.getVisibility()==View.GONE){
-                    topLinearLayout.setVisibility(View.VISIBLE);
-                    bottomRelativeLayout.setVisibility(View.VISIBLE);
-                    seekBar.setVisibility(View.VISIBLE);
-                }
-                if(e1.getY()-e2.getY()>FLING_MIN_DISTANCE){
-                    Log.e("上下滑动","上滑"+e1.getY()+" "+e2.getY()+" "+windowHeight);
-                    volumeLayout.setVisibility(View.VISIBLE);
-                    vumChange((e1.getY()-e2.getY())/windowHeight);
-                    // audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
-                    //        AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
-
-                }
-                else if(e2.getY()-e1.getY()>FLING_MIN_DISTANCE){
-                    Log.e("上下滑动","下滑"+e1.getY()+" "+e2.getY()+" "+windowHeight);
-
-                    // audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
-                    //         AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
-                    volumeLayout.setVisibility(View.VISIBLE);
-                    vumChange((e1.getY()-e2.getY())/windowHeight);
-
-                }
-
-                return false;
-            }
-
-            @Override
-            public void onLongPress(MotionEvent e) {
-
-            }
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                if(e2.getX()-e1.getX()>FLING_MIN_DISTANCE){
-                    Log.e("左右滑动","右滑"+e1.getX()+" "+e2.getX());
-                    progressChange(5000);
-                }
-                else if(e1.getX()-e2.getX()>FLING_MIN_DISTANCE){
-                    Log.e("左右滑动","左滑");
-                    progressChange(-5000);
-                }
-                if(topLinearLayout.getVisibility()==View.VISIBLE) {
-                    topLinearLayout.setVisibility(View.GONE);
-                    bottomRelativeLayout.setVisibility(View.GONE);
-                    seekBar.setVisibility(View.GONE);
-                }
-                if(volumeLayout.getVisibility()==View.VISIBLE){
-                    volumeLayout.setVisibility(View.GONE);
-                }
-                currentVum=audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-                return false;
-            }
-        });
     }
     @Override
     public boolean onTouchEvent(MotionEvent event){
@@ -325,6 +241,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
     public void surfaceCreated(SurfaceHolder arg0) {
         // 必须在surface创建后才能初始化MediaPlayer,否则不会显示图像
         Log.e("video", "media init");
+       // showProgressBar();
        // progressBar.setVisibility(View.VISIBLE);
         player = new MediaPlayer();
         play();
@@ -387,7 +304,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
     @Override
     public void onPrepared(MediaPlayer mp) {
         Log.e("video","prepare start");
-        hideProgressBar();
+        //hideProgressBar();
        // Log.e("video", "prepare start "+video.getPosition());
         //progressBar.setVisibility(View.GONE);
         player.start();
@@ -430,6 +347,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
             }
         }
         textView.setText( MediaUtil.getShowTime(progress) + "/" +time);
+       // Log.e("time", textView.getText().toString());
     }
 
     @Override
@@ -559,14 +477,21 @@ public class VideoPlayActivity extends AppCompatActivity implements
 
     private void progressChange(int seconds){
 
+        boolean flag=false;
+        if(player.isPlaying()){
+            flag=true;
+            player.pause();
+        }
         int position=player.getCurrentPosition()+seconds;
         video.setPosition(position);
         player.seekTo(position);
-        if(!player.isPlaying()){
+        if(flag){
+            player.start();
+        }
+        else {
             player.start();
             player.pause();
         }
-
 
     }
 
@@ -610,10 +535,6 @@ public class VideoPlayActivity extends AppCompatActivity implements
         progressLayout.addView(progressBar);
     }
 
-    private void hideProgressBar(){
-        //progressLayout.setVisibility(View.INVISIBLE);
-        //surfaceviewLayout.setVisibility(View.VISIBLE);
-    }
 
     private void showTopBottom(){
         if(topLinearLayout.getVisibility()==View.GONE){

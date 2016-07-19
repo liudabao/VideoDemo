@@ -35,8 +35,8 @@ import com.example.administrator.videotest.global.GlobalContext;
 import com.example.administrator.videotest.global.GlobalValue;
 import com.example.administrator.videotest.service.ScanService;
 import com.example.administrator.videotest.util.DbManager;
-import com.example.administrator.videotest.util.VideoAdapter;
-import com.example.administrator.videotest.util.VideoNameComparator;
+import com.example.administrator.videotest.adapter.VideoAdapter;
+import com.example.administrator.videotest.adapter.VideoNameComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;

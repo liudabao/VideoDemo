@@ -21,8 +21,8 @@ import com.example.administrator.videotest.global.GlobalContext;
 import com.example.administrator.videotest.global.GlobalValue;
 import com.example.administrator.videotest.util.DbUtil;
 import com.example.administrator.videotest.util.DialogUtil;
-import com.example.administrator.videotest.util.EditAdapter;
-import com.example.administrator.videotest.util.VideoNameComparator;
+import com.example.administrator.videotest.adapter.EditAdapter;
+import com.example.administrator.videotest.adapter.VideoNameComparator;
 
 import java.io.File;
 import java.util.Collections;

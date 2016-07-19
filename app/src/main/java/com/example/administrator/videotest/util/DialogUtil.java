@@ -49,12 +49,6 @@ public class DialogUtil {
           //builder.setTitle(title);
         builder.setMessage(msg);
         builder.setCancelable(true);
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
         builder.create().show();
 
     }

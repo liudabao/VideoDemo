@@ -31,12 +31,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="16dp">
-            <ImageButton
-                android:id="@+id/sort"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:background="@drawable/sort_selector"
-                android:layout_marginRight="16dp"/>
+
             <ImageButton
                 android:id="@+id/video_meun"
                 android:layout_width="24dp"

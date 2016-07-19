@@ -1,4 +1,4 @@
-package com.example.administrator.videotest.util;
+package com.example.administrator.videotest.adapter;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.administrator.videotest.R;
 import com.example.administrator.videotest.entity.Video;
+import com.example.administrator.videotest.util.MediaUtil;
 
 import java.util.List;
 

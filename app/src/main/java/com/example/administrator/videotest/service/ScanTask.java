@@ -11,7 +11,7 @@ import com.example.administrator.videotest.global.GlobalContext;
 import com.example.administrator.videotest.util.DbManager;
 import com.example.administrator.videotest.util.FileUtil;
 import com.example.administrator.videotest.util.MediaUtil;
-import com.example.administrator.videotest.util.VideoNameComparator;
+import com.example.administrator.videotest.adapter.VideoNameComparator;
 
 import java.io.File;
 import java.util.ArrayList;

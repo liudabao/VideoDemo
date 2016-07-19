@@ -18,9 +18,9 @@ import com.example.administrator.videotest.global.GlobalValue;
 import com.example.administrator.videotest.listener.OnRecyclerViewItemClickListener;
 import com.example.administrator.videotest.util.DbUtil;
 import com.example.administrator.videotest.util.FileUtil;
-import com.example.administrator.videotest.util.FindContentAdapter;
-import com.example.administrator.videotest.util.FindHeadAdapter;
-import com.example.administrator.videotest.util.FindNameComparator;
+import com.example.administrator.videotest.adapter.FindContentAdapter;
+import com.example.administrator.videotest.adapter.FindHeadAdapter;
+import com.example.administrator.videotest.adapter.FindNameComparator;
 
 import java.io.File;
 import java.util.ArrayList;
