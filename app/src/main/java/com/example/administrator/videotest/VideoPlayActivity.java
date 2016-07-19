@@ -75,7 +75,9 @@ public class VideoPlayActivity extends AppCompatActivity implements
     int windowHeight;
     private LinearLayout volumeLayout;
     private VerticalSeekBar volumeBar;
-    private boolean isShow=true;
+    //private boolean isShow=true;
+    private boolean isChangeProgress=false;
+    private boolean isChangeVolume=false;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -252,7 +254,9 @@ public class VideoPlayActivity extends AppCompatActivity implements
                     bottomRelativeLayout.setVisibility(View.GONE);
                     seekBar.setVisibility(View.GONE);
                 }*/
-                showTopBottom();
+               // showTopBottom();
+                isChangeVolume=false;
+                isChangeProgress=false;
                 break;
             case MotionEvent.ACTION_MOVE:
                 if(event.getY()-oldY>FLING_MIN_DISTANCE){
@@ -260,18 +264,22 @@ public class VideoPlayActivity extends AppCompatActivity implements
                    // hideTopBottom();
                     volumeLayout.setVisibility(View.VISIBLE);
                     vumChange((oldY-event.getY())/windowHeight);
+                    isChangeVolume=true;
                 }
                 else if(oldY-event.getY()>FLING_MIN_DISTANCE){
                     //Log.e("上下滑动","上滑"+event.getY()+" "+oldY+" "+windowHeight);
                     //hideTopBottom();
                     volumeLayout.setVisibility(View.VISIBLE);
                     vumChange((oldY-event.getY())/windowHeight);
+                    isChangeVolume=true;
                 }
                 else if(event.getX()-oldX>FLING_MIN_DISTANCE){
-                    //showTopBottom();
+                    showTopBottom();
+                    isChangeProgress=true;
                 }
                 else if(oldX-event.getX()>FLING_MIN_DISTANCE){
-                    //showTopBottom();
+                    showTopBottom();
+                    isChangeProgress=true;
                 }
                // isShow=true;
                 break;
@@ -286,6 +294,23 @@ public class VideoPlayActivity extends AppCompatActivity implements
                 }
                 currentVum=audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
                 volumeLayout.setVisibility(View.GONE);
+                Log.e("TAG", isChangeProgress+" "+isChangeVolume);
+                if(!isChangeProgress&&!isChangeVolume){
+                    //showTopBottom();
+                    //hideTopBottom();
+                    if(topLinearLayout.getVisibility()==View.GONE){
+                        topLinearLayout.setVisibility(View.VISIBLE);
+                        bottomRelativeLayout.setVisibility(View.VISIBLE);
+                        seekBar.setVisibility(View.VISIBLE);
+                        //isShow=false;
+                    }
+                    else {
+                        topLinearLayout.setVisibility(View.GONE);
+                        bottomRelativeLayout.setVisibility(View.GONE);
+                        seekBar.setVisibility(View.GONE);
+                    }
+                }
+                break;
             default:
                 break;
         }
