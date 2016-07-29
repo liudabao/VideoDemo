@@ -14,7 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.administrator.videotest.dummy.DummyContent;
+import com.example.administrator.videotest.entity.ShareDevice;
 import com.example.administrator.videotest.global.GlobalContext;
+import com.example.administrator.videotest.listener.OnRecyclerViewItemClickListener;
 
 import org.cybergarage.upnp.ControlPoint;
 import org.cybergarage.upnp.Device;
@@ -30,22 +32,38 @@ public class DeviceFragment extends Fragment {
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private View view;
-    private List<Device> list=new ArrayList<>();
+    private List<ShareDevice> list=new ArrayList<>();
     private ControlPoint point;
     private Handler handler;
+    private boolean isLoad;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if(view==null){
+            isLoad=false;
             view = inflater.inflate(R.layout.fragment_device, container, false);
         }
-        initData();
-        initView();
+        else{
+            isLoad=true;
+        }
+        ViewGroup parent = (ViewGroup) view.getParent();
+        if (parent != null)
+        {
+            parent.removeView(view);
+        }
+        if(!isLoad){
+            initView();
+            initData();
+        }
+
         handler=new Handler(){
 
             public void handleMessage(Message msg){
                 switch (msg.what){
                     case 0:
+                        Log.e("device refreash", list.size()+"");
+                        adapter=new DeviceAdapter(GlobalContext.getContext(),list);
+                        recyclerView.setAdapter(adapter);
                         adapter.notifyDataSetChanged();
                 }
             }
@@ -58,23 +76,41 @@ public class DeviceFragment extends Fragment {
     private void initView(){
         recyclerView=(RecyclerView) view.findViewById(R.id.device_view);
         linearLayoutManager=new LinearLayoutManager(GlobalContext.getContext());
-        if(linearLayoutManager==null){
-            Log.e("manage","null");
-            return;
-        }
         adapter=new DeviceAdapter(GlobalContext.getContext(),list);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
+        point=new ControlPoint();
+        adapter.setOnItemClickLitener(new OnRecyclerViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                ShareDevice shareDevice=list.get(position);
+                Log.e("device list", shareDevice.getDevice().getFriendlyName()+"");
+                if (shareDevice.getSelect()) {
+                    shareDevice.setSelect(false);
+                }
+                else {
+                    shareDevice.setSelect(true);
+                }
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+
+            }
+        });
     }
 
     private void initData(){
         list.clear();
-        point=new ControlPoint();
+
         point.addDeviceChangeListener(new DeviceChangeListener() {
             @Override
             public void deviceAdded(Device device) {
                 Log.e("device", device.getFriendlyName());
-                list.add(device);
+                ShareDevice shareDevice=new ShareDevice();
+                shareDevice.setDevice(device);
+                shareDevice.setSelect(false);
+                list.add(shareDevice);
                 Message msg=new Message();
                 msg.what=0;
                 handler.sendMessage(msg);
@@ -94,7 +130,6 @@ public class DeviceFragment extends Fragment {
             }
         }).start();
     }
-
 
 
 
