@@ -65,6 +65,7 @@ public class DeviceFragment extends Fragment {
                         adapter=new DeviceAdapter(GlobalContext.getContext(),list);
                         recyclerView.setAdapter(adapter);
                         adapter.notifyDataSetChanged();
+                        initEvent();
                 }
             }
 
@@ -80,24 +81,7 @@ public class DeviceFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
         point=new ControlPoint();
-        adapter.setOnItemClickLitener(new OnRecyclerViewItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                ShareDevice shareDevice=list.get(position);
-                Log.e("device list", shareDevice.getDevice().getFriendlyName()+"");
-                if (shareDevice.getSelect()) {
-                    shareDevice.setSelect(false);
-                }
-                else {
-                    shareDevice.setSelect(true);
-                }
-            }
 
-            @Override
-            public void onItemLongClick(View view, int position) {
-
-            }
-        });
     }
 
     private void initData(){
@@ -132,5 +116,25 @@ public class DeviceFragment extends Fragment {
     }
 
 
+    private void initEvent(){
+        adapter.setOnItemClickLitener(new OnRecyclerViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                ShareDevice shareDevice=list.get(position);
+                Log.e("device list", shareDevice.getDevice().getFriendlyName()+"");
+                if (shareDevice.getSelect()) {
+                    shareDevice.setSelect(false);
+                }
+                else {
+                    shareDevice.setSelect(true);
+                }
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+
+            }
+        });
+    }
 
 }

@@ -70,6 +70,9 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
                 }
             });
         }
+        else {
+            Log.e("listener", "null");
+        }
     }
 
     @Override
