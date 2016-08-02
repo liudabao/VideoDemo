@@ -51,8 +51,8 @@ public class DlnaUtil {
         shareDevice.setSelect(false);
         mDevices.add(shareDevice);
         //mDevices.add(d);
-        Log.e("TAG", "Devices add a device" + d.getDeviceType());
-
+        //Log.e("TAG", "Devices add a device" + d.getDeviceType());
+        Log.e("TAG", "Devices add a device" + d.getLocation());
     }
 
     public synchronized void removeDevice(Device d) {

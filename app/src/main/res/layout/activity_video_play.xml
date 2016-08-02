@@ -15,7 +15,7 @@
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/video_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,7 +30,18 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:background="@drawable/back_selector"/>
-    </LinearLayout>
+        <ImageButton
+            android:id="@+id/image_tv"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/tv_selector"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="16dp"
+            />
+    </RelativeLayout>
     <SeekBar
         android:id="@+id/progress"
         android:layout_width="match_parent"

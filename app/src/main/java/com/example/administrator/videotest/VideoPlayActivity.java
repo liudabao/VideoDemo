@@ -61,7 +61,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
     private String time;
     private boolean flag;
     private boolean isFinish=false;
-    private LinearLayout topLinearLayout;
+    private RelativeLayout topLinearLayout;
     private RelativeLayout bottomRelativeLayout;
     private Video video;
     private DbUtil dbUtil;
@@ -110,7 +110,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
 
         dbUtil=new DbUtil();
         bottomRelativeLayout=(RelativeLayout)findViewById(R.id.video_bottom);
-        topLinearLayout=(LinearLayout)findViewById(R.id.video_top);
+        topLinearLayout=(RelativeLayout)findViewById(R.id.video_top);
         volumeLayout=(LinearLayout)findViewById(R.id.volume_layout);
         volumeBar=(VerticalSeekBar)findViewById(R.id.volume_seek);
         //progressBar=(ProgressBar)findViewById(R.id.progressBar);
