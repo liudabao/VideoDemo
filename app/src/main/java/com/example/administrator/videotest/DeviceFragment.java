@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.example.administrator.videotest.adapter.DeviceAdapter;
 import com.example.administrator.videotest.entity.ShareDevice;
@@ -40,6 +41,8 @@ public class DeviceFragment extends Fragment {
     private boolean isLoad;
     private IntentFilter intentFilter;
     private DeviceReceiver deviceReceiver;
+    private ImageButton refreash;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -80,6 +83,7 @@ public class DeviceFragment extends Fragment {
     }
 
     private void initView(){
+        refreash=(ImageButton)view.findViewById(R.id.share_refreash);
         recyclerView=(RecyclerView) view.findViewById(R.id.device_view);
         linearLayoutManager=new LinearLayoutManager(GlobalContext.getContext());
         adapter=new DeviceAdapter(GlobalContext.getContext(),list);
@@ -95,8 +99,7 @@ public class DeviceFragment extends Fragment {
 
     private void initData(){
         list.clear();
-        Intent intent=new Intent(getActivity(), DlnaService.class);
-        GlobalContext.getContext().startService(intent);
+        start();
 
         /*point.addDeviceChangeListener(new DeviceChangeListener() {
             @Override
@@ -152,6 +155,14 @@ public class DeviceFragment extends Fragment {
 
             }
         });
+
+        refreash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //stop();
+                initData();
+            }
+        });
     }
 
     @Override
@@ -171,4 +182,14 @@ public class DeviceFragment extends Fragment {
         }
     }
 
+
+    private void start(){
+        Intent intent=new Intent(getActivity(), DlnaService.class);
+        GlobalContext.getContext().startService(intent);
+    }
+
+    private void stop(){
+        Intent intent=new Intent(getActivity(), DlnaService.class);
+        GlobalContext.getContext().stopService(intent);
+    }
 }

@@ -3,6 +3,7 @@ package com.example.administrator.videotest;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import org.cybergarage.upnp.ControlPoint;
 
@@ -19,6 +20,7 @@ public class DlnaService extends Service {
 
     @Override
     public void onCreate() {
+        Log.e("service", "create");
         super.onCreate();
         init();
     }
@@ -31,6 +33,7 @@ public class DlnaService extends Service {
 
     @Override
     public void onDestroy() {
+        Log.e("service", "destroy");
         super.onDestroy();
     }
 

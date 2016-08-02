@@ -15,15 +15,29 @@ import org.cybergarage.upnp.device.DeviceChangeListener;
 public class DlnaThread implements Runnable {
 
     private ControlPoint mControlPoint;
+    private boolean mStartComplete=false;
 
     public DlnaThread(ControlPoint mControlPoint){
         this.mControlPoint=mControlPoint;
         mControlPoint.addDeviceChangeListener(deviceChangeListener);
+        
     }
 
     @Override
     public void run() {
-        mControlPoint.start();
+        if(mStartComplete){
+            mControlPoint.search("ssdp:all");
+            Log.e("TAG", "controlpoint search...");
+        }
+        else {
+            mControlPoint.stop();
+            boolean ret=mControlPoint.start();
+            Log.e("TAG", "controlpoint search..." +ret);
+            if(ret){
+                mStartComplete=true;
+            }
+        }
+
     }
 
     private DeviceChangeListener deviceChangeListener=new DeviceChangeListener() {
