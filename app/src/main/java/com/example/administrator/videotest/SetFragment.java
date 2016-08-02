@@ -146,7 +146,7 @@ public class SetFragment extends Fragment {
 		AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
 		builder.setMessage("确定清空应用数据")
 				.setCancelable(true);
-		builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface arg0, int arg1) {
@@ -162,7 +162,7 @@ public class SetFragment extends Fragment {
 
 			}
 		});
-		builder.setNegativeButton("no", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 

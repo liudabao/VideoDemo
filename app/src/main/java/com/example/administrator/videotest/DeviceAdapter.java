@@ -45,12 +45,15 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Device device=mDevices.get(position).getDevice();
-        holder.mView.setText(device.getFriendlyName().toString());
+        holder.textView.setText(device.getFriendlyName().toString());
         if(mDevices.get(position).getSelect()){
             holder.imageView.setBackgroundResource(R.drawable.choose);
         }
+        else {
+            holder.imageView.setBackgroundResource(0);
+        }
 
-        Log.e("device list", device.getFriendlyName());
+        Log.e("device list name", device.getFriendlyName());
         if(mListener!=null){
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -82,12 +85,12 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView mView;
+        public TextView textView;
         public ImageView imageView;
 
         public ViewHolder(View view) {
             super(view);
-            mView = (TextView) view.findViewById(R.id.device_name);
+            textView = (TextView) view.findViewById(R.id.device_name);
             imageView=(ImageView)view.findViewById(R.id.device_select);
         }
 

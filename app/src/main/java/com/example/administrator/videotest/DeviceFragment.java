@@ -1,11 +1,9 @@
 package com.example.administrator.videotest;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.administrator.videotest.dummy.DummyContent;
 import com.example.administrator.videotest.entity.ShareDevice;
 import com.example.administrator.videotest.global.GlobalContext;
 import com.example.administrator.videotest.listener.OnRecyclerViewItemClickListener;
@@ -54,6 +51,7 @@ public class DeviceFragment extends Fragment {
         if(!isLoad){
             initView();
             initData();
+            initEvent();
         }
 
         handler=new Handler(){
@@ -124,10 +122,12 @@ public class DeviceFragment extends Fragment {
                 Log.e("device list", shareDevice.getDevice().getFriendlyName()+"");
                 if (shareDevice.getSelect()) {
                     shareDevice.setSelect(false);
+
                 }
                 else {
                     shareDevice.setSelect(true);
                 }
+                adapter.notifyDataSetChanged();
             }
 
             @Override
