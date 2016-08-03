@@ -52,7 +52,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
             holder.imageView.setBackgroundResource(0);
         }
 
-        Log.e("device list name", device.getFriendlyName());
+       // Log.e("device list name", device.getFriendlyName());
         if(mListener!=null){
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -84,10 +84,15 @@ public class DlnaUtil {
     }
 
     public Device getSelectedDevice() {
+        for(ShareDevice shareDevice:mDevices){
+            if(shareDevice.getSelect()){
+                mSelectedDevice=shareDevice.getDevice();
+                Log.e("device select", mSelectedDevice.getFriendlyName());
+                break;
+            }
+        }
+
         return mSelectedDevice;
     }
 
-    public void setSelectedDevice(Device mSelectedDevice) {
-        this.mSelectedDevice = mSelectedDevice;
-    }
 }

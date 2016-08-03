@@ -138,15 +138,13 @@ public class DeviceFragment extends Fragment {
                 Log.e("device list", shareDevice.getDevice().getFriendlyName()+"");
                 if (shareDevice.getSelect()) {
                     shareDevice.setSelect(false);
-
-
                 }
                 else {
                     for(ShareDevice device:list){
                         device.setSelect(false);
                     }
                     shareDevice.setSelect(true);
-                   // DlnaUtil.getInstance().setSelectedDevice(shareDevice);
+                   // DlnaUtil.getInstance().setSelectedDevice(shareDevice.getDevice());
                 }
                 adapter.notifyDataSetChanged();
             }

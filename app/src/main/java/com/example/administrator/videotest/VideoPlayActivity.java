@@ -40,6 +40,10 @@ import com.example.administrator.videotest.ui.VerticalSeekBar;
 import com.example.administrator.videotest.util.DbUtil;
 import com.example.administrator.videotest.util.MediaUtil;
 
+import org.cybergarage.upnp.Action;
+import org.cybergarage.upnp.Device;
+import org.cybergarage.upnp.Service;
+
 import java.io.File;
 
 public class VideoPlayActivity extends AppCompatActivity implements
@@ -123,7 +127,10 @@ public class VideoPlayActivity extends AppCompatActivity implements
         back=(ImageButton)findViewById(R.id.back);
         tv=(ImageButton)findViewById(R.id.image_tv) ;
         if(DlnaUtil.getInstance().getSelectedDevice()!=null){
-
+            tv.setVisibility(View.VISIBLE);
+        }
+        else {
+            tv.setVisibility(View.GONE);
         }
         surface = (SurfaceView) findViewById(R.id.view);
         surfaceHolder = surface.getHolder(); // SurfaceHolder是SurfaceView的控制接口
@@ -272,6 +279,17 @@ public class VideoPlayActivity extends AppCompatActivity implements
         }
         else if(v==back){
            back();
+        }
+        else if(v==tv){
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.e("tv","play");
+                    tvPlay();
+                }
+            }).start();
+
         }
 
     }
@@ -457,6 +475,29 @@ public class VideoPlayActivity extends AppCompatActivity implements
         play();
     }
 
+    private void tvPlay(){
+        Device device=DlnaUtil.getInstance().getSelectedDevice();
+        Service service=device.getService("urn:schemas-upnp-org:service:AVTransport:1");
+        if(service==null){
+            Log.e("service", "null");
+        }
+        else {
+
+            Action action=service.getAction("SetAVTransportURI");
+            if(action==null){
+                Log.e("action", "null");
+            }
+            else {
+                Log.e("action", video.getUrl());
+                action.setArgumentValue("InstanceID", 0);
+                action.setArgumentValue("CurrentURI", video.getUrl());
+                action.setArgumentValue("CurrentURIMetaData", 0);
+                if (!action.postControlAction()) {
+                    Log.e("action", "false");
+                }
+            }
+        }
+    }
     private void back(){
         if(player!=null){
             if (player.isPlaying()) {

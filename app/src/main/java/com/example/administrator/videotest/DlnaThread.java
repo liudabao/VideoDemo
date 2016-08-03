@@ -5,8 +5,10 @@ import android.util.Log;
 
 import com.example.administrator.videotest.global.GlobalContext;
 
+import org.cybergarage.upnp.Action;
 import org.cybergarage.upnp.ControlPoint;
 import org.cybergarage.upnp.Device;
+import org.cybergarage.upnp.Service;
 import org.cybergarage.upnp.device.DeviceChangeListener;
 import org.cybergarage.upnp.device.SearchResponseListener;
 import org.cybergarage.upnp.ssdp.SSDPPacket;
@@ -44,10 +46,25 @@ public class DlnaThread implements Runnable {
     private DeviceChangeListener deviceChangeListener=new DeviceChangeListener() {
         @Override
         public void deviceAdded(Device device) {
-            Log.e("thread device add :", device.getFriendlyName());
+            Log.e("thread device add :", device.getFriendlyName()+" "+device.getLocation());
             DlnaUtil.getInstance().addDevice(device);
             Intent intent=new Intent("android.video.device");
             GlobalContext.getContext().sendBroadcast(intent);
+            Service service=device.getService("urn:schemas-upnp-org:service:AVTransport:1");
+            if(service==null){
+                Log.e("service", "null");
+            }
+            else {
+
+                Action action=service.getAction("SetAVTransportURI");
+                if(action==null){
+                    Log.e("action", "null");
+                }
+                else {
+                    Log.e("action", "ok");
+
+                }
+            }
         }
 
         @Override
