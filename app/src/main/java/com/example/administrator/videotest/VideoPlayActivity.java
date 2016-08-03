@@ -53,6 +53,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
     private ImageButton next;
     private ImageButton prev;
     private ImageButton back;
+    private ImageButton tv;
     private SeekBar seekBar;
     private TextView textView;
     private ProgressBar progressBar;
@@ -120,6 +121,10 @@ public class VideoPlayActivity extends AppCompatActivity implements
         next=(ImageButton)findViewById(R.id.next);
         prev=(ImageButton)findViewById(R.id.prev);
         back=(ImageButton)findViewById(R.id.back);
+        tv=(ImageButton)findViewById(R.id.image_tv) ;
+        if(DlnaUtil.getInstance().getSelectedDevice()!=null){
+
+        }
         surface = (SurfaceView) findViewById(R.id.view);
         surfaceHolder = surface.getHolder(); // SurfaceHolder是SurfaceView的控制接口
         //surfaceHolder.setFormat(PixelFormat.TRANSPARENT);
@@ -147,7 +152,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
         prev.setOnClickListener(this);
         back.setOnClickListener(this);
         //progressBar.setVisibility(View.VISIBLE);
-
+        tv.setOnClickListener(this);
     }
     @Override
     public boolean onTouchEvent(MotionEvent event){

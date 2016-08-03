@@ -146,6 +146,7 @@ public class DeviceFragment extends Fragment {
                         device.setSelect(false);
                     }
                     shareDevice.setSelect(true);
+                   // DlnaUtil.getInstance().setSelectedDevice(shareDevice);
                 }
                 adapter.notifyDataSetChanged();
             }

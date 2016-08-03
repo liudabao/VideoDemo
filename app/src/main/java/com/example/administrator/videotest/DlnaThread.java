@@ -8,6 +8,8 @@ import com.example.administrator.videotest.global.GlobalContext;
 import org.cybergarage.upnp.ControlPoint;
 import org.cybergarage.upnp.Device;
 import org.cybergarage.upnp.device.DeviceChangeListener;
+import org.cybergarage.upnp.device.SearchResponseListener;
+import org.cybergarage.upnp.ssdp.SSDPPacket;
 
 /**
  * Created by lenovo on 2016/8/2.
@@ -20,7 +22,6 @@ public class DlnaThread implements Runnable {
     public DlnaThread(ControlPoint mControlPoint){
         this.mControlPoint=mControlPoint;
         mControlPoint.addDeviceChangeListener(deviceChangeListener);
-        
     }
 
     @Override
@@ -55,4 +56,5 @@ public class DlnaThread implements Runnable {
             DlnaUtil.getInstance().removeDevice(device);
         }
     };
+
 }

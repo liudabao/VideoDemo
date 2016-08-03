@@ -82,4 +82,12 @@ public class DlnaUtil {
     public List<ShareDevice> getDevices() {
         return mDevices;
     }
+
+    public Device getSelectedDevice() {
+        return mSelectedDevice;
+    }
+
+    public void setSelectedDevice(Device mSelectedDevice) {
+        this.mSelectedDevice = mSelectedDevice;
+    }
 }
