@@ -294,6 +294,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
                 }
             }).start();
             showTv();
+            start();
         }
 
     }
@@ -500,7 +501,6 @@ public class VideoPlayActivity extends AppCompatActivity implements
                     Log.e("action", "false");
                 }
                 else{
-
                     Action playAction=service.getAction("Play");
                     playAction.setArgumentValue("InstanceID", 0);
                     playAction.setArgumentValue("Speed", "1");
@@ -610,7 +610,13 @@ public class VideoPlayActivity extends AppCompatActivity implements
         cancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tvStop();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        tvStop();
+                    }
+                }).start();
+
             }
         });
         //surfaceviewLayout=(RelativeLayout)findViewById(R.id.surfaceviewLayout);
