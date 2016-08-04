@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -40,6 +41,7 @@ import com.example.administrator.videotest.ui.VerticalSeekBar;
 import com.example.administrator.videotest.util.DbUtil;
 import com.example.administrator.videotest.util.MediaUtil;
 
+import org.cybergarage.net.HostInterface;
 import org.cybergarage.upnp.Action;
 import org.cybergarage.upnp.Device;
 import org.cybergarage.upnp.Service;
@@ -61,8 +63,9 @@ public class VideoPlayActivity extends AppCompatActivity implements
     private SeekBar seekBar;
     private TextView textView;
     private ProgressBar progressBar;
-    private RelativeLayout progressLayout;
-    private RelativeLayout surfaceviewLayout;
+    private RelativeLayout surfaceLayout;
+    private RelativeLayout tvLayout;
+    private Button cancle;
     private String time;
     private boolean flag;
     private boolean isFinish=false;
@@ -287,9 +290,10 @@ public class VideoPlayActivity extends AppCompatActivity implements
                 public void run() {
                     Log.e("tv","play");
                     tvPlay();
+                    //showTv();
                 }
             }).start();
-
+            showTv();
         }
 
     }
@@ -488,14 +492,45 @@ public class VideoPlayActivity extends AppCompatActivity implements
                 Log.e("action", "null");
             }
             else {
-                Log.e("action", video.getUrl());
+                Log.e("action","http://"+HostInterface.getIPv4Address()+  video.getUrl());
                 action.setArgumentValue("InstanceID", 0);
-                action.setArgumentValue("CurrentURI", video.getUrl());
+                action.setArgumentValue("CurrentURI", "http://"+HostInterface.getIPv4Address()+ video.getUrl());
                 action.setArgumentValue("CurrentURIMetaData", 0);
                 if (!action.postControlAction()) {
                     Log.e("action", "false");
                 }
+                else{
+
+                    Action playAction=service.getAction("Play");
+                    playAction.setArgumentValue("InstanceID", 0);
+                    playAction.setArgumentValue("Speed", "1");
+                    if(!playAction.postControlAction()){
+                        Log.e("play action", "false");
+                    }
+
+                }
             }
+        }
+    }
+
+    private void tvStop(){
+        Device device=DlnaUtil.getInstance().getSelectedDevice();
+        Service service=device.getService("urn:schemas-upnp-org:service:AVTransport:1");
+        if(service==null){
+            Log.e("stop service", "null");
+        }
+        else {
+
+            Action action=service.getAction("Stop");
+            if(action==null){
+                Log.e("stop action", "null");
+            }
+            else{
+                if (!action.postControlAction()) {
+                    Log.e("stop action", "false");
+                }
+            }
+
         }
     }
     private void back(){
@@ -568,17 +603,25 @@ public class VideoPlayActivity extends AppCompatActivity implements
         }
     }
 
-    private void showProgressBar(){
-        progressLayout=(RelativeLayout) findViewById(R.id.progress_layout);
-        surfaceviewLayout=(RelativeLayout)findViewById(R.id.surfaceviewLayout);
-        RelativeLayout.LayoutParams lParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+    private void showTv(){
+        tvLayout=(RelativeLayout) findViewById(R.id.tv_layout);
+        cancle=(Button)findViewById(R.id.tv_cancle);
+        tvLayout.setVisibility(View.VISIBLE);
+        cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tvStop();
+            }
+        });
+        //surfaceviewLayout=(RelativeLayout)findViewById(R.id.surfaceviewLayout);
+       // RelativeLayout.LayoutParams lParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
        // lParams.= Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
-        lParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-        progressBar=new ProgressBar(GlobalContext.getContext());
-        progressBar.setVisibility(View.VISIBLE);
+       // lParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+       // progressBar=new ProgressBar(GlobalContext.getContext());
+       // progressBar.setVisibility(View.VISIBLE);
         //surfaceviewLayout.setVisibility(View.INVISIBLE);
-        progressBar.setLayoutParams(lParams);
-        progressLayout.addView(progressBar);
+       // progressBar.setLayoutParams(lParams);
+        //progressLayout.addView(progressBar);
     }
 
 

@@ -41,7 +41,9 @@
         android:layout_height="wrap_content"
         android:text="设备"
         android:layout_marginTop="48dp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/md_gray_100"
         android:textSize="@dimen/text_size_16"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/device_view"
