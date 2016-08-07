@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.example.administrator.videotest.adapter.DeviceAdapter;
+import com.example.administrator.videotest.dms.HttpServer;
 import com.example.administrator.videotest.entity.ShareDevice;
 import com.example.administrator.videotest.global.GlobalContext;
 import com.example.administrator.videotest.listener.OnRecyclerViewItemClickListener;
@@ -25,6 +26,7 @@ import org.cybergarage.upnp.ControlPoint;
 import org.cybergarage.upnp.Device;
 import org.cybergarage.upnp.device.DeviceChangeListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -144,7 +146,12 @@ public class DeviceFragment extends Fragment {
                         device.setSelect(false);
                     }
                     shareDevice.setSelect(true);
-                   // DlnaUtil.getInstance().setSelectedDevice(shareDevice.getDevice());
+                    try {
+                        HttpServer server=new HttpServer(8080);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    // DlnaUtil.getInstance().setSelectedDevice(shareDevice.getDevice());
                 }
                 adapter.notifyDataSetChanged();
             }

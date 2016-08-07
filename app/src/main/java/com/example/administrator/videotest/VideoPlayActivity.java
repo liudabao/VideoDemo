@@ -493,21 +493,25 @@ public class VideoPlayActivity extends AppCompatActivity implements
                 Log.e("action", "null");
             }
             else {
-                Log.e("action","http://"+HostInterface.getIPv4Address()+  video.getUrl());
+                String path="http://"+HostInterface.getIPv4Address()+ ":8080"+ video.getUrl();
+                Log.e("action path",path);
                 action.setArgumentValue("InstanceID", 0);
-                action.setArgumentValue("CurrentURI", "http://"+HostInterface.getIPv4Address()+ video.getUrl());
+                action.setArgumentValue("CurrentURI", path);
                 action.setArgumentValue("CurrentURIMetaData", 0);
                 if (!action.postControlAction()) {
                     Log.e("action", "false");
                 }
                 else{
+                    Log.e("action", "ok");
                     Action playAction=service.getAction("Play");
                     playAction.setArgumentValue("InstanceID", 0);
                     playAction.setArgumentValue("Speed", "1");
                     if(!playAction.postControlAction()){
                         Log.e("play action", "false");
                     }
-
+                    else {
+                        Log.e("play action", "ok");
+                    }
                 }
             }
         }
