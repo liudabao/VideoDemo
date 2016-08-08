@@ -1,7 +1,9 @@
 package com.example.administrator.videotest;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -38,7 +40,13 @@ public class DlnaService extends Service {
     }
 
     private void init(){
+        WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        Log.e("TAG", wm.getConnectionInfo() + "");
+        WifiManager.MulticastLock multicastLock = wm.createMulticastLock("multicastLock");
+        multicastLock.setReferenceCounted(true);
+        multicastLock.acquire();
         mControlPoint=new ControlPoint();
         dlnaThread=new DlnaThread(mControlPoint);
+
     }
 }

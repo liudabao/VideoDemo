@@ -36,9 +36,9 @@ public class DlnaUtil {
     }
 
     public synchronized void addDevice(Device d) {
-        //if (!DLNAUtil.isMediaRenderDevice(d)) {
-        //     return;
-        // }
+       // if (isMediaRenderDevice(d)) {
+       //      return;
+       // }
         int size = mDevices.size();
         for (int i = 0; i < size; i++) {
             String udnString = mDevices.get(i).getDevice().getUDN();
@@ -56,7 +56,7 @@ public class DlnaUtil {
     }
 
     public synchronized void removeDevice(Device d) {
-        //if (!DLNAUtil.isMediaRenderDevice(d)) {
+       // if (isMediaRenderDevice(d)) {
        //     return;
        // }
         int size = mDevices.size();
@@ -94,5 +94,13 @@ public class DlnaUtil {
 
         return mSelectedDevice;
     }
+
+    public synchronized void clear() {
+        if (mDevices != null) {
+            mDevices.clear();
+            mSelectedDevice = null;
+        }
+    }
+
 
 }

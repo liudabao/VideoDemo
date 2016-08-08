@@ -221,7 +221,8 @@ public class EditFragment extends Fragment {
 		}
 		Intent intent=new Intent("android.video.delete");
 		getActivity().sendBroadcast(intent);
-		getFragmentManager().popBackStack();
+		getFragmentManager().popBackStackImmediate();
+		//getActivity().finish();
 		dialog.dismiss();
 
 	}

@@ -530,6 +530,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
                 Log.e("stop action", "null");
             }
             else{
+                action.setArgumentValue("InstanceID",0);
                 if (!action.postControlAction()) {
                     Log.e("stop action", "false");
                 }
@@ -620,6 +621,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
                         tvStop();
                     }
                 }).start();
+                tvLayout.setVisibility(View.GONE);
 
             }
         });
