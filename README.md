@@ -5,4 +5,4 @@
 <p>下拉刷新本地视频文件</p>
 <p>支持继续播放</p>
 <p>支持手动打开和批量删除</p>
-<p>DLNA设备搜索</p>
+<p>DLNA设备搜索，Cyberlink和Nanohttpd实现视频共享</p>
