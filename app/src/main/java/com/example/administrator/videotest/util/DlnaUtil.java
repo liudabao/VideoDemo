@@ -1,4 +1,4 @@
-package com.example.administrator.videotest;
+package com.example.administrator.videotest.util;
 
 import android.util.Log;
 

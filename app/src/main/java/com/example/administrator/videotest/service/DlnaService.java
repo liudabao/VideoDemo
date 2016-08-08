@@ -1,4 +1,4 @@
-package com.example.administrator.videotest;
+package com.example.administrator.videotest.service;
 
 import android.app.Service;
 import android.content.Context;

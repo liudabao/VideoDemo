@@ -1,8 +1,9 @@
-package com.example.administrator.videotest;
+package com.example.administrator.videotest.service;
 
 import android.content.Intent;
 import android.util.Log;
 
+import com.example.administrator.videotest.util.DlnaUtil;
 import com.example.administrator.videotest.global.GlobalContext;
 import com.example.administrator.videotest.listener.OnHttpListener;
 import com.example.administrator.videotest.util.HttpUtil;
@@ -11,10 +12,8 @@ import com.example.administrator.videotest.util.ParseUtil;
 import org.cybergarage.upnp.Action;
 import org.cybergarage.upnp.ControlPoint;
 import org.cybergarage.upnp.Device;
-import org.cybergarage.upnp.DeviceList;
 import org.cybergarage.upnp.Service;
 import org.cybergarage.upnp.device.DeviceChangeListener;
-import org.cybergarage.upnp.device.NotifyListener;
 import org.cybergarage.upnp.device.SearchResponseListener;
 import org.cybergarage.upnp.ssdp.SSDPPacket;
 

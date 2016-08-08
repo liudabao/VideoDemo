@@ -21,10 +21,10 @@ import com.example.administrator.videotest.dms.HttpServer;
 import com.example.administrator.videotest.entity.ShareDevice;
 import com.example.administrator.videotest.global.GlobalContext;
 import com.example.administrator.videotest.listener.OnRecyclerViewItemClickListener;
+import com.example.administrator.videotest.service.DlnaService;
+import com.example.administrator.videotest.util.DlnaUtil;
 
 import org.cybergarage.upnp.ControlPoint;
-import org.cybergarage.upnp.Device;
-import org.cybergarage.upnp.device.DeviceChangeListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -184,7 +184,7 @@ public class DeviceFragment extends Fragment {
             Message msg=new Message();
             msg.what=0;
             handler.sendMessage(msg);
-            list=DlnaUtil.getInstance().getDevices();
+            list= DlnaUtil.getInstance().getDevices();
         }
     }
 

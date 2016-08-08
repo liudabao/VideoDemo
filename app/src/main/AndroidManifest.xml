@@ -42,7 +42,7 @@
         <activity android:name=".HomeActivity" />
 
         <service
-            android:name=".DlnaService"
+            android:name=".service.DlnaService"
             android:enabled="true"
             android:exported="true"></service>
     </application>
