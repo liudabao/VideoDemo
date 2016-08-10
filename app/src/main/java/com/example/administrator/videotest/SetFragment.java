@@ -51,6 +51,7 @@ public class SetFragment extends Fragment {
 	private DownloadReceiver receiver;
 	private Version version;
 	private Handler handler;
+	private String versionCode;
 	
 	@Override	
 	public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
@@ -73,8 +74,11 @@ public class SetFragment extends Fragment {
 
 			public void handleMessage(Message message){
 				switch (message.what){
-					case GlobalValue.VERSION:
+					case GlobalValue.VERSION_UPDATE:
 						showDownDialog();
+						break;
+					case GlobalValue.VERSION_KEEP:
+						DialogUtil.showDialog(getActivity(),"当前已是最新版本，版本号为: "+versionCode);
 						break;
 					default:
 						break;
@@ -224,16 +228,20 @@ public class SetFragment extends Fragment {
 						try {
 							info = manager.getPackageInfo(getActivity().getPackageName(), 0);
 							//Log.e("Version",info.versionName+" and "+version.getValue()+" and "+info.versionCode);
-							if(info.versionName.compareTo(version.getValue())>0){
+							if(info.versionName.compareTo(version.getValue())>=0){
 								Log.e("Version ",info.versionName+" and "+version.getValue());
-								DialogUtil.showDialog(getActivity(),"当前已是最新版本，版本号为: "+info.versionName );
+								Message msg=new Message();
+								msg.what=GlobalValue.VERSION_KEEP;
+								handler.sendMessage(msg);
+								versionCode=info.versionName;
+								//DialogUtil.showDialog(GlobalContext.getContext(),"当前已是最新版本，版本号为: "+info.versionName );
 
 							}
 							else {
 								Log.e("Version update",info.versionName+" and "+version.getValue());
 								//showDownDialog();
 								Message msg=new Message();
-								msg.what=GlobalValue.VERSION;
+								msg.what=GlobalValue.VERSION_UPDATE;
 								handler.sendMessage(msg);
 							}
 						} catch (PackageManager.NameNotFoundException e) {

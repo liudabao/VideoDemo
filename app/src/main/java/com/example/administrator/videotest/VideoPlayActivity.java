@@ -98,8 +98,11 @@ public class VideoPlayActivity extends AppCompatActivity implements
     }
 
     private void initData(){
+        dbUtil=new DbUtil();
         Bundle bundle=getIntent().getExtras();
-        video=(Video)bundle.getSerializable(GlobalValue.KEY);
+        Log.e("TAG",bundle.getString(GlobalValue.VIDEO_KEY));
+        video=dbUtil.queryByName(GlobalValue.TABLE, bundle.getString(GlobalValue.VIDEO_KEY));
+        //video=(Video)bundle.getSerializable(GlobalValue.KEY);
         Display disp = getWindowManager().getDefaultDisplay();
         windowWidth = disp.getWidth();
         windowHeight = disp.getHeight();
@@ -107,7 +110,7 @@ public class VideoPlayActivity extends AppCompatActivity implements
 
     private void initView() {
 
-        dbUtil=new DbUtil();
+
         bottomRelativeLayout=(RelativeLayout)findViewById(R.id.video_bottom);
         topLinearLayout=(RelativeLayout)findViewById(R.id.video_top);
         volumeLayout=(LinearLayout)findViewById(R.id.volume_layout);
@@ -143,11 +146,11 @@ public class VideoPlayActivity extends AppCompatActivity implements
         start.setOnClickListener(this);
         if (video.getNextUrl()==null){
             next.setEnabled(false);
-            //next.setBackgroundResource(R.drawable.next_back);
+            next.setBackgroundResource(R.drawable.next_back);
         }
         if(video.getPrevUrl()==null){
             prev.setEnabled(false);
-            //prev.setBackgroundResource(R.drawable.prev_back);
+            prev.setBackgroundResource(R.drawable.prev_back);
         }
         next.setOnClickListener(this);
         prev.setOnClickListener(this);
@@ -429,19 +432,19 @@ public class VideoPlayActivity extends AppCompatActivity implements
         video=dbUtil.queryByUrl(GlobalValue.TABLE, video.getNextUrl());
         if(video.getNextUrl()==null){
             next.setEnabled(false);
-            //next.setBackgroundResource(R.drawable.next_back);
+            next.setBackgroundResource(R.drawable.next_back);
         }
         else {
             next.setEnabled(true);
-            // next.setBackgroundResource(R.drawable.next);
+            next.setBackgroundResource(R.drawable.next);
         }
         if(video.getPrevUrl()==null){
             prev.setEnabled(false);
-            // prev.setBackgroundResource(R.drawable.prev_back);
+            prev.setBackgroundResource(R.drawable.prev_back);
         }
         else {
             prev.setEnabled(true);
-            // prev.setBackgroundResource(R.drawable.prev);
+            prev.setBackgroundResource(R.drawable.prev);
         }
         play();
     }
@@ -454,19 +457,19 @@ public class VideoPlayActivity extends AppCompatActivity implements
         video=dbUtil.queryByUrl(GlobalValue.TABLE, video.getPrevUrl());
         if(video.getPrevUrl()==null){
             prev.setEnabled(false);
-            // prev.setBackgroundResource(R.drawable.prev_back);
+             prev.setBackgroundResource(R.drawable.prev_back);
         }
         else {
             prev.setEnabled(true);
-            // prev.setBackgroundResource(R.drawable.prev);
+            prev.setBackgroundResource(R.drawable.prev);
         }
         if(video.getNextUrl()==null){
             next.setEnabled(false);
-            //next.setBackgroundResource(R.drawable.next_back);
+            next.setBackgroundResource(R.drawable.next_back);
         }
         else {
             next.setEnabled(true);
-            //next.setBackgroundResource(R.drawable.next);
+            next.setBackgroundResource(R.drawable.next);
         }
         play();
     }

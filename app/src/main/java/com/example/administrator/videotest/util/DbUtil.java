@@ -181,6 +181,7 @@ public class DbUtil {
                 if(cursor.moveToFirst()){
                     do{
                        // Log.e("query all", cursor.getString(cursor.getColumnIndex("selected")));
+                      //  Log.e("query all", cursor.getString(cursor.getColumnIndex("name")));
                         Video video=new Video();
                         video.setName(cursor.getString(cursor.getColumnIndex("name")));
                         video.setSize(cursor.getString(cursor.getColumnIndex("size")));
@@ -191,10 +192,12 @@ public class DbUtil {
                         video.setPosition(cursor.getInt(cursor.getColumnIndex("position")));
                         video.setSelected(cursor.getString(cursor.getColumnIndex("selected")));
                         video.setImageUrl(cursor.getString(cursor.getColumnIndex("imageUrl")));
+
                         if(video.getSelected().equals("false")){
                             //Log.e("query all", "add "+video.getName());
                             list.add(video);
                         }
+                      //  Log.e("query all", cursor.getString(cursor.getColumnIndex("url")));
                         //list.add(video);
                     }while(cursor.moveToNext());
                 }
@@ -270,7 +273,7 @@ public class DbUtil {
                 if(cursor.moveToFirst()){
                     do{
                         //Log.e("query", name);
-                       // Log.e("query cursor", nextUrl+" &&&  "+cursor.getString(cursor.getColumnIndex("nextUrl")));
+                       // Log.e("query cursor", cursor.getString(cursor.getColumnIndex("name")));
                         if(name.equals(cursor.getString(cursor.getColumnIndex("name")))){
                             Log.e("query video", cursor.getString(cursor.getColumnIndex("name"))+" "+cursor.getInt(cursor.getColumnIndex("position")));
                             video.setName(cursor.getString(cursor.getColumnIndex("name")));

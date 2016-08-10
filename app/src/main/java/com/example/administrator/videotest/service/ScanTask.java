@@ -44,11 +44,11 @@ public class ScanTask extends AsyncTask<Void, Integer, Boolean>{
         Log.e("ScanTask", "start scan");
         File file= Environment.getExternalStorageDirectory();
         FileUtil.getFile(file, time, imageUrl, list);
-        Collections.sort(list, new VideoNameComparator());
-       // for(int i=0;i<list.size();i++){
+        //Collections.sort(list, new VideoNameComparator());
+        //for(int i=0;i<list.size();i++){
        //     Log.e("sort list", list.get(i).getName());
        // }
-        MediaUtil.setNext(list);
+        //MediaUtil.setNext(list);
         ScanThread[] scanThread=new ScanThread[num];
         block=list.size()/num;
         for(int i=0;i<num;i++){

@@ -38,6 +38,9 @@ public class FileUtil {
                         }*/
                         DbUtil dbUtil=new DbUtil();
                         if(dbUtil.isExist(GlobalValue.TABLE, name)||dbUtil.queryByName(GlobalValue.TABLE, name).getSelected()=="true"){
+                            Video video=dbUtil.queryByName(GlobalValue.TABLE, name);
+                            video.setUrl(f.getAbsolutePath());
+                            dbUtil.update(video, GlobalValue.TABLE);
                            /* Video video=dbUtil.queryByName(GlobalValue.TABLE, name);
                             list.add(video);
                             Log.e("vedio db", file.getPath()+": "+name+" "+formetFileSize(getFileSizes(f)));*/

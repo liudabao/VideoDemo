@@ -69,4 +69,14 @@ public class ImageUtil {
                 .error(R.mipmap.ic_launcher)
                 .into(imageView);
     }
+
+    public static void display(ImageView imageView, String url) {
+        // TODO Auto-generated method stub
+
+        Glide.with(GlobalContext.getContext())
+                .load(url)
+                .centerCrop()
+                .crossFade()
+                .into(imageView);
+    }
 }

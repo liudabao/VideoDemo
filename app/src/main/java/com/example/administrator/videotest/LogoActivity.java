@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.example.administrator.videotest.global.GlobalContext;
@@ -30,6 +32,7 @@ public class LogoActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_logo);
         getPersimmions();
 
@@ -37,7 +40,8 @@ public class LogoActivity extends Activity {
 
     private void initView(){
         iv_ad=(ImageView)findViewById(R.id.iv_ad);
-        ImageUtil.display(iv_ad,R.mipmap.ic_launcher);
+        //ImageUtil.display(iv_ad,R.mipmap.ic_launcher);
+        ImageUtil.display(iv_ad, GlobalValue.LOGO_URL);
         onScaleWidth(iv_ad);
         new Handler().postDelayed(new Runnable() {
 

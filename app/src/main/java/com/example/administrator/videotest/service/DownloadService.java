@@ -55,7 +55,7 @@ public class DownloadService extends Service {
         progress.setIcon(R.drawable.download);
         progress.setTitle("下载");
         progress.setMessage("版本更新");
-        progress.setCancelable(false);
+        progress.setCancelable(true);
         progress.setMax(100);
         progress.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         progress.show();

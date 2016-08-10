@@ -1,6 +1,7 @@
 package com.example.administrator.videotest.util;
 
 import android.media.MediaMetadataRetriever;
+import android.util.Log;
 
 
 import com.example.administrator.videotest.entity.Video;
@@ -46,12 +47,19 @@ public class MediaUtil {
 
     public static  void setNext(List<Video> list){
         for(int i=0;i<list.size();i++){
-           // Log.e("next", i+"");
+
+            //Log.e("next", i+" "+list.get(i).getName());
             if(i>0){
                 list.get(i).setPrevUrl(list.get(i-1).getUrl());
             }
+            else {
+                list.get(i).setPrevUrl(null);
+            }
             if(i<list.size()-1){
                 list.get(i).setNextUrl(list.get(i+1).getUrl());
+            }
+            else {
+                list.get(i).setNextUrl(null);
             }
 
         }

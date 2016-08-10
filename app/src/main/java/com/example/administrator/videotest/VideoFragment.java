@@ -37,7 +37,9 @@ import com.example.administrator.videotest.service.ScanService;
 import com.example.administrator.videotest.util.DbManager;
 import com.example.administrator.videotest.adapter.VideoAdapter;
 import com.example.administrator.videotest.adapter.VideoNameComparator;
+import com.example.administrator.videotest.util.DialogUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -111,7 +113,7 @@ public class VideoFragment extends Fragment {
 
 	private void initData(){
 		list= DbManager.query();
-		Collections.sort(list, new VideoNameComparator());
+		//Collections.sort(list, new VideoNameComparator());
 		initView();
 		initEvent();
 		if(list.size()==0){
@@ -144,11 +146,23 @@ public class VideoFragment extends Fragment {
 			@Override
 			public void onItemClick(View view, int position) {
 				Log.e("item click", list.get(position).getName());
-				Intent intent=new Intent(getActivity(), VideoPlayActivity.class);
-				Bundle bundle=new Bundle();
-				bundle.putSerializable(GlobalValue.KEY, list.get(position));
-				intent.putExtras(bundle);
-				startActivityForResult(intent, GlobalValue.REQUEST_CODE_PLAY);
+				File file=new File(list.get(position).getUrl());
+				if(file.exists()){
+					Intent intent=new Intent(getActivity(), VideoPlayActivity.class);
+					Bundle bundle=new Bundle();
+					//bundle.putSerializable(GlobalValue.KEY, list.get(position));
+					bundle.putString(GlobalValue.VIDEO_KEY, list.get(position).getName());
+					intent.putExtras(bundle);
+					startActivityForResult(intent, GlobalValue.REQUEST_CODE_PLAY);
+				}
+				else {
+					DialogUtil.showDialog(GlobalContext.getContext(), "视频源文件已被删除");
+				}
+				//Intent intent=new Intent(getActivity(), VideoPlayActivity.class);
+				//Bundle bundle=new Bundle();
+				//bundle.putSerializable(GlobalValue.KEY, list.get(position));
+				//intent.putExtras(bundle);
+				//startActivityForResult(intent, GlobalValue.REQUEST_CODE_PLAY);
 			}
 
 			@Override
@@ -183,7 +197,7 @@ public class VideoFragment extends Fragment {
 							progress.dismiss();
 						}
 						list=DbManager.query();
-						Collections.sort(list, new VideoNameComparator());
+						//Collections.sort(list, new VideoNameComparator());
 						Log.e("message 1",list.size()+"");
 						adapter=new VideoAdapter(GlobalContext.getContext(), list);
 						recyclerView.setAdapter(adapter);
@@ -197,7 +211,7 @@ public class VideoFragment extends Fragment {
 					case GlobalValue.TYPE_REFREASH:
 						//initView();
 						list=DbManager.query();
-						Collections.sort(list, new VideoNameComparator());
+						//Collections.sort(list, new VideoNameComparator());
 						Log.e("message 2",list.size()+"");
 						adapter=new VideoAdapter(GlobalContext.getContext(), list);
 						recyclerView.setAdapter(adapter);
@@ -253,8 +267,8 @@ public class VideoFragment extends Fragment {
 			case GlobalValue.REQUEST_CODE_PLAY:
 				if(resultCode==getActivity().RESULT_OK){
 					Log.e("result","ok");
-					list=DbManager.query();
-					Collections.sort(list, new VideoNameComparator());
+					list=DbManager.queryAll();
+					//Collections.sort(list, new VideoNameComparator());
 					adapter=new VideoAdapter(GlobalContext.getContext(), list);
 					recyclerView.setAdapter(adapter);
 					adapter.notifyDataSetChanged();
