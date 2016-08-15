@@ -35,6 +35,7 @@ public class DlnaThread implements Runnable {
     @Override
     public void run() {
         if(mControlPoint==null){
+            Log.e("DLNA", "IT is NULL");
             return;
         }
         if(mStartComplete){
@@ -45,11 +46,18 @@ public class DlnaThread implements Runnable {
         }
         else {
             mControlPoint.stop();
-            boolean ret=mControlPoint.start();
-            Log.e("TAG", "controlpoint start..." +ret);
-            if(ret){
-                mStartComplete=true;
+            try{
+                boolean ret=mControlPoint.start();
+                Log.e("TAG", "controlpoint start..." +ret);
+                if(ret){
+                    mStartComplete=true;
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }finally {
+
             }
+
         }
 
     }

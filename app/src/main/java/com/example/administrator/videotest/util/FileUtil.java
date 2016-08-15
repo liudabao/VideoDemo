@@ -58,20 +58,27 @@ public class FileUtil {
                           //  }
 
                             video.setName(name);
-                            video.setSize(FileUtil.formetFileSize(FileUtil.getFileSizes(f)));
+                            video.setSize(formetFileSize(getFileSizes(f)));
                             video.setUrl(f.getAbsolutePath());
                             video.setTime(time);
                             video.setImageUrl(imageUrl);
                             video.setSelected("false");
                            // Log.e("video detail", name+" * "+FileUtil.formetFileSize(FileUtil.getFileSizes(f))+" * "+f.getAbsolutePath()+" * "+time+" * "+imageUrl);
-                           // if(list.size()>0){
+                           // if(list.size()>0){yu76
                            //     list.get(list.size()-1).setNextUrl(video.getUrl());
                            //     video.setPrevUrl(list.get(list.size()-1).getUrl());
                            // }
                            // else if (list.size()==0){
                            //     video.setPrevUrl(null);
                            // }
-                            list.add(video);
+                            if(getFileSizes(f)>0){
+                                Log.e("Video", video.getName()+" "+video.getTime());
+                                list.add(video);
+                            }
+                            else {
+                                Log.e("Video", video.getName()+" "+video.getSize()+" "+video.getTime());
+                            }
+                           // list.add(video);
                             //DbManager.insert(video);
                            // Intent intent=new Intent();
                            // intent.setAction("android.video.delete");

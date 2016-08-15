@@ -38,6 +38,7 @@ public class ScanThread extends Thread{
         for(int i=start;i<=end;i++){
             Video video=list.get(i);
             File f=new File(video.getUrl());
+            Log.e("ScanThread", video.getUrl());
             Bitmap bitmap= ImageUtil.getImage(f, video.getPosition());
             String time= MediaUtil.getMediaTime(f);
             String name=video.getName();
